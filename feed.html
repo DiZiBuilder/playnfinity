@@ -24,7 +24,7 @@
     .game h2 { font-size: 1.5rem; font-weight: bold; }
     .game p { color: #9ca3af; font-size: 0.875rem; }
     .yom-badge { color: #3b82f6; font-size: 0.75rem; }
-    .likes { color: #f59e0b; font-size: 0.875rem; }
+    .likes { color: #f59e0b; font-size: 0.875rem; cursor: pointer; }
     .back { text-align: center; margin: 2rem; }
     .back a { color: #ec4899; text-decoration: none; }
     .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); color: white; border: none; padding: 0.5rem; border-radius: 50%; cursor: pointer; }
@@ -38,19 +38,19 @@
     <h2>Valley of the Ancient</h2>
     <p>2-3 min | Exploration Adventure</p>
     <p class="yom-badge">Powered by YOM</p>
-    <p class="likes">❤️ 1.2K likes</p>
+    <p class="likes" onclick="likeGame(1)">❤️ 1.2K likes</p>
   </div>
   <div class="game" onclick="playGame('https://yom.net/embed/k4-rally')">
     <h2>K4 Rally</h2>
     <p>2 min | High-Speed Racing</p>
     <p class="yom-badge">Powered by YOM</p>
-    <p class="likes">❤️ 2.5K likes</p>
+    <p class="likes" onclick="likeGame(2)">❤️ 2.5K likes</p>
   </div>
   <div class="game" onclick="playGame('https://yom.net/embed/domenation')">
     <h2>Domenation</h2>
     <p>3 min | Strategy Domination</p>
     <p class="yom-badge">Powered by YOM</p>
-    <p class="likes">❤️ 890 likes</p>
+    <p class="likes" onclick="likeGame(3)">❤️ 890 likes</p>
   </div>
   <div class="back"><a href="index.html">← Back to Home</a></div>
 
@@ -78,13 +78,11 @@
         }
       });
     }
-    // Demo likes (localStorage)
-    document.querySelectorAll('.likes').forEach(like => {
-      like.onclick = (e) => {
-        e.stopPropagation();
-        alert('Liked! (Demo)');
-      };
-    });
+    // Demo likes
+    function likeGame(id) {
+      event.stopPropagation();
+      alert(`Liked game ${id}! (Demo)`);
+    }
   </script>
 </body>
 </html>
