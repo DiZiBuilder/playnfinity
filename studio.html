@@ -6,18 +6,32 @@
   <title>Studio - Playnfinity</title>
   <link rel="icon" href="favicon.ico" />
   <style>
-    body { background: #000; color: white; font-family: sans-serif; text-align: center; padding: 2rem; }
-    input, button { width: 100%; max-width: 300px; padding: 1rem; margin: 0.5rem auto; display: block; border-radius: 0.5rem; border: none; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #000; color: white; 
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;
+      text-align: center;
+    }
+    body.light { background: #f9fafb; color: #000; }
+    input, button { 
+      width: 100%; max-width: 300px; padding: 1rem; margin: 0.5rem 0; border-radius: 0.5rem; border: none; 
+      font-size: 1rem; display: block; margin: 0 auto 0.5rem;
+    }
     input { background: #111; color: white; }
-    button { background: #10b981; font-weight: bold; cursor: pointer; }
+    body.light input { background: #f3f4f6; color: #000; }
+    button { background: #10b981; color: white; font-weight: bold; cursor: pointer; }
     button:hover { background: #059669; }
     .back { margin-top: 2rem; }
     .back a { color: #ec4899; text-decoration: none; }
+    .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); color: white; border: none; padding: 0.5rem; border-radius: 50%; cursor: pointer; }
+    body.light .toggle { background: rgba(255,255,255,0.5); color: black; }
   </style>
 </head>
 <body>
-  <h1>Studio Dashboard</h1>
-  <p>Upload your YOM game to the feed</p>
+  <button class="toggle" onclick="toggleDark()">🌙</button>
+  <h1 style="font-size:2rem; margin-bottom:1rem;">Studio Dashboard</h1>
+  <p style="color:#9ca3af; margin-bottom:2rem;">Upload your YOM game to the feed</p>
   <input type="text" placeholder="Game Title" id="title" />
   <input type="url" placeholder="YOM Stream URL" id="url" />
   <input type="number" placeholder="Duration (min)" min="1" max="5" id="dur" />
@@ -25,14 +39,27 @@
   <button onclick="postGame()">Post Game</button>
   <div class="back"><a href="index.html">← Back</a></div>
   <script>
+    function toggleDark() {
+      document.body.classList.toggle('light');
+      const btn = document.querySelector('.toggle');
+      btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+    }
     function postGame() {
       const title = document.getElementById('title').value;
       const url = document.getElementById('url').value;
-      const dur = document.getElementById('dur').value;
+      const dur = document.getElementById('dur').value || 3;
       const tags = document.getElementById('tags').value;
       if (title && url) {
-        alert(`"${title}" posted! (Demo — refresh feed to see. Real version saves to DB.)`);
-        // In full MVP, this posts to Supabase
+        // Demo save to localStorage (refresh feed to see)
+        const games = JSON.parse(localStorage.getItem('games') || '[]');
+        games.push({ title, url, dur, tags: tags.split(',').map(t => t.trim()) });
+        localStorage.setItem('games', JSON.stringify(games));
+        alert(`"${title}" posted! (Demo — refresh feed to see.)`);
+        // Clear form
+        document.getElementById('title').value = '';
+        document.getElementById('url').value = '';
+        document.getElementById('dur').value = '';
+        document.getElementById('tags').value = '';
       } else {
         alert('Fill title & URL');
       }

@@ -7,19 +7,33 @@
   <link rel="icon" href="favicon.ico" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; color: white; font-family: sans-serif; overflow-y: auto; }
-    .game { background: #111; padding: 1.5rem; margin: 1rem; border-radius: 1rem; cursor: pointer; transition: all 0.3s; }
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #000; color: white; 
+      height: 100vh; overflow-y: auto; 
+      transition: background 0.3s;
+    }
+    body.light { background: #f9fafb; color: #000; }
+    .game { 
+      background: #111; padding: 1.5rem; margin: 1rem; border-radius: 1rem; cursor: pointer; 
+      transition: all 0.3s;
+    }
+    body.light .game { background: #f3f4f6; }
     .game:hover { background: #222; transform: scale(1.02); }
+    body.light .game:hover { background: #e5e7eb; }
     .game h2 { font-size: 1.5rem; font-weight: bold; }
     .game p { color: #9ca3af; font-size: 0.875rem; }
     .yom-badge { color: #3b82f6; font-size: 0.75rem; }
     .likes { color: #f59e0b; font-size: 0.875rem; }
     .back { text-align: center; margin: 2rem; }
     .back a { color: #ec4899; text-decoration: none; }
+    .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); color: white; border: none; padding: 0.5rem; border-radius: 50%; cursor: pointer; }
+    body.light .toggle { background: rgba(255,255,255,0.5); color: black; }
     @media (max-width: 640px) { .game { margin: 0.5rem; padding: 0.75rem; } }
   </style>
 </head>
 <body>
+  <button class="toggle" onclick="toggleDark()">🌙</button>
   <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient')">
     <h2>Valley of the Ancient</h2>
     <p>2-3 min | Exploration Adventure</p>
@@ -41,6 +55,11 @@
   <div class="back"><a href="index.html">← Back to Home</a></div>
 
   <script>
+    function toggleDark() {
+      document.body.classList.toggle('light');
+      const btn = document.querySelector('.toggle');
+      btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+    }
     function playGame(embedUrl) {
       const iframe = document.createElement('iframe');
       iframe.src = embedUrl;
@@ -49,17 +68,23 @@
       document.body.appendChild(iframe);
       setTimeout(() => document.body.removeChild(iframe), 180000); // 3 min
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.body.removeChild(iframe); });
-      // Swipe up to next (TikTok style)
+      // Swipe up to close/next
       let startY = 0;
       document.addEventListener('touchstart', (e) => startY = e.touches[0].clientY);
       document.addEventListener('touchmove', (e) => {
         if (startY - e.touches[0].clientY > 100) { // Swipe up
           document.body.removeChild(iframe);
-          // Auto-next (demo)
-          setTimeout(() => alert('Next game auto-loads!'), 500);
+          setTimeout(() => alert('Next game loads! (Demo)'), 500);
         }
       });
     }
+    // Demo likes (localStorage)
+    document.querySelectorAll('.likes').forEach(like => {
+      like.onclick = (e) => {
+        e.stopPropagation();
+        alert('Liked! (Demo)');
+      };
+    });
   </script>
 </body>
 </html>

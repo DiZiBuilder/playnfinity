@@ -14,7 +14,9 @@
       min-height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;
       text-align: center;
+      transition: background 0.3s;
     }
+    body.light { background: linear-gradient(to bottom, #f3e8ff, #ffffff, #f3e8ff); color: #000; }
     h1 { 
       font-size: 4.5rem; font-weight: bold; 
       background: linear-gradient(to right, #ec4899, #a855f7); 
@@ -34,10 +36,13 @@
     }
     .btn:hover { transform: scale(1.05); }
     .btn-secondary:hover { background: #ec4899; color: black; }
+    .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); color: white; border: none; padding: 0.5rem; border-radius: 50%; cursor: pointer; }
+    body.light .toggle { background: rgba(255,255,255,0.5); color: black; }
     @media (max-width: 640px) { h1 { font-size: 3rem; } }
   </style>
 </head>
 <body>
+  <button class="toggle" onclick="toggleDark()">🌙</button>
   <h1>Playnfinity</h1>
   <p style="font-size:1.25rem; color:#9ca3af;">TikTok for Games on YOM</p>
   <div>
@@ -45,5 +50,12 @@
     <a href="studio.html" class="btn btn-secondary">Studio</a>
   </div>
   <p style="margin-top:4rem; font-size:0.875rem; color:#6b7280;">In partnership with YOM</p>
+  <script>
+    function toggleDark() {
+      document.body.classList.toggle('light');
+      const btn = document.querySelector('.toggle');
+      btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+    }
+  </script>
 </body>
 </html>
