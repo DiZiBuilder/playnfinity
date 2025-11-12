@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Studio - Playnfinity</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    /* FORCE RESET */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { 
+      height: 100% !important; 
+      background: #000 !important; 
+      overflow-y: auto !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    body.light { background: #f9fafb !important; }
+    body { 
+      font-family: 'Segoe UI', sans-serif !important; 
+      color: white !important; 
+      min-height: 100vh !important;
+      transition: background 0.3s !important;
+      padding: 1rem !important;
+    }
+    .container { 
+      max-width: 500px !important; 
+      margin: 0 auto !important; 
+      padding-top: 4rem !important; /* Space for toggle */
+    }
+    .form-card { 
+      background: #111 !important; 
+      border-radius: 1rem !important; 
+      padding: 2rem !important; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    }
+    body.light .form-card { background: #fff !important; box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important; }
+    h1 { font-size: 2rem !important; margin-bottom: 1rem !important; text-align: center !important; }
+    p { color: #9ca3af !important; margin-bottom: 2rem !important; text-align: center !important; }
+    body.light p { color: #6b7280 !important; }
+    input, button { 
+      width: 100% !important; 
+      padding: 1rem !important; 
+      margin: 0.5rem 0 !important; 
+      border-radius: 0.5rem !important; 
+      border: none !important; 
+      font-size: 1rem !important;
+      -webkit-appearance: none !important;
+      outline: none !important;
+    }
+    input { background: #222 !important; color: white !important; }
+    body.light input { background: #f3f4f6 !important; color: #000 !important; }
+    button { background: #10b981 !important; color: white !important; font-weight: bold !important; cursor: pointer !important; }
+    button:hover { background: #059669 !important; }
+    .back { text-align: center !important; margin-top: 2rem !important; }
+    .back a { color: #ec4899 !important; text-decoration: none !important; font-weight: bold !important; }
+    
+    /* TOGGLE — NUCLEAR FIXED */
+    .toggle { 
+      position: fixed !important; 
+      top: 1rem !important; 
+      right: 1rem !important; 
+      background: rgba(0,0,0,0.7) !important; 
+      color: white !important; 
+      border: none !important; 
+      padding: 0.75rem !important; 
+      border-radius: 50% !important; 
+      cursor: pointer !important; 
+      z-index: 9999 !important; 
+      backdrop-filter: blur(10px) !important;
+      font-size: 1.1rem !important;
+      -webkit-appearance: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    body.light .toggle { 
+      background: rgba(255,255,255,0.9) !important; 
+      color: #000 !important; 
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle" onclick="toggleDark()">🌙</button>
+
+  <div class="container">
+    <div class="form-card">
+      <h1>Studio Dashboard</h1>
+      <p>Upload your YOM game</p>
+      <input type="text" placeholder="Game Title" id="title" />
+      <input type="url" placeholder="YOM Stream URL" id="url" />
+      <input type="number" placeholder="Duration (min)" min="1" max="5" id="dur" />
+      <input type="text" placeholder="Tags (comma separated)" id="tags" />
+      <button onclick="postGame()">Post Game</button>
+    </div>
+    <div class="back"><a href="index.html">← Back</a></div>
+  </div>
+
+  <script>
+    function toggleDark() {
+      document.body.classList.toggle('light');
+      const btn = document.querySelector('.toggle');
+      btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+    }
+    function postGame() {
+      const title = document.getElementById('title').value.trim();
+      const url = document.getElementById('url').value.trim();
+      if (title && url) {
+        const games = JSON.parse(localStorage.getItem('games') || '[]');
+        games.unshift({ title, url, likes: 0, comments: 0 });
+        localStorage.setItem('games', JSON.stringify(games));
+        alert(`"${title}" added to feed!`);
+        ['title', 'url', 'dur', 'tags'].forEach(id => document.getElementById(id).value = '');
+      } else {
+        alert('Title & URL required');
+      }
+    }
+  </script>
+</body>
+</html>
