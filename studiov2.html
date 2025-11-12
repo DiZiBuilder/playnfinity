@@ -6,7 +6,6 @@
   <title>Studio - Playnfinity</title>
   <link rel="icon" href="favicon.ico" />
   <style>
-    /* FORCE RESET */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { 
       height: 100% !important; 
@@ -21,12 +20,13 @@
       color: white !important; 
       min-height: 100vh !important;
       transition: background 0.3s !important;
-      padding: 1rem !important;
+      position: relative !important;
     }
-    .container { 
+    .main-content { 
       max-width: 500px !important; 
       margin: 0 auto !important; 
-      padding-top: 4rem !important; /* Space for toggle */
+      padding: 1rem !important;
+      padding-top: 5rem !important; /* Space for toggle */
     }
     .form-card { 
       background: #111 !important; 
@@ -55,7 +55,7 @@
     .back { text-align: center !important; margin-top: 2rem !important; }
     .back a { color: #ec4899 !important; text-decoration: none !important; font-weight: bold !important; }
     
-    /* TOGGLE — NUCLEAR FIXED */
+    /* TOGGLE — OUTSIDE FLOW, TOP-RIGHT */
     .toggle { 
       position: fixed !important; 
       top: 1rem !important; 
@@ -80,9 +80,11 @@
   </style>
 </head>
 <body>
+  <!-- TOGGLE IS FIXED TOP-RIGHT -->
   <button class="toggle" onclick="toggleDark()">🌙</button>
 
-  <div class="container">
+  <!-- MAIN CONTENT — NO TOGGLE INSIDE -->
+  <div class="main-content">
     <div class="form-card">
       <h1>Studio Dashboard</h1>
       <p>Upload your YOM game</p>
