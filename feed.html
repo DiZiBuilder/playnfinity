@@ -7,10 +7,11 @@
   <link rel="icon" href="favicon.ico" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow-x: hidden; }
     body { 
       font-family: 'Segoe UI', sans-serif; 
       background: #000; color: white; 
-      min-height: 100vh; overflow-y: auto; padding-bottom: 5rem;
+      min-height: 100vh; padding-bottom: 5rem;
       transition: all 0.3s;
     }
     body.light { background: #f9fafb; color: #000; }
@@ -20,8 +21,8 @@
       cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     body.light .game { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .game:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-    .thumb { width: 100%; height: 200px; object-fit: cover; }
+    .game:hover { transform: translateY(-4px); }
+    .thumb { width: 100%; height: 200px; object-fit: cover; background: #222; }
     .info { padding: 1rem; }
     .info h2 { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; }
     .info p { font-size: 0.875rem; color: #9ca3af; margin: 0.25rem 0; }
@@ -43,8 +44,7 @@
       border: none; padding: 1rem; border-radius: 50%; cursor: pointer; z-index: 1001; 
       font-size: 1.5rem; box-shadow: 0 4px 12px rgba(236,72,153,0.4);
     }
-    .feedback-btn:hover { transform: scale(1.1); }
-    @media (max-width: 640px) { .container { padding: 0.5rem; } .thumb { height: 160px; } }
+    @media (max-width: 640px) { .thumb { height: 160px; } }
   </style>
 </head>
 <body>
@@ -52,11 +52,13 @@
   <button class="feedback-btn" onclick="feedbackModal()">💬</button>
 
   <div class="container">
-    <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient')">
-      <img src="https://yom.net/assets/games/valley-thumb.jpg" alt="Valley of the Ancient" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=Valley+of+the+Ancient'">
+    <!-- Game 1 -->
+    <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient', 1)">
+      <img src="https://yom.net/assets/images/games/valley-of-the-ancient.jpg" alt="Valley" class="thumb" 
+           onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=Valley+of+the+Ancient'">
       <div class="info">
         <h2>Valley of the Ancient</h2>
-        <p>2-3 min | Exploration Adventure</p>
+        <p>2-3 min | Exploration</p>
         <p class="yom-badge">Powered by YOM</p>
         <div class="actions">
           <div class="likes" onclick="likeGame(1, event)">❤️ <span class="count">1.2K</span></div>
@@ -65,11 +67,13 @@
       </div>
     </div>
 
-    <div class="game" onclick="playGame('https://yom.net/embed/k4-rally')">
-      <img src="https://yom.net/assets/games/k4-thumb.jpg" alt="K4 Rally" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/ec4899/fff?text=K4+Rally'">
+    <!-- Game 2 -->
+    <div class="game" onclick="playGame('https://yom.net/embed/k4-rally', 2)">
+      <img src="https://yom.net/assets/images/games/k4-rally.jpg" alt="K4 Rally" class="thumb" 
+           onerror="this.src='https://via.placeholder.com/500x200/ec4899/fff?text=K4+Rally'">
       <div class="info">
         <h2>K4 Rally</h2>
-        <p>2 min | High-Speed Racing</p>
+        <p>2 min | Racing</p>
         <p class="yom-badge">Powered by YOM</p>
         <div class="actions">
           <div class="likes" onclick="likeGame(2, event)">❤️ <span class="count">2.5K</span></div>
@@ -78,11 +82,13 @@
       </div>
     </div>
 
-    <div class="game" onclick="playGame('https://yom.net/embed/domenation')">
-      <img src="https://yom.net/assets/games/domenation-thumb.jpg" alt="Domenation" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/a855f7/fff?text=Domenation'">
+    <!-- Game 3 -->
+    <div class="game" onclick="playGame('https://yom.net/embed/domenation', 3)">
+      <img src="https://yom.net/assets/images/games/domenation.jpg" alt="Domenation" class="thumb" 
+           onerror="this.src='https://via.placeholder.com/500x200/a855f7/fff?text=Domenation'">
       <div class="info">
         <h2>Domenation</h2>
-        <p>3 min | Strategy Domination</p>
+        <p>3 min | Strategy</p>
         <p class="yom-badge">Powered by YOM</p>
         <div class="actions">
           <div class="likes" onclick="likeGame(3, event)">❤️ <span class="count">890</span></div>
@@ -91,41 +97,88 @@
       </div>
     </div>
 
-    <div class="back"><a href="index.html">← Back to Home</a></div>
+    <div class="back"><a href="index.html">← Back</a></div>
   </div>
 
   <script>
     function toggleDark() {
       document.body.classList.toggle('light');
-      const btn = document.querySelector('.toggle');
-      btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+      document.querySelector('.toggle').textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
     }
-    function playGame(url) {
+
+    function playGame(url, id) {
       const iframe = document.createElement('iframe');
       iframe.src = url;
       iframe.allow = 'fullscreen';
       iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;border:none;background:#000;';
       document.body.appendChild(iframe);
-      setTimeout(() => iframe.remove(), 180000);
-      document.addEventListener('keydown', e => e.key === 'Escape' && iframe.remove());
+
+      // Close on ESC or swipe
+      const close = () => iframe.remove();
+      document.addEventListener('keydown', e => e.key === 'Escape' && close());
       let startY = 0;
       document.addEventListener('touchstart', e => startY = e.touches[0].clientY);
       document.addEventListener('touchmove', e => {
-        if (startY - e.touches[0].clientY > 100) { iframe.remove(); }
+        if (startY - e.touches[0].clientY > 100) close();
       });
+
+      // Auto-close after 3 min
+      setTimeout(close, 180000);
     }
+
     function likeGame(id, e) {
       e.stopPropagation();
       const count = document.querySelector(`.game:nth-child(${id}) .count`);
-      count.textContent = (parseInt(count.textContent.replace(/[^0-9]/g, '')) + 1).toLocaleString();
+      const num = parseInt(count.textContent.replace(/[^0-9]/g, '')) + 1;
+      count.textContent = num.toLocaleString();
     }
+
     function commentModal(id, e) {
       e.stopPropagation();
-      prompt(`Leave a comment for game ${id}:`);
+      const comment = prompt(`Comment on game ${id}:`);
+      if (comment) {
+        saveFeedback(id, 'comment', comment);
+        alert('Comment saved!');
+      }
     }
+
     function feedbackModal() {
-      const msg = prompt('What do you think of Playnfinity?');
-      if (msg) alert('Feedback received! 🚀');
+      const msg = prompt('Feedback for Playnfinity:');
+      if (msg) {
+        saveFeedback(0, 'general', msg);
+        alert('Thanks! Saved.');
+      }
+    }
+
+    // === REAL FEEDBACK COLLECTION ===
+    function saveFeedback(gameId, type, text) {
+      const feedback = JSON.parse(localStorage.getItem('playnfinity_feedback') || '[]');
+      feedback.push({
+        gameId,
+        type,
+        text,
+        timestamp: new Date().toISOString(),
+        device: navigator.userAgent,
+        url: location.href
+      });
+      localStorage.setItem('playnfinity_feedback', JSON.stringify(feedback));
+    }
+
+    // Auto-export button (dev only — remove later)
+    if (location.search.includes('dev')) {
+      const btn = document.createElement('button');
+      btn.textContent = '📥 Export Feedback';
+      btn.style.position = 'fixed'; btn.style.bottom = '5rem'; btn.style.right = '1.5rem';
+      btn.style.background = '#10b981'; btn.style.color = 'white'; btn.style.padding = '0.5rem';
+      btn.onclick = () => {
+        const data = localStorage.getItem('playnfinity_feedback') || '[]';
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'playnfinity_feedback.json';
+        a.click();
+      };
+      document.body.appendChild(btn);
     }
   </script>
 </body>

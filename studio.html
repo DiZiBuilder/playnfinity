@@ -7,14 +7,18 @@
   <link rel="icon" href="favicon.ico" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
     body { 
       font-family: 'Segoe UI', sans-serif; 
       background: #000; color: white; 
       min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;
-      text-align: center; transition: all 0.3s;
+      transition: all 0.3s;
     }
     body.light { background: #f9fafb; color: #000; }
     .form { max-width: 400px; width: 100%; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    p { color: #9ca3af; margin-bottom: 2rem; }
+    body.light p { color: #6b7280; }
     input, button { 
       width: 100%; padding: 1rem; margin: 0.5rem 0; border-radius: 0.5rem; border: none; 
       font-size: 1rem;
@@ -36,8 +40,8 @@
 <body>
   <button class="toggle" onclick="toggleDark()">🌙</button>
   <div class="form">
-    <h1 style="font-size:2rem; margin-bottom:1rem;">Studio Dashboard</h1>
-    <p style="color:#9ca3af; margin-bottom:2rem;">Upload your YOM game</p>
+    <h1>Studio Dashboard</h1>
+    <p>Upload your YOM game</p>
     <input type="text" placeholder="Game Title" id="title" />
     <input type="url" placeholder="YOM Stream URL" id="url" />
     <input type="number" placeholder="Duration (min)" min="1" max="5" id="dur" />
@@ -48,8 +52,7 @@
   <script>
     function toggleDark() {
       document.body.classList.toggle('light');
-      const btn = document.querySelector('.toggle');
-      btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+      document.querySelector('.toggle').textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
     }
     function postGame() {
       const title = document.getElementById('title').value;
@@ -58,12 +61,10 @@
         const games = JSON.parse(localStorage.getItem('games') || '[]');
         games.unshift({ title, url, likes: 0, comments: 0 });
         localStorage.setItem('games', JSON.stringify(games));
-        alert(`"${title}" added to feed!`);
+        alert(`"${title}" added!`);
         document.getElementById('title').value = '';
         document.getElementById('url').value = '';
-      } else {
-        alert('Fill title & URL');
-      }
+      } else alert('Fill title & URL');
     }
   </script>
 </body>
