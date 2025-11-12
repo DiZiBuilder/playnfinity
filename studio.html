@@ -11,34 +11,40 @@
       font-family: 'Segoe UI', sans-serif; 
       background: #000; color: white; 
       min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;
-      text-align: center;
-      transition: background 0.3s;
+      text-align: center; transition: all 0.3s;
     }
     body.light { background: #f9fafb; color: #000; }
+    .form { max-width: 400px; width: 100%; }
     input, button { 
-      width: 100%; max-width: 300px; padding: 1rem; margin: 0.5rem 0; border-radius: 0.5rem; border: none; 
-      font-size: 1rem; display: block; margin: 0 auto 0.5rem;
+      width: 100%; padding: 1rem; margin: 0.5rem 0; border-radius: 0.5rem; border: none; 
+      font-size: 1rem;
     }
     input { background: #111; color: white; }
     body.light input { background: #f3f4f6; color: #000; }
     button { background: #10b981; color: white; font-weight: bold; cursor: pointer; }
     button:hover { background: #059669; }
     .back { margin-top: 2rem; }
-    .back a { color: #ec4899; text-decoration: none; }
-    .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); color: white; border: none; padding: 0.5rem; border-radius: 50%; cursor: pointer; }
-    body.light .toggle { background: rgba(255,255,255,0.5); color: black; }
+    .back a { color: #ec4899; text-decoration: none; font-weight: bold; }
+    .toggle { 
+      position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white; 
+      border: none; padding: 0.75rem; border-radius: 50%; cursor: pointer; z-index: 1000; 
+      backdrop-filter: blur(10px);
+    }
+    body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
   </style>
 </head>
 <body>
   <button class="toggle" onclick="toggleDark()">🌙</button>
-  <h1 style="font-size:2rem; margin-bottom:1rem;">Studio Dashboard</h1>
-  <p style="color:#9ca3af; margin-bottom:2rem;">Upload your YOM game to the feed</p>
-  <input type="text" placeholder="Game Title" id="title" />
-  <input type="url" placeholder="YOM Stream URL" id="url" />
-  <input type="number" placeholder="Duration (min)" min="1" max="5" id="dur" />
-  <input type="text" placeholder="Tags (comma separated)" id="tags" />
-  <button onclick="postGame()">Post Game</button>
-  <div class="back"><a href="index.html">← Back</a></div>
+  <div class="form">
+    <h1 style="font-size:2rem; margin-bottom:1rem;">Studio Dashboard</h1>
+    <p style="color:#9ca3af; margin-bottom:2rem;">Upload your YOM game</p>
+    <input type="text" placeholder="Game Title" id="title" />
+    <input type="url" placeholder="YOM Stream URL" id="url" />
+    <input type="number" placeholder="Duration (min)" min="1" max="5" id="dur" />
+    <input type="text" placeholder="Tags (comma separated)" id="tags" />
+    <button onclick="postGame()">Post Game</button>
+    <div class="back"><a href="index.html">← Back</a></div>
+  </div>
   <script>
     function toggleDark() {
       document.body.classList.toggle('light');
@@ -48,19 +54,13 @@
     function postGame() {
       const title = document.getElementById('title').value;
       const url = document.getElementById('url').value;
-      const dur = document.getElementById('dur').value || 3;
-      const tags = document.getElementById('tags').value;
       if (title && url) {
-        // Demo save to localStorage (refresh feed to see)
         const games = JSON.parse(localStorage.getItem('games') || '[]');
-        games.unshift({ title, url, dur, tags: tags.split(',').map(t => t.trim()), likes: 0, comments: 0 }); // Add to top
+        games.unshift({ title, url, likes: 0, comments: 0 });
         localStorage.setItem('games', JSON.stringify(games));
-        alert(`"${title}" posted to feed! Refresh feed to see it (Demo).`);
-        // Clear form
+        alert(`"${title}" added to feed!`);
         document.getElementById('title').value = '';
         document.getElementById('url').value = '';
-        document.getElementById('dur').value = '';
-        document.getElementById('tags').value = '';
       } else {
         alert('Fill title & URL');
       }

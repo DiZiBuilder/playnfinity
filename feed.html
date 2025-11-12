@@ -10,56 +10,89 @@
     body { 
       font-family: 'Segoe UI', sans-serif; 
       background: #000; color: white; 
-      height: 100vh; overflow-y: auto; 
-      transition: background 0.3s;
+      min-height: 100vh; overflow-y: auto; padding-bottom: 5rem;
+      transition: all 0.3s;
     }
     body.light { background: #f9fafb; color: #000; }
+    .container { max-width: 500px; margin: 0 auto; padding: 1rem; }
     .game { 
-      background: #111; padding: 1.5rem; margin: 1rem; border-radius: 1rem; cursor: pointer; 
-      transition: all 0.3s; position: relative;
+      background: #111; border-radius: 1rem; overflow: hidden; margin: 1rem 0; 
+      cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-    body.light .game { background: #f3f4f6; }
-    .game:hover { background: #222; transform: scale(1.02); }
-    body.light .game:hover { background: #e5e7eb; }
-    .game h2 { font-size: 1.5rem; font-weight: bold; }
-    .game p { color: #9ca3af; font-size: 0.875rem; }
+    body.light .game { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .game:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+    .thumb { width: 100%; height: 200px; object-fit: cover; }
+    .info { padding: 1rem; }
+    .info h2 { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; }
+    .info p { font-size: 0.875rem; color: #9ca3af; margin: 0.25rem 0; }
+    body.light .info p { color: #6b7280; }
     .yom-badge { color: #3b82f6; font-size: 0.75rem; }
-    .likes { color: #f59e0b; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-    .comments { color: #6b7280; font-size: 0.875rem; cursor: pointer; }
-    .back { text-align: center; margin: 2rem; }
-    .back a { color: #ec4899; text-decoration: none; }
-    .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); color: white; border: none; padding: 0.5rem; border-radius: 50%; cursor: pointer; z-index: 1001; }
-    body.light .toggle { background: rgba(255,255,255,0.5); color: black; }
-    .feedback-btn { position: fixed; bottom: 1rem; right: 1rem; background: #ec4899; color: white; border: none; padding: 1rem; border-radius: 50%; cursor: pointer; z-index: 1001; }
-    @media (max-width: 640px) { .game { margin: 0.5rem; padding: 0.75rem; } }
+    .actions { display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.875rem; }
+    .likes, .comments { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+    .likes { color: #f59e0b; }
+    .back { text-align: center; margin: 2rem 0; }
+    .back a { color: #ec4899; text-decoration: none; font-weight: bold; }
+    .toggle { 
+      position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white; 
+      border: none; padding: 0.75rem; border-radius: 50%; cursor: pointer; z-index: 1001; 
+      backdrop-filter: blur(10px);
+    }
+    body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
+    .feedback-btn { 
+      position: fixed; bottom: 1.5rem; right: 1.5rem; background: #ec4899; color: white; 
+      border: none; padding: 1rem; border-radius: 50%; cursor: pointer; z-index: 1001; 
+      font-size: 1.5rem; box-shadow: 0 4px 12px rgba(236,72,153,0.4);
+    }
+    .feedback-btn:hover { transform: scale(1.1); }
+    @media (max-width: 640px) { .container { padding: 0.5rem; } .thumb { height: 160px; } }
   </style>
 </head>
 <body>
   <button class="toggle" onclick="toggleDark()">🌙</button>
-  <button class="feedback-btn" onclick="feedbackModal()">💬 Feedback</button>
+  <button class="feedback-btn" onclick="feedbackModal()">💬</button>
 
-  <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient')">
-    <h2>Valley of the Ancient</h2>
-    <p>2-3 min | Exploration Adventure</p>
-    <p class="yom-badge">Powered by YOM</p>
-    <p class="likes" onclick="likeGame(1, event)">❤️ 1.2K <span class="count">1.2K</span></p>
-    <p class="comments" onclick="commentModal(1, event)">💬 456 comments</p>
+  <div class="container">
+    <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient')">
+      <img src="https://yom.net/assets/games/valley-thumb.jpg" alt="Valley of the Ancient" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=Valley+of+the+Ancient'">
+      <div class="info">
+        <h2>Valley of the Ancient</h2>
+        <p>2-3 min | Exploration Adventure</p>
+        <p class="yom-badge">Powered by YOM</p>
+        <div class="actions">
+          <div class="likes" onclick="likeGame(1, event)">❤️ <span class="count">1.2K</span></div>
+          <div class="comments" onclick="commentModal(1, event)">💬 456</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="game" onclick="playGame('https://yom.net/embed/k4-rally')">
+      <img src="https://yom.net/assets/games/k4-thumb.jpg" alt="K4 Rally" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/ec4899/fff?text=K4+Rally'">
+      <div class="info">
+        <h2>K4 Rally</h2>
+        <p>2 min | High-Speed Racing</p>
+        <p class="yom-badge">Powered by YOM</p>
+        <div class="actions">
+          <div class="likes" onclick="likeGame(2, event)">❤️ <span class="count">2.5K</span></div>
+          <div class="comments" onclick="commentModal(2, event)">💬 789</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="game" onclick="playGame('https://yom.net/embed/domenation')">
+      <img src="https://yom.net/assets/games/domenation-thumb.jpg" alt="Domenation" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/a855f7/fff?text=Domenation'">
+      <div class="info">
+        <h2>Domenation</h2>
+        <p>3 min | Strategy Domination</p>
+        <p class="yom-badge">Powered by YOM</p>
+        <div class="actions">
+          <div class="likes" onclick="likeGame(3, event)">❤️ <span class="count">890</span></div>
+          <div class="comments" onclick="commentModal(3, event)">💬 234</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="back"><a href="index.html">← Back to Home</a></div>
   </div>
-  <div class="game" onclick="playGame('https://yom.net/embed/k4-rally')">
-    <h2>K4 Rally</h2>
-    <p>2 min | High-Speed Racing</p>
-    <p class="yom-badge">Powered by YOM</p>
-    <p class="likes" onclick="likeGame(2, event)">❤️ 2.5K <span class="count">2.5K</span></p>
-    <p class="comments" onclick="commentModal(2, event)">💬 789 comments</p>
-  </div>
-  <div class="game" onclick="playGame('https://yom.net/embed/domenation')">
-    <h2>Domenation</h2>
-    <p>3 min | Strategy Domination</p>
-    <p class="yom-badge">Powered by YOM</p>
-    <p class="likes" onclick="likeGame(3, event)">❤️ 890 <span class="count">890</span></p>
-    <p class="comments" onclick="commentModal(3, event)">💬 234 comments</p>
-  </div>
-  <div class="back"><a href="index.html">← Back to Home</a></div>
 
   <script>
     function toggleDark() {
@@ -67,41 +100,32 @@
       const btn = document.querySelector('.toggle');
       btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
     }
-    function playGame(embedUrl) {
+    function playGame(url) {
       const iframe = document.createElement('iframe');
-      iframe.src = embedUrl;
-      iframe.allow = 'fullscreen *';
-      iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;border:none;background:black;';
+      iframe.src = url;
+      iframe.allow = 'fullscreen';
+      iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;border:none;background:#000;';
       document.body.appendChild(iframe);
-      setTimeout(() => document.body.removeChild(iframe), 180000); // 3 min
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.body.removeChild(iframe); });
-      // Swipe up to close/next
+      setTimeout(() => iframe.remove(), 180000);
+      document.addEventListener('keydown', e => e.key === 'Escape' && iframe.remove());
       let startY = 0;
-      document.addEventListener('touchstart', (e) => startY = e.touches[0].clientY);
-      document.addEventListener('touchmove', (e) => {
-        if (startY - e.touches[0].clientY > 100) { // Swipe up
-          document.body.removeChild(iframe);
-          setTimeout(() => alert('Next game loads!'), 500);
-        }
+      document.addEventListener('touchstart', e => startY = e.touches[0].clientY);
+      document.addEventListener('touchmove', e => {
+        if (startY - e.touches[0].clientY > 100) { iframe.remove(); }
       });
     }
-    // Demo likes (localStorage)
     function likeGame(id, e) {
       e.stopPropagation();
-      const count = document.querySelector(`.game:nth-of-type(${id}) .count`);
-      const current = parseInt(count.textContent);
-      count.textContent = (current + 1).toLocaleString();
-      alert('Liked!');
+      const count = document.querySelector(`.game:nth-child(${id}) .count`);
+      count.textContent = (parseInt(count.textContent.replace(/[^0-9]/g, '')) + 1).toLocaleString();
     }
-    // Demo comments modal
     function commentModal(id, e) {
       e.stopPropagation();
-      alert(`Comments for game ${id} (Demo — add your feedback!)`);
+      prompt(`Leave a comment for game ${id}:`);
     }
-    // Feedback modal
     function feedbackModal() {
-      const feedback = prompt('What do you think? (Fun? More games?)');
-      if (feedback) alert('Thanks! Feedback saved (Demo).');
+      const msg = prompt('What do you think of Playnfinity?');
+      if (msg) alert('Feedback received! 🚀');
     }
   </script>
 </body>

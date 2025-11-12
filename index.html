@@ -14,7 +14,7 @@
       min-height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;
       text-align: center;
-      transition: background 0.3s;
+      transition: all 0.3s;
     }
     body.light { background: linear-gradient(to bottom, #f3e8ff, #ffffff, #f3e8ff); color: #000; }
     h1 { 
@@ -23,7 +23,15 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
       margin-bottom: 1rem;
     }
-    p { margin: 1rem 0; }
+    .subtitle {
+      font-size: 1.25rem; color: #9ca3af; margin: 1rem 0;
+    }
+    .subtitle a {
+      color: #a855f7; text-decoration: none; font-weight: bold;
+    }
+    .subtitle a:hover { text-decoration: underline; }
+    body.light .subtitle { color: #6b7280; }
+    body.light .subtitle a { color: #7c3aed; }
     .btn { 
       padding: 1rem 2rem; border-radius: 9999px; font-weight: bold; text-decoration: none; 
       transition: all 0.3s; display: inline-block; margin: 0.5rem;
@@ -32,25 +40,31 @@
       background: linear-gradient(to right, #ec4899, #a855f7); color: white; 
     }
     .btn-secondary { 
-      border: 2px solid #ec4899; color: white; 
+      background: transparent; border: 2px solid #ec4899; color: white; 
+    }
+    body.light .btn-secondary { 
+      background: transparent; border: 2px solid #7c3aed; color: #7c3aed; 
     }
     .btn:hover { transform: scale(1.05); }
     .btn-secondary:hover { background: #ec4899; color: black; }
-    .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); color: white; border: none; padding: 0.5rem; border-radius: 50%; cursor: pointer; }
-    body.light .toggle { background: rgba(255,255,255,0.5); color: black; }
-    .feedback { margin-top: 2rem; font-size: 0.875rem; color: #9ca3af; }
-    @media (max-width: 640px) { h1 { font-size: 3rem; } }
+    body.light .btn-secondary:hover { background: #7c3aed; color: white; }
+    .toggle { 
+      position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.6); color: white; 
+      border: none; padding: 0.75rem; border-radius: 50%; cursor: pointer; z-index: 1000; 
+      backdrop-filter: blur(8px);
+    }
+    body.light .toggle { background: rgba(255,255,255,0.8); color: #000; }
+    @media (max-width: 640px) { h1 { font-size: 3rem; } .btn { padding: 0.875rem 1.5rem; } }
   </style>
 </head>
 <body>
   <button class="toggle" onclick="toggleDark()">🌙</button>
   <h1>Playnfinity</h1>
-  <p style="font-size:1.25rem; color:#9ca3af;">TikTok for Games on YOM</p>
+  <p class="subtitle">TikTok for Games on <a href="https://yom.net" target="_blank">YOM</a></p>
   <div>
     <a href="feed.html" class="btn btn-primary">Explore Games</a>
     <a href="studio.html" class="btn btn-secondary">Studio</a>
   </div>
-  <p class="feedback">Feedback? Scroll & play — tell us what you think!</p>
   <script>
     function toggleDark() {
       document.body.classList.toggle('light');
