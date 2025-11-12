@@ -12,17 +12,17 @@
       font-family: 'Segoe UI', sans-serif; 
       background: #000; color: white; 
       min-height: 100vh; padding-bottom: 5rem;
-      transition: all 0.3s;
+      transition: background 0.3s;
     }
     body.light { background: #f9fafb; color: #000; }
     .container { max-width: 500px; margin: 0 auto; padding: 1rem; }
     .game { 
       background: #111; border-radius: 1rem; overflow: hidden; margin: 1rem 0; 
-      cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      cursor: pointer; transition: box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     body.light .game { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .game:hover { transform: translateY(-4px); }
-    .thumb { width: 100%; height: 200px; object-fit: cover; background: #222; }
+    .game:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+    .thumb { width: 100%; height: 200px; object-fit: cover; display: block; }
     .info { padding: 1rem; }
     .info h2 { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; }
     .info p { font-size: 0.875rem; color: #9ca3af; margin: 0.25rem 0; }
@@ -52,10 +52,11 @@
   <button class="feedback-btn" onclick="feedbackModal()">💬</button>
 
   <div class="container">
-    <!-- Game 1 -->
+    <!-- Game 1: Valley -->
     <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient', 1)">
-      <img src="https://yom.net/assets/images/games/valley-of-the-ancient.jpg" alt="Valley" class="thumb" 
-           onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=Valley+of+the+Ancient'">
+      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png" 
+           alt="Valley of the Ancient" class="thumb" 
+           onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=Valley'">
       <div class="info">
         <h2>Valley of the Ancient</h2>
         <p>2-3 min | Exploration</p>
@@ -67,9 +68,10 @@
       </div>
     </div>
 
-    <!-- Game 2 -->
+    <!-- Game 2: K4 Rally -->
     <div class="game" onclick="playGame('https://yom.net/embed/k4-rally', 2)">
-      <img src="https://yom.net/assets/images/games/k4-rally.jpg" alt="K4 Rally" class="thumb" 
+      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png" 
+           alt="K4 Rally" class="thumb" 
            onerror="this.src='https://via.placeholder.com/500x200/ec4899/fff?text=K4+Rally'">
       <div class="info">
         <h2>K4 Rally</h2>
@@ -82,17 +84,18 @@
       </div>
     </div>
 
-    <!-- Game 3 -->
-    <div class="game" onclick="playGame('https://yom.net/embed/domenation', 3)">
-      <img src="https://yom.net/assets/images/games/domenation.jpg" alt="Domenation" class="thumb" 
-           onerror="this.src='https://via.placeholder.com/500x200/a855f7/fff?text=Domenation'">
+    <!-- Game 3: Martians vs Roughnecks -->
+    <div class="game" onclick="playGame('https://yom.net/embed/martians-vs-roughnecks', 3)">
+      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png" 
+           alt="Martians vs Roughnecks" class="thumb" 
+           onerror="this.src='https://via.placeholder.com/500x200/a855f7/fff?text=Martians'">
       <div class="info">
-        <h2>Domenation</h2>
-        <p>3 min | Strategy</p>
+        <h2>Martians vs Roughnecks</h2>
+        <p>3 min | Action</p>
         <p class="yom-badge">Powered by YOM</p>
         <div class="actions">
-          <div class="likes" onclick="likeGame(3, event)">❤️ <span class="count">890</span></div>
-          <div class="comments" onclick="commentModal(3, event)">💬 234</div>
+          <div class="likes" onclick="likeGame(3, event)">❤️ <span class="count">1.1K</span></div>
+          <div class="comments" onclick="commentModal(3, event)">💬 312</div>
         </div>
       </div>
     </div>
@@ -113,16 +116,14 @@
       iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;border:none;background:#000;';
       document.body.appendChild(iframe);
 
-      // Close on ESC or swipe
       const close = () => iframe.remove();
       document.addEventListener('keydown', e => e.key === 'Escape' && close());
       let startY = 0;
-      document.addEventListener('touchstart', e => startY = e.touches[0].clientY);
+      document.addEventListener('touchstart', e => startY = e.touches[0].clientY, { once: true });
       document.addEventListener('touchmove', e => {
         if (startY - e.touches[0].clientY > 100) close();
       });
 
-      // Auto-close after 3 min
       setTimeout(close, 180000);
     }
 
@@ -135,50 +136,25 @@
 
     function commentModal(id, e) {
       e.stopPropagation();
-      const comment = prompt(`Comment on game ${id}:`);
+      const comment = prompt(`Comment:`);
       if (comment) {
         saveFeedback(id, 'comment', comment);
-        alert('Comment saved!');
+        alert('Saved!');
       }
     }
 
     function feedbackModal() {
-      const msg = prompt('Feedback for Playnfinity:');
+      const msg = prompt('Feedback:');
       if (msg) {
         saveFeedback(0, 'general', msg);
-        alert('Thanks! Saved.');
+        alert('Thanks!');
       }
     }
 
-    // === REAL FEEDBACK COLLECTION ===
     function saveFeedback(gameId, type, text) {
       const feedback = JSON.parse(localStorage.getItem('playnfinity_feedback') || '[]');
-      feedback.push({
-        gameId,
-        type,
-        text,
-        timestamp: new Date().toISOString(),
-        device: navigator.userAgent,
-        url: location.href
-      });
+      feedback.push({ gameId, type, text, timestamp: new Date().toISOString(), device: navigator.userAgent });
       localStorage.setItem('playnfinity_feedback', JSON.stringify(feedback));
-    }
-
-    // Auto-export button (dev only — remove later)
-    if (location.search.includes('dev')) {
-      const btn = document.createElement('button');
-      btn.textContent = '📥 Export Feedback';
-      btn.style.position = 'fixed'; btn.style.bottom = '5rem'; btn.style.right = '1.5rem';
-      btn.style.background = '#10b981'; btn.style.color = 'white'; btn.style.padding = '0.5rem';
-      btn.onclick = () => {
-        const data = localStorage.getItem('playnfinity_feedback') || '[]';
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'playnfinity_feedback.json';
-        a.click();
-      };
-      document.body.appendChild(btn);
     }
   </script>
 </body>
