@@ -1,5 +1,5 @@
 // src/app/page.tsx
-import Link from 'next/link';
+
 
 export default function Home() {
   return (
@@ -11,12 +11,12 @@ export default function Home() {
         TikTok for Games on YOM
       </p>
       <div className="flex flex-col sm:flex-row gap-6">
-        <Link href="/feed" className="bg-gradient-to-r from-pink-600 to-purple-600 px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition transform">
+        <a href="/feed" className="bg-gradient-to-r from-pink-600 to-purple-600 px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition transform">
           Explore Games
-        </Link>
-        <Link href="/studio" className="border-2 border-pink-500 px-8 py-4 rounded-full font-bold text-lg hover:bg-pink-500 hover:text-black transition">
+        </a>
+        <a href="/studio" className="border-2 border-pink-500 px-8 py-4 rounded-full font-bold text-lg hover:bg-pink-500 hover:text-black transition">
           Studio
-        </Link>
+        </a>
       </div>
       <p className="mt-16 text-sm text-gray-500">
         In partnership with YOM
