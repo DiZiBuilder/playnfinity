@@ -51,11 +51,11 @@
       const dur = document.getElementById('dur').value || 3;
       const tags = document.getElementById('tags').value;
       if (title && url) {
-        // Demo save to localStorage (refresh feed to see new game)
+        // Demo save to localStorage (refresh feed to see)
         const games = JSON.parse(localStorage.getItem('games') || '[]');
-        games.push({ title, url, dur, tags: tags.split(',').map(t => t.trim()) });
+        games.unshift({ title, url, dur, tags: tags.split(',').map(t => t.trim()), likes: 0, comments: 0 }); // Add to top
         localStorage.setItem('games', JSON.stringify(games));
-        alert(`"${title}" posted to feed! (Demo — refresh feed to see it.)`);
+        alert(`"${title}" posted to feed! Refresh feed to see it (Demo).`);
         // Clear form
         document.getElementById('title').value = '';
         document.getElementById('url').value = '';
