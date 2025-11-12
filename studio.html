@@ -22,16 +22,19 @@
     .container { 
       max-width: 500px; 
       margin: 0 auto; 
-      height: 100vh; 
       display: flex; 
       flex-direction: column; 
-      justify-content: center;
+      min-height: calc(100vh - 2rem);
+      justify-content: flex-start;
+      padding-top: 3rem; /* Space for toggle */
     }
     .form-card { 
       background: #111; 
       border-radius: 1rem; 
       padding: 2rem; 
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      margin-top: auto;
+      margin-bottom: auto;
     }
     body.light .form-card { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     h1 { font-size: 2rem; margin-bottom: 1rem; text-align: center; }
@@ -49,7 +52,7 @@
     body.light input { background: #f3f4f6; color: #000; }
     button { background: #10b981; color: white; font-weight: bold; cursor: pointer; }
     button:hover { background: #059669; }
-    .back { text-align: center; margin-top: 1.5rem; }
+    .back { text-align: center; margin-top: 2rem; }
     .back a { color: #ec4899; text-decoration: none; font-weight: bold; }
     .toggle { 
       position: fixed; 
@@ -65,7 +68,7 @@
       backdrop-filter: blur(10px);
       font-size: 1.1rem;
     }
-    body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
+    body.light .toggle { background: rgba(255,255,0.9); color: #000; }
   </style>
 </head>
 <body>
@@ -98,10 +101,7 @@
         games.unshift({ title, url, likes: 0, comments: 0 });
         localStorage.setItem('games', JSON.stringify(games));
         alert(`"${title}" added to feed!`);
-        document.getElementById('title').value = '';
-        document.getElementById('url').value = '';
-        document.getElementById('dur').value = '';
-        document.getElementById('tags').value = '';
+        ['title', 'url', 'dur', 'tags'].forEach(id => document.getElementById(id).value = '');
       } else {
         alert('Title & URL required');
       }
