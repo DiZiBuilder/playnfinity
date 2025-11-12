@@ -1,21 +1,54 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"/><title>Feed - Playnfinity</title><link rel="icon" href="favicon.ico"/><style>
-  body { background: #000; color: white; font-family: sans-serif; padding: 1rem; }
-  .game { background: #111; padding: 1rem; margin: 1rem 0; border-radius: 1rem; cursor: pointer; }
-  .game:hover { background: #222; }
-</style></head><body>
-  <h1>Game Feed</h1>
-  <div class="game" onclick="alert('Valley of the Ancient launching...')">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feed - Playnfinity</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; color: white; font-family: sans-serif; overflow-y: auto; }
+    .game { background: #111; padding: 1.5rem; margin: 1rem; border-radius: 1rem; cursor: pointer; }
+    .game:hover { background: #222; }
+    .game h2 { font-size: 1.5rem; font-weight: bold; }
+    .game p { color: #9ca3af; font-size: 0.875rem; }
+    .yom-badge { color: #3b82f6; font-size: 0.75rem; }
+    .back { text-align: center; margin: 2rem; }
+    .back a { color: #ec4899; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient')">
     <h2>Valley of the Ancient</h2>
     <p>2-3 min | Exploration</p>
+    <p class="yom-badge">Powered by YOM</p>
   </div>
-  <div class="game" onclick="alert('K4 Rally launching...')">
+  <div class="game" onclick="playGame('https://yom.net/embed/k4-rally')">
     <h2>K4 Rally</h2>
     <p>2 min | Racing</p>
+    <p class="yom-badge">Powered by YOM</p>
   </div>
-  <div class="game" onclick="alert('Domenation launching...')">
+  <div class="game" onclick="playGame('https://yom.net/embed/domenation')">
     <h2>Domenation</h2>
     <p>3 min | Strategy</p>
+    <p class="yom-badge">Powered by YOM</p>
   </div>
-  <br><a href="index.html">← Back</a>
-</body></html>
+  <div class="back"><a href="index.html">← Back</a></div>
+
+  <script>
+    function playGame(url) {
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;border:none;';
+      document.body.appendChild(iframe);
+      setTimeout(() => document.body.removeChild(iframe), 180000); // 3 min
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.body.removeChild(iframe); });
+      let startY = 0;
+      document.addEventListener('touchstart', (e) => startY = e.touches[0].clientY);
+      document.addEventListener('touchmove', (e) => {
+        if (e.touches[0].clientY - startY > 100) document.body.removeChild(iframe);
+      });
+    }
+  </script>
+</body>
+</html>
