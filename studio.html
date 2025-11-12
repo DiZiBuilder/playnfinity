@@ -9,32 +9,27 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { 
       height: 100%; 
-      overflow: hidden; 
       background: #000; 
+      overflow-y: auto; /* Allow scroll if needed */
     }
     body.light { background: #f9fafb; }
     body { 
       font-family: 'Segoe UI', sans-serif; 
       color: white; 
-      padding: 1rem;
+      min-height: 100vh;
       transition: background 0.3s;
     }
     .container { 
       max-width: 500px; 
       margin: 0 auto; 
-      display: flex; 
-      flex-direction: column; 
-      min-height: calc(100vh - 2rem);
-      justify-content: flex-start;
-      padding-top: 3rem; /* Space for toggle */
+      padding: 1rem;
+      padding-top: 4rem; /* Space for fixed toggle */
     }
     .form-card { 
       background: #111; 
       border-radius: 1rem; 
       padding: 2rem; 
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      margin-top: auto;
-      margin-bottom: auto;
     }
     body.light .form-card { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     h1 { font-size: 2rem; margin-bottom: 1rem; text-align: center; }
@@ -47,6 +42,8 @@
       border-radius: 0.5rem; 
       border: none; 
       font-size: 1rem;
+      -webkit-appearance: none;
+      outline: none;
     }
     input { background: #222; color: white; }
     body.light input { background: #f3f4f6; color: #000; }
@@ -55,23 +52,29 @@
     .back { text-align: center; margin-top: 2rem; }
     .back a { color: #ec4899; text-decoration: none; font-weight: bold; }
     .toggle { 
-      position: fixed; 
-      top: 0.75rem; 
-      right: 0.75rem; 
-      background: rgba(0,0,0,0.7); 
-      color: white; 
-      border: none; 
-      padding: 0.75rem; 
-      border-radius: 50%; 
-      cursor: pointer; 
-      z-index: 1001; 
+      position: fixed !important; 
+      top: 1rem !important; 
+      right: 1rem !important; 
+      background: rgba(0,0,0,0.7) !important; 
+      color: white !important; 
+      border: none !important; 
+      padding: 0.75rem !important; 
+      border-radius: 50% !important; 
+      cursor: pointer !important; 
+      z-index: 9999 !important; 
       backdrop-filter: blur(10px);
       font-size: 1.1rem;
+      -webkit-appearance: none;
+      outline: none;
     }
-    body.light .toggle { background: rgba(255,255,0.9); color: #000; }
+    body.light .toggle { 
+      background: rgba(255,255,255,0.9) !important; 
+      color: #000 !important; 
+    }
   </style>
 </head>
 <body>
+  <!-- TOGGLE IS FIXED TOP-RIGHT -->
   <button class="toggle" onclick="toggleDark()">🌙</button>
 
   <div class="container">
