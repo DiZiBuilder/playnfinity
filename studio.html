@@ -6,78 +6,101 @@
   <title>Studio - Playnfinity</title>
   <link rel="icon" href="favicon.ico" />
   <style>
+    /* TOTAL RESET */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { 
       height: 100%; 
       background: #000; 
-      overflow-y: auto; /* Allow scroll if needed */
-    }
-    body.light { background: #f9fafb; }
-    body { 
       font-family: 'Segoe UI', sans-serif; 
-      color: white; 
-      min-height: 100vh;
-      transition: background 0.3s;
+      color: white;
+      overflow-x: hidden;
     }
-    .container { 
-      max-width: 500px; 
-      margin: 0 auto; 
-      padding: 1rem;
-      padding-top: 4rem; /* Space for fixed toggle */
-    }
-    .form-card { 
-      background: #111; 
-      border-radius: 1rem; 
-      padding: 2rem; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    body.light .form-card { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    h1 { font-size: 2rem; margin-bottom: 1rem; text-align: center; }
-    p { color: #9ca3af; margin-bottom: 2rem; text-align: center; }
-    body.light p { color: #6b7280; }
-    input, button { 
-      width: 100%; 
-      padding: 1rem; 
-      margin: 0.5rem 0; 
-      border-radius: 0.5rem; 
-      border: none; 
-      font-size: 1rem;
-      -webkit-appearance: none;
-      outline: none;
-    }
-    input { background: #222; color: white; }
-    body.light input { background: #f3f4f6; color: #000; }
-    button { background: #10b981; color: white; font-weight: bold; cursor: pointer; }
-    button:hover { background: #059669; }
-    .back { text-align: center; margin-top: 2rem; }
-    .back a { color: #ec4899; text-decoration: none; font-weight: bold; }
-    .toggle { 
-      position: fixed !important; 
-      top: 1rem !important; 
-      right: 1rem !important; 
-      background: rgba(0,0,0,0.7) !important; 
-      color: white !important; 
-      border: none !important; 
-      padding: 0.75rem !important; 
-      border-radius: 50% !important; 
-      cursor: pointer !important; 
-      z-index: 9999 !important; 
-      backdrop-filter: blur(10px);
-      font-size: 1.1rem;
-      -webkit-appearance: none;
-      outline: none;
+    body.light { background: #f9fafb; color: #000; }
+
+    /* TOGGLE — FIXED TOP RIGHT, OUTSIDE EVERYTHING */
+    .toggle {
+      position: fixed !important;
+      top: 16px !important;
+      right: 16px !important;
+      width: 48px !important;
+      height: 48px !important;
+      background: rgba(0,0,0,0.7) !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 50% !important;
+      font-size: 1.4rem !important;
+      cursor: pointer !important;
+      z-index: 99999 !important;
+      backdrop-filter: blur(12px);
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
     }
     body.light .toggle { 
       background: rgba(255,255,255,0.9) !important; 
       color: #000 !important; 
     }
+
+    /* MAIN CONTENT — NO FLEX, NO CENTER PUSH */
+    .studio-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 80px 16px 32px; /* top padding for toggle */
+      text-align: center;
+    }
+
+    .form-card {
+      background: #111;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    body.light .form-card { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+
+    h1 { font-size: 2rem; margin-bottom: 8px; }
+    p { color: #9ca3af; margin-bottom: 32px; font-size: 0.95rem; }
+    body.light p { color: #6b7280; }
+
+    input, button {
+      width: 100%;
+      padding: 16px;
+      margin: 8px 0;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+    input { background: #222; color: white; }
+    body.light input { background: #f3f4f6; color: #000; }
+
+    button {
+      background: #10b981;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: 0.2s;
+    }
+    button:hover { background: #059669; }
+
+    .back {
+      margin-top: 32px;
+    }
+    .back a {
+      color: #ec4899;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
-  <!-- TOGGLE IS FIXED TOP-RIGHT -->
+
+  <!-- TOGGLE OUTSIDE EVERYTHING -->
   <button class="toggle" onclick="toggleDark()">🌙</button>
 
-  <div class="container">
+  <div class="studio-container">
     <div class="form-card">
       <h1>Studio Dashboard</h1>
       <p>Upload your YOM game</p>
@@ -96,18 +119,17 @@
       const btn = document.querySelector('.toggle');
       btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
     }
+
     function postGame() {
       const title = document.getElementById('title').value.trim();
       const url = document.getElementById('url').value.trim();
-      if (title && url) {
-        const games = JSON.parse(localStorage.getItem('games') || '[]');
-        games.unshift({ title, url, likes: 0, comments: 0 });
-        localStorage.setItem('games', JSON.stringify(games));
-        alert(`"${title}" added to feed!`);
-        ['title', 'url', 'dur', 'tags'].forEach(id => document.getElementById(id).value = '');
-      } else {
-        alert('Title & URL required');
-      }
+      if (!title || !url) return alert('Title & URL required');
+      
+      const games = JSON.parse(localStorage.getItem('games') || '[]');
+      games.unshift({ title, url, likes: 0, comments: 0 });
+      localStorage.setItem('games', JSON.stringify(games));
+      alert(`"${title}" added!`);
+      ['title', 'url', 'dur', 'tags'].forEach(id => document.getElementById(id).value = '');
     }
   </script>
 </body>
