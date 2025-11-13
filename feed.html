@@ -8,16 +8,16 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow-x: hidden; }
-    body { 
-      font-family: 'Segoe UI', sans-serif; 
-      background: #000; color: white; 
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #000; color: white;
       min-height: 100vh; padding-bottom: 5rem;
       transition: background 0.3s;
     }
     body.light { background: #f9fafb; color: #000; }
     .container { max-width: 500px; margin: 0 auto; padding: 1rem; }
-    .game { 
-      background: #111; border-radius: 1rem; overflow: hidden; margin: 1rem 0; 
+    .game {
+      background: #111; border-radius: 1rem; overflow: hidden; margin: 1rem 0;
       cursor: pointer; transition: box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     body.light .game { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -33,15 +33,15 @@
     .likes { color: #f59e0b; }
     .back { text-align: center; margin: 2rem 0; }
     .back a { color: #ec4899; text-decoration: none; font-weight: bold; }
-    .toggle { 
-      position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white; 
-      border: none; padding: 0.75rem; border-radius: 50%; cursor: pointer; z-index: 1001; 
+    .toggle {
+      position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white;
+      border: none; padding: 0.75rem; border-radius: 50%; cursor: pointer; z-index: 1001;
       backdrop-filter: blur(10px);
     }
     body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
-    .feedback-btn { 
-      position: fixed; bottom: 1.5rem; right: 1.5rem; background: #ec4899; color: white; 
-      border: none; padding: 1rem; border-radius: 50%; cursor: pointer; z-index: 1001; 
+    .feedback-btn {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; background: #ec4899; color: white;
+      border: none; padding: 1rem; border-radius: 50%; cursor: pointer; z-index: 1001;
       font-size: 1.5rem; box-shadow: 0 4px 12px rgba(236,72,153,0.4);
     }
     @media (max-width: 640px) { .thumb { height: 160px; } }
@@ -50,60 +50,69 @@
 <body>
   <button class="toggle" onclick="toggleDark()">🌙</button>
   <button class="feedback-btn" onclick="feedbackModal()">💬</button>
-
-  <div class="container">
-    <!-- Game 1: Valley -->
-    <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient', 1)">
-      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png" 
-           alt="Valley of the Ancient" class="thumb" 
-           onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=Valley'">
-      <div class="info">
-        <h2>Valley of the Ancient</h2>
-        <p>2-3 min | Exploration</p>
-        <p class="yom-badge">Powered by YOM</p>
-        <div class="actions">
-          <div class="likes" onclick="likeGame(1, event)">❤️ <span class="count">1.2K</span></div>
-          <div class="comments" onclick="commentModal(1, event)">💬 456</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Game 2: K4 Rally -->
-    <div class="game" onclick="playGame('https://yom.net/embed/k4-rally', 2)">
-      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png" 
-           alt="K4 Rally" class="thumb" 
-           onerror="this.src='https://via.placeholder.com/500x200/ec4899/fff?text=K4+Rally'">
-      <div class="info">
-        <h2>K4 Rally</h2>
-        <p>2 min | Racing</p>
-        <p class="yom-badge">Powered by YOM</p>
-        <div class="actions">
-          <div class="likes" onclick="likeGame(2, event)">❤️ <span class="count">2.5K</span></div>
-          <div class="comments" onclick="commentModal(2, event)">💬 789</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Game 3: Martians vs Roughnecks -->
-    <div class="game" onclick="playGame('https://yom.net/embed/martians-vs-roughnecks', 3)">
-      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png" 
-           alt="Martians vs Roughnecks" class="thumb" 
-           onerror="this.src='https://via.placeholder.com/500x200/a855f7/fff?text=Martians'">
-      <div class="info">
-        <h2>Martians vs Roughnecks</h2>
-        <p>3 min | Action</p>
-        <p class="yom-badge">Powered by YOM</p>
-        <div class="actions">
-          <div class="likes" onclick="likeGame(3, event)">❤️ <span class="count">1.1K</span></div>
-          <div class="comments" onclick="commentModal(3, event)">💬 312</div>
-        </div>
-      </div>
-    </div>
-
+  <div class="container" id="container">
+    <!-- DB GAMES WILL BE INSERTED HERE -->
     <div class="back"><a href="index.html">← Back</a></div>
   </div>
 
   <script>
+    const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+
+    const staticGames = [
+      { id: 1, title: "Valley of the Ancient", url: "https://yom.net/embed/valley-of-the-ancient", thumb: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png", dur: "2-3 min", tags: "Exploration", likes: "1.2K", comments: 456 },
+      { id: 2, title: "K4 Rally", url: "https://yom.net/embed/k4-rally", thumb: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png", dur: "2 min", tags: "Racing", likes: "2.5K", comments: 789 },
+      { id: 3, title: "Martians vs Roughnecks", url: "https://yom.net/embed/martians-vs-roughnecks", thumb: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png", dur: "3 min", tags: "Action", likes: "1.1K", comments: 312 }
+    ];
+
+    async function loadDBGames() {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/games?approved=eq.true&order=created_at.desc`, {
+          headers: { 'apikey': SUPABASE_ANON_KEY }
+        });
+        const dbGames = await res.json();
+        renderGames(dbGames);
+      } catch (e) {
+        renderGames([]);
+      }
+    }
+
+    function renderGames(dbGames) {
+      const container = document.getElementById('container');
+      container.innerHTML = '<div class="back"><a href="index.html">← Back</a></div>';
+
+      // DB GAMES FIRST
+      dbGames.forEach(game => {
+        const div = createGameDiv(game.id, game.title, game.url, game.thumbnail, game.duration + " min", game.tags, game.likes || 0, game.comments || 0);
+        container.insertBefore(div, container.firstChild);
+      });
+
+      // STATIC GAMES LAST
+      staticGames.forEach(game => {
+        const div = createGameDiv(game.id, game.title, game.url, game.thumb, game.dur, game.tags, game.likes, game.comments);
+        container.appendChild(div);
+      });
+    }
+
+    function createGameDiv(id, title, url, thumb, dur, tags, likes, comments) {
+      const div = document.createElement('div');
+      div.className = 'game';
+      div.onclick = () => playGame(url, id);
+      div.innerHTML = `
+        <img src="${thumb}" alt="${title}" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=${encodeURIComponent(title)}'">
+        <div class="info">
+          <h2>${title}</h2>
+          <p>${dur} | ${tags}</p>
+          <p class="yom-badge">Powered by YOM</p>
+          <div class="actions">
+            <div class="likes" onclick="likeGame(${id}, event)">❤️ <span class="count">${typeof likes === 'number' ? likes : likes}</span></div>
+            <div class="comments" onclick="commentModal(${id}, event)">💬 ${comments}</div>
+          </div>
+        </div>
+      `;
+      return div;
+    }
+
     function toggleDark() {
       document.body.classList.toggle('light');
       document.querySelector('.toggle').textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
@@ -115,7 +124,6 @@
       iframe.allow = 'fullscreen';
       iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;border:none;background:#000;';
       document.body.appendChild(iframe);
-
       const close = () => iframe.remove();
       document.addEventListener('keydown', e => e.key === 'Escape' && close());
       let startY = 0;
@@ -123,15 +131,15 @@
       document.addEventListener('touchmove', e => {
         if (startY - e.touches[0].clientY > 100) close();
       });
-
       setTimeout(close, 180000);
     }
 
     function likeGame(id, e) {
       e.stopPropagation();
-      const count = document.querySelector(`.game:nth-child(${id}) .count`);
+      const count = e.target.querySelector('.count');
       const num = parseInt(count.textContent.replace(/[^0-9]/g, '')) + 1;
       count.textContent = num.toLocaleString();
+      // TODO: Save to DB if id > 3
     }
 
     function commentModal(id, e) {
@@ -156,6 +164,8 @@
       feedback.push({ gameId, type, text, timestamp: new Date().toISOString(), device: navigator.userAgent });
       localStorage.setItem('playnfinity_feedback', JSON.stringify(feedback));
     }
+
+    loadDBGames();
   </script>
 </body>
 </html>
