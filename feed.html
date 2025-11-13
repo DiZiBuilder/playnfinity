@@ -7,19 +7,10 @@
   <link rel="icon" href="favicon.ico" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; overflow-x: hidden; }
-    body { 
-      font-family: 'Segoe UI', sans-serif; 
-      background: #000; color: white; 
-      min-height: 100vh; padding-bottom: 5rem;
-      transition: background 0.3s;
-    }
+    html, body { height: 100%; overflow-x: hidden; background: #000; color: white; font-family: 'Segoe UI', sans-serif; min-height: 100vh; padding-bottom: 5rem; }
     body.light { background: #f9fafb; color: #000; }
     .container { max-width: 500px; margin: 0 auto; padding: 1rem; }
-    .game { 
-      background: #111; border-radius: 1rem; overflow: hidden; margin: 1rem 0; 
-      cursor: pointer; transition: box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
+    .game { background: #111; border-radius: 1rem; overflow: hidden; margin: 1rem 0; cursor: pointer; transition: box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     body.light .game { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .game:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
     .thumb { width: 100%; height: 200px; object-fit: cover; display: block; }
@@ -33,105 +24,82 @@
     .likes { color: #f59e0b; }
     .back { text-align: center; margin: 2rem 0; }
     .back a { color: #ec4899; text-decoration: none; font-weight: bold; }
-    .toggle { 
-      position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white; 
-      border: none; padding: 0.75rem; border-radius: 50%; cursor: pointer; z-index: 1001; 
-      backdrop-filter: blur(10px);
-    }
+    .toggle { position: fixed; top: 16px; right: 16px; width: 48px; height: 48px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; font-size: 1.4rem; cursor: pointer; z-index: 99999; backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; }
     body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
-    .feedback-btn { 
-      position: fixed; bottom: 1.5rem; right: 1.5rem; background: #ec4899; color: white; 
-      border: none; padding: 1rem; border-radius: 50%; cursor: pointer; z-index: 1001; 
-      font-size: 1.5rem; box-shadow: 0 4px 12px rgba(236,72,153,0.4);
-    }
     @media (max-width: 640px) { .thumb { height: 160px; } }
   </style>
 </head>
 <body>
   <button class="toggle" onclick="toggleDark()">🌙</button>
-  <button class="feedback-btn" onclick="feedbackModal()">💬</button>
-
-  <div class="container">
-    <!-- Game 1: Valley -->
-    <div class="game" onclick="playGame('https://yom.net/embed/valley-of-the-ancient', 1)">
-      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png" 
-           alt="Valley of the Ancient" class="thumb" 
-           onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=Valley'">
-      <div class="info">
-        <h2>Valley of the Ancient</h2>
-        <p>2-3 min | Exploration</p>
-        <p class="yom-badge">Powered by YOM</p>
-        <div class="actions">
-          <div class="likes" onclick="likeGame(1, event)">❤️ <span class="count">1.2K</span></div>
-          <div class="comments" onclick="commentModal(1, event)">💬 456</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Game 2: K4 Rally -->
-    <div class="game" onclick="playGame('https://yom.net/embed/k4-rally', 2)">
-      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png" 
-           alt="K4 Rally" class="thumb" 
-           onerror="this.src='https://via.placeholder.com/500x200/ec4899/fff?text=K4+Rally'">
-      <div class="info">
-        <h2>K4 Rally</h2>
-        <p>2 min | Racing</p>
-        <p class="yom-badge">Powered by YOM</p>
-        <div class="actions">
-          <div class="likes" onclick="likeGame(2, event)">❤️ <span class="count">2.5K</span></div>
-          <div class="comments" onclick="commentModal(2, event)">💬 789</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Game 3: Martians vs Roughnecks -->
-    <div class="game" onclick="playGame('https://yom.net/embed/martians-vs-roughnecks', 3)">
-      <img src="https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png" 
-           alt="Martians vs Roughnecks" class="thumb" 
-           onerror="this.src='https://via.placeholder.com/500x200/a855f7/fff?text=Martians'">
-      <div class="info">
-        <h2>Martians vs Roughnecks</h2>
-        <p>3 min | Action</p>
-        <p class="yom-badge">Powered by YOM</p>
-        <div class="actions">
-          <div class="likes" onclick="likeGame(3, event)">❤️ <span class="count">1.1K</span></div>
-          <div class="comments" onclick="commentModal(3, event)">💬 312</div>
-        </div>
-      </div>
-    </div>
-
+  <div class="container" id="games-container">
     <div class="back"><a href="index.html">← Back</a></div>
   </div>
 
   <script>
+    const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+
     function toggleDark() {
       document.body.classList.toggle('light');
       document.querySelector('.toggle').textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
     }
 
-    function playGame(url, id) {
+    async function loadGames() {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/games?approved=eq.true&order=created_at.desc`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY }
+      });
+      const games = await res.json();
+      const container = document.getElementById('games-container');
+      container.innerHTML = '';
+
+      games.forEach(game => {
+        const div = document.createElement('div');
+        div.className = 'game';
+        div.innerHTML = `
+          <img src="${game.thumbnail || 'https://via.placeholder.com/500x200/ec4899/fff?text=' + encodeURIComponent(game.title)}" alt="${game.title}" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=No+Image'">
+          <div class="info">
+            <h2>${game.title}</h2>
+            <p>${game.duration || '3'} min | ${game.tags || 'Fun'}</p>
+            <p class="yom-badge">Powered by YOM</p>
+            <div class="actions">
+              <div class="likes" onclick="likeGame(${game.id}, event)">❤️ <span class="count">${game.likes}</span></div>
+              <div class="comments" onclick="commentModal(${game.id}, event)">💬 ${game.comments}</div>
+            </div>
+          </div>
+        `;
+        div.onclick = () => playGame(game.url);
+        container.appendChild(div);
+      });
+
+      if (games.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#888">No games yet. Submit one in Studio!</p>';
+      }
+      container.innerHTML += '<div class="back"><a href="index.html">← Back</a></div>';
+    }
+
+    function playGame(url) {
       const iframe = document.createElement('iframe');
       iframe.src = url;
       iframe.allow = 'fullscreen';
       iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;border:none;background:#000;';
       document.body.appendChild(iframe);
-
       const close = () => iframe.remove();
       document.addEventListener('keydown', e => e.key === 'Escape' && close());
-      let startY = 0;
-      document.addEventListener('touchstart', e => startY = e.touches[0].clientY, { once: true });
-      document.addEventListener('touchmove', e => {
-        if (startY - e.touches[0].clientY > 100) close();
-      });
-
       setTimeout(close, 180000);
     }
 
-    function likeGame(id, e) {
+    async function likeGame(id, e) {
       e.stopPropagation();
-      const count = document.querySelector(`.game:nth-child(${id}) .count`);
-      const num = parseInt(count.textContent.replace(/[^0-9]/g, '')) + 1;
-      count.textContent = num.toLocaleString();
+      const game = games.find(g => g.id === id);
+      await fetch(`${SUPABASE_URL}/rest/v1/games?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ likes: game.likes + 1 })
+      });
+      loadGames();
     }
 
     function commentModal(id, e) {
@@ -139,15 +107,7 @@
       const comment = prompt(`Comment:`);
       if (comment) {
         saveFeedback(id, 'comment', comment);
-        alert('Saved!');
-      }
-    }
-
-    function feedbackModal() {
-      const msg = prompt('Feedback:');
-      if (msg) {
-        saveFeedback(0, 'general', msg);
-        alert('Thanks!');
+        alert('Comment saved!');
       }
     }
 
@@ -156,6 +116,8 @@
       feedback.push({ gameId, type, text, timestamp: new Date().toISOString(), device: navigator.userAgent });
       localStorage.setItem('playnfinity_feedback', JSON.stringify(feedback));
     }
+
+    loadGames();
   </script>
 </body>
 </html>

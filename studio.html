@@ -6,134 +6,74 @@
   <title>Studio - Playnfinity</title>
   <link rel="icon" href="favicon.ico" />
   <style>
-    /* TOTAL RESET */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { 
-      height: 100%; 
-      background: #000; 
-      font-family: 'Segoe UI', sans-serif; 
-      color: white;
-      overflow-x: hidden;
-      position: relative;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; background: #000; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
     body.light { background: #f9fafb; color: #000; }
-
-    /* TOGGLE — HARD PIXELS, NO REM, NO MOVEMENT */
-    .toggle {
-      position: fixed;
-      top: 16px;     /* ← HARD 16px from top (same as feed) */
-      right: 16px;   /* ← HARD 16px from right */
-      width: 48px;
-      height: 48px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      font-size: 1.4rem;
-      cursor: pointer;
-      z-index: 99999;
-      backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      -webkit-tap-highlight-color: transparent;
-    }
-    body.light .toggle {
-      background: rgba(255, 255, 255, 0.9);
-      color: #000;
-    }
-
-    /* CONTENT — HARD GAP BELOW TOGGLE */
-    .studio-container {
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 16px;
-      padding-top: 80px; /* ← 16px (toggle) + 64px gap = 80px */
-      text-align: center;
-    }
-
-    .form-card {
-      background: #111;
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    }
-    body.light .form-card {
-      background: #fff;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    }
-
+    .toggle { position: fixed; top: 16px; right: 16px; width: 48px; height: 48px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; font-size: 1.4rem; cursor: pointer; z-index: 99999; backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; }
+    body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
+    .studio-container { max-width: 500px; margin: 0 auto; padding: 16px; padding-top: 80px; text-align: center; }
+    .form-card { background: #111; border-radius: 16px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    body.light .form-card { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
     h1 { font-size: 2rem; margin-bottom: 8px; }
     p { color: #9ca3af; margin-bottom: 32px; font-size: 0.95rem; }
     body.light p { color: #6b7280; }
-
-    input, button {
-      width: 100%;
-      padding: 16px;
-      margin: 8px 0;
-      border-radius: 12px;
-      border: none;
-      font-size: 1rem;
-      outline: none;
-    }
+    input, button { width: 100%; padding: 16px; margin: 8px 0; border-radius: 12px; border: none; font-size: 1rem; outline: none; }
     input { background: #222; color: white; }
     body.light input { background: #f3f4f6; color: #000; }
-
-    button {
-      background: #10b981;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: background 0.2s;
-    }
+    button { background: #10b981; color: white; font-weight: bold; cursor: pointer; margin-top: 16px; }
     button:hover { background: #059669; }
-
     .back { margin-top: 32px; }
-    .back a {
-      color: #ec4899;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
+    .back a { color: #ec4899; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
   </style>
 </head>
 <body>
-
-  <!-- TOGGLE — LOCKED AT 16px TOP -->
   <button class="toggle" onclick="toggleDark()">🌙</button>
-
   <div class="studio-container">
     <div class="form-card">
       <h1>Studio Dashboard</h1>
-      <p>Upload your YOM game</p>
+      <p>Upload your YOM game (awaiting approval)</p>
       <input type="text" placeholder="Game Title" id="title" />
       <input type="url" placeholder="YOM Stream URL" id="url" />
       <input type="number" placeholder="Duration (min)" min="1" max="5" id="dur" />
       <input type="text" placeholder="Tags (comma separated)" id="tags" />
-      <button onclick="postGame()">Post Game</button>
+      <button onclick="postGame()">Submit for Approval</button>
     </div>
     <div class="back"><a href="index.html">← Back</a></div>
   </div>
 
   <script>
+    const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+
     function toggleDark() {
       document.body.classList.toggle('light');
-      const btn = document.querySelector('.toggle');
-      btn.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+      document.querySelector('.toggle').textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
     }
 
-    function postGame() {
+    async function postGame() {
       const title = document.getElementById('title').value.trim();
       const url = document.getElementById('url').value.trim();
+      const dur = document.getElementById('dur').value || 3;
+      const tags = document.getElementById('tags').value;
+
       if (!title || !url) return alert('Title & URL required');
-      
-      const games = JSON.parse(localStorage.getItem('games') || '[]');
-      games.unshift({ title, url, likes: 0, comments: 0 });
-      localStorage.setItem('games', JSON.stringify(games));
-      alert(`"${title}" added!`);
-      ['title', 'url', 'dur', 'tags'].forEach(id => document.getElementById(id).value = '');
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/games`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ title, url, duration: dur, tags, approved: false })
+      });
+
+      if (res.ok) {
+        alert('Game submitted! Check admin.html to approve.');
+        ['title', 'url', 'dur', 'tags'].forEach(id => document.getElementById(id).value = '');
+      } else {
+        alert('Error. Check console.');
+      }
     }
   </script>
 </body>
