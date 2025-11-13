@@ -52,11 +52,17 @@
       if (event === 'SIGNED_IN') checkAdmin(session.user.id);
     });
 
-    async function sendMagicLink() {
-      const email = document.getElementById('email').value;
-      const { error } = await supabase.auth.signInWithOtp({ email });
-      document.getElementById('status').textContent = error ? 'Error' : 'Check email for magic link!';
-    }
+async function sendMagicLink() {
+    const email = document.getElementById('email').value;
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: 'https://playnfinity.games/adminpublishers.html'
+      }
+    });
+    document.getElementById('status').textContent = error ? 'Error: ' + error.message : 'Magic link sent! Check inbox.';
+  }
+    
 
     async function checkAdmin(userId) {
       const { data } = await supabase.from('admin_users').select('id').eq('id', userId);
