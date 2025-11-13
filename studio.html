@@ -6,7 +6,6 @@
   <title>Studio - Playnfinity</title>
   <link rel="icon" href="favicon.ico" />
   <style>
-    /* TOTAL RESET */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { 
       height: 100%; 
@@ -17,11 +16,11 @@
     }
     body.light { background: #f9fafb; color: #000; }
 
-    /* TOGGLE — FIXED TOP RIGHT, OUTSIDE EVERYTHING */
+    /* TOGGLE — EXACT SAME AS FEED.HTML */
     .toggle {
       position: fixed !important;
-      top: 16px !important;
-      right: 16px !important;
+      top: 1rem !important;
+      right: 1rem !important;
       width: 48px !important;
       height: 48px !important;
       background: rgba(0,0,0,0.7) !important;
@@ -42,11 +41,12 @@
       color: #000 !important; 
     }
 
-    /* MAIN CONTENT — NO FLEX, NO CENTER PUSH */
+    /* STUDIO CONTENT — NO PADDING-TOP PUSHING TOGGLE */
     .studio-container {
       max-width: 500px;
       margin: 0 auto;
-      padding: 80px 16px 32px; /* top padding for toggle */
+      padding: 1rem;
+      padding-top: 5rem; /* Space for toggle */
       text-align: center;
     }
 
@@ -97,7 +97,7 @@
 </head>
 <body>
 
-  <!-- TOGGLE OUTSIDE EVERYTHING -->
+  <!-- TOGGLE — OUTSIDE, FIXED, SAME AS FEED -->
   <button class="toggle" onclick="toggleDark()">🌙</button>
 
   <div class="studio-container">
