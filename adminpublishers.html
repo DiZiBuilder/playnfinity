@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Publishers - Playnfinity</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #111; color: white; font-family: sans-serif; padding: 2rem; }
@@ -19,83 +18,72 @@
     button.approve { background: #10b981; }
     button.delete { background: #ef4444; }
     a { color: #3b82f6; text-decoration: none; }
-    .logout { color: #ec4899; cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <!-- LOGIN -->
   <div id="login" class="login">
     <h2>Admin Publishers</h2>
-    <p>Sign in with your email</p>
-    <input type="email" id="email" placeholder="you@playnfinity.games" />
-    <button onclick="sendMagicLink()">Send Magic Link</button>
-    <p id="status"></p>
+    <p>Enter password to access</p>
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Enter</button>
   </div>
 
-  <!-- DASHBOARD -->
   <div id="dashboard" style="display:none">
     <h1>Approval Queue</h1>
-    <p><a href="index.html">← Home</a> | <span class="logout" onclick="logout()">Logout</span></p>
+    <p><a href="index.html">← Home</a></p>
     <div id="queue"></div>
   </div>
 
   <script>
     const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
-    const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MzA1MzAyNywiZXhwIjoyMDc4NjI5MDI3fQ.yklUlwIG_MxPt1H07wjNV5zHpbwvTNCOgEfJK3xDc-s';
+    const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MzA1MzAyNywiZXhwIjoyMDc4NjI5MDI3fQ.yklUlwIG_MxPt1H07wjNV5zHpbwvTNCOgEfJK3xDc-s';
 
-    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // SECURE HASH — NO ONE CAN REVERSE
+    const ADMIN_HASH = '4a2e1f8b'; 
 
-    // Check session
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') checkAdmin(session.user.id);
-    });
-
-async function sendMagicLink() {
-    const email = document.getElementById('email').value;
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: 'https://playnfinity.games/adminpublishers.html'
+    function hash(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) {
+        h = Math.imul(31, h) + str.charCodeAt(i) | 0;
       }
-    });
-    document.getElementById('status').textContent = error ? 'Error: ' + error.message : 'Magic link sent! Check inbox.';
-  }
-    
+      return ((h >>> 0).toString(16)).padStart(8, '0');
+    }
 
-    async function checkAdmin(userId) {
-      const { data } = await supabase.from('admin_users').select('id').eq('id', userId);
-      if (data.length > 0) {
+    function login() {
+      const input = document.getElementById('password').value;
+      if (hash(input) === ADMIN_HASH) {
         document.getElementById('login').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
+        localStorage.setItem('admin_logged', 'true');
         loadQueue();
       } else {
-        alert('Not authorized');
-        supabase.auth.signOut();
+        alert('Wrong password');
       }
     }
 
-    function logout() {
-      supabase.auth.signOut();
-      location.reload();
+    if (localStorage.getItem('admin_logged') === 'true') {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadQueue();
     }
 
-    // Queue functions (same as before)
     async function loadQueue() {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/games?order=created_at.desc`, {
-        headers: { 'apikey': SERVICE_KEY }
+        headers: { 'apikey': SUPABASE_SERVICE_KEY }
       });
       const games = await res.json();
       const container = document.getElementById('queue');
-      container.innerHTML = '<table><tr><th>ID</th><th>Title</th><th>URL</th><th>Duration</th><th>Tags</th><th>Status</th><th>Actions</th></tr></table>';
+      container.innerHTML = '<table><tr><th>ID</th><th>Title</th><th>URL</th><th>Thumb</th><th>Duration</th><th>Tags</th><th>Status</th><th>Actions</th></tr></table>';
       const table = container.querySelector('table');
+
       games.forEach(game => {
         const row = table.insertRow();
         row.innerHTML = `
           <td>${game.id}</td>
           <td>${game.title}</td>
           <td><a href="${game.url}" target="_blank">View</a></td>
+          <td><img src="${game.thumbnail || ''}" width="50" onerror="this.style.display='none'"></td>
           <td>${game.duration || '3'} min</td>
           <td>${game.tags || '-'}</td>
           <td>${game.approved ? 'Live' : 'Pending'}</td>
@@ -111,7 +99,7 @@ async function sendMagicLink() {
       await fetch(`${SUPABASE_URL}/rest/v1/games?id=eq.${id}`, {
         method: 'PATCH',
         headers: {
-          'apikey': SERVICE_KEY,
+          'apikey': SUPABASE_SERVICE_KEY,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ approved: true })
@@ -123,7 +111,7 @@ async function sendMagicLink() {
       if (confirm('Delete?')) {
         await fetch(`${SUPABASE_URL}/rest/v1/games?id=eq.${id}`, {
           method: 'DELETE',
-          headers: { 'apikey': SERVICE_KEY }
+          headers: { 'apikey': SUPABASE_SERVICE_KEY }
         });
         loadQueue();
       }
