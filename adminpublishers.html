@@ -15,8 +15,8 @@
     table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
     th, td { padding: 1rem; border: 1px solid #333; text-align: left; }
     th { background: #222; }
-    button.approve { background: #10b981; }
-    button.delete { background: #ef4444; }
+    button.approve { background: #10b981; padding: 8px 16px; margin: 4px; border: none; border-radius: 8px; cursor: pointer; }
+    button.delete { background: #ef4444; padding: 8px 16px; margin: 4px; border: none; border-radius: 8px; cursor: pointer; }
     a { color: #3b82f6; text-decoration: none; }
   </style>
 </head>
@@ -70,7 +70,7 @@
 
     async function loadQueue() {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/games?order=created_at.desc`, {
-        headers: { 'apikey': SUPABASE_ANON_KEY }
+        headers: { 'apikey': SUPABASE_SERVICE_KEY }  // ← SERVICE KEY = READ ALL
       });
       const games = await res.json();
       const container = document.getElementById('queue');
@@ -111,7 +111,7 @@
     }
 
     async function deleteGame(id) {
-      if (confirm('Delete?')) {
+      if (confirm('Delete this game?')) {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/games?id=eq.${id}`, {
           method: 'DELETE',
           headers: { 'apikey': SUPABASE_SERVICE_KEY }
