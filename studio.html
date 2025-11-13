@@ -6,7 +6,7 @@
   <title>Studio - Playnfinity</title>
   <link rel="icon" href="favicon.ico" />
   <style>
-    /* FULL RESET */
+    /* TOTAL RESET */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { 
       height: 100%; 
@@ -18,11 +18,11 @@
     }
     body.light { background: #f9fafb; color: #000; }
 
-    /* TOGGLE — EXACT SAME AS FEED.HTML */
+    /* TOGGLE — HARD PIXELS, NO REM, NO MOVEMENT */
     .toggle {
       position: fixed;
-      top: 1rem;     /* ← 16px from top */
-      right: 1rem;   /* ← 16px from right */
+      top: 16px;     /* ← HARD 16px from top (same as feed) */
+      right: 16px;   /* ← HARD 16px from right */
       width: 48px;
       height: 48px;
       background: rgba(0, 0, 0, 0.7);
@@ -37,18 +37,19 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      -webkit-tap-highlight-color: transparent;
     }
     body.light .toggle {
       background: rgba(255, 255, 255, 0.9);
       color: #000;
     }
 
-    /* CONTENT — STARTS BELOW TOGGLE */
+    /* CONTENT — HARD GAP BELOW TOGGLE */
     .studio-container {
       max-width: 500px;
       margin: 0 auto;
-      padding: 1rem;
-      padding-top: 5rem; /* ← 1rem (toggle) + 4rem gap = 5rem */
+      padding: 16px;
+      padding-top: 80px; /* ← 16px (toggle) + 64px gap = 80px */
       text-align: center;
     }
 
@@ -100,7 +101,7 @@
 </head>
 <body>
 
-  <!-- TOGGLE — FIXED TOP-RIGHT -->
+  <!-- TOGGLE — LOCKED AT 16px TOP -->
   <button class="toggle" onclick="toggleDark()">🌙</button>
 
   <div class="studio-container">
