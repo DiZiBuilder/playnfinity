@@ -16,10 +16,10 @@
     }
     body.light { background: #f9fafb; color: #000; }
 
-    /* TOGGLE — EXACT SAME AS FEED.HTML */
+    /* TOGGLE — EXACT SAME AS FEED.HTML (top: 1rem) */
     .toggle {
       position: fixed !important;
-      top: 1rem !important;
+      top: 1rem !important;   /* ← SAME AS FEED */
       right: 1rem !important;
       width: 48px !important;
       height: 48px !important;
@@ -41,12 +41,12 @@
       color: #000 !important; 
     }
 
-    /* STUDIO CONTENT — NO PADDING-TOP PUSHING TOGGLE */
+    /* CONTENT — PUSHED DOWN TO MATCH TOGGLE HEIGHT */
     .studio-container {
       max-width: 500px;
       margin: 0 auto;
       padding: 1rem;
-      padding-top: 5rem; /* Space for toggle */
+      padding-top: 4rem; /* ← 1rem (toggle) + 3rem gap = 4rem */
       text-align: center;
     }
 
@@ -97,7 +97,7 @@
 </head>
 <body>
 
-  <!-- TOGGLE — OUTSIDE, FIXED, SAME AS FEED -->
+  <!-- TOGGLE — FIXED TOP-RIGHT -->
   <button class="toggle" onclick="toggleDark()">🌙</button>
 
   <div class="studio-container">
