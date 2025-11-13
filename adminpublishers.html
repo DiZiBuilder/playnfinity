@@ -37,6 +37,7 @@
 
   <script>
     const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
     const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MzA1MzAyNywiZXhwIjoyMDc4NjI5MDI3fQ.yklUlwIG_MxPt1H07wjNV5zHpbwvTNCOgEfJK3xDc-s';
 
     const ADMIN_HASH = 'a317d35d';
@@ -69,7 +70,7 @@
 
     async function loadQueue() {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/games?order=created_at.desc`, {
-        headers: { 'apikey': SUPABASE_SERVICE_KEY }
+        headers: { 'apikey': SUPABASE_ANON_KEY }
       });
       const games = await res.json();
       const container = document.getElementById('queue');
