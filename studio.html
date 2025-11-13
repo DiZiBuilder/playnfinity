@@ -45,10 +45,13 @@
       const title = document.getElementById('title').value.trim();
       const url = document.getElementById('url').value.trim();
       const thumb = document.getElementById('thumb').value.trim();
-      const dur = document.getElementById('dur').value || 3;
-      const tags = document.getElementById('tags').value;
+      const dur = parseInt(document.getElementById('dur').value) || 3;
+      const tags = document.getElementById('tags').value.trim();
 
       if (!title || !url) return alert('Title & URL required');
+
+      const payload = { title, url, duration: dur, tags, approved: false };
+      if (thumb) payload.thumbnail = thumb;
 
       const res = await fetch(`${SUPABASE_URL}/rest/v1/games`, {
         method: 'POST',
@@ -57,14 +60,15 @@
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal'
         },
-        body: JSON.stringify({ title, url, thumbnail: thumb, duration: dur, tags, approved: false })
+        body: JSON.stringify(payload)
       });
 
       if (res.ok) {
         document.getElementById('message').innerHTML = '<div class="success">Thank you for submitting the game. Your publishing is under review. The game will be published once the reviewing process is completed.</div>';
         ['title', 'url', 'thumb', 'dur', 'tags'].forEach(id => document.getElementById(id).value = '');
       } else {
-        alert('Error. Check console.');
+        const err = await res.text();
+        alert('Error: ' + err);
       }
     }
   </script>
