@@ -98,7 +98,7 @@
     }
 
     async function approve(id) {
-      await fetch(`${SUPABASE_URL}/rest/v1/games?id=eq.${id}`, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/games?id=eq.${id}`, {
         method: 'PATCH',
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -106,16 +106,18 @@
         },
         body: JSON.stringify({ approved: true })
       });
-      loadQueue();
+      if (res.ok) loadQueue();
+      else console.error('Approve failed:', await res.text());
     }
 
     async function deleteGame(id) {
       if (confirm('Delete?')) {
-        await fetch(`${SUPABASE_URL}/rest/v1/games?id=eq.${id}`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/games?id=eq.${id}`, {
           method: 'DELETE',
           headers: { 'apikey': SUPABASE_SERVICE_KEY }
         });
-        loadQueue();
+        if (res.ok) loadQueue();
+        else console.error('Delete failed:', await res.text());
       }
     }
   </script>
