@@ -1,4 +1,8 @@
-// track.js — FULL FINGERPRINT ENGINE
+// track.js — FULL FINGERPRINT ENGINE (96 LINES)
+const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 async function initTracking(gameId, targetDuration = 180) {
   const sessionId = crypto.randomUUID();
   const startTime = Date.now();
