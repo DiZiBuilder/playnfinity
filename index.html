@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Playnfinity — Play and Scroll. Short Games with Zero Install.</title>
+  <title>Playnfinity — Play. Scroll. Play some more.</title>
   <link rel="icon" href="favicon.ico" />
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#a855f7">
   <!-- SEO / SHARE -->
-  <meta property="og:title" content="Playnfinity — Play and Scroll. Short Games with Zero Install." />
+  <meta property="og:title" content="Playnfinity — Play. Scroll. Play some more." />
   <meta property="og:description" content="TikTok for Games on YOM. 100K+ plays. 68% repeat." />
   <meta property="og:image" content="https://playnfinity.games/hero-bg.jpg" />
   <meta property="og:url" content="https://playnfinity.games" />
@@ -57,7 +57,7 @@
       50% { transform: scale(1.08); }
     }
 
-    /* HEADLINE — LIGHT PURPLE GRADIENT + BLACK SHADOW */
+    /* HEADLINE — SOLID LIGHT PURPLE + OUTER BLACK SHADOW */
     .headline {
       font-size: 2.8rem;
       font-weight: 700;
@@ -67,12 +67,9 @@
     @media (max-width: 640px) { .headline { font-size: 2.2rem; } }
 
     .brand-name {
-      background: linear-gradient(90deg, #e9d5ff, #c4b5fd, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #d8b4fe; /* LIGHT PURPLE */
       font-weight: 800;
-      text-shadow: 0 4px 12px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);
+      text-shadow: 0 4px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);
     }
 
     .subheadline {
@@ -166,14 +163,13 @@
       align-items: center; 
     }
     .nav-item.active { 
-      color: #999; /* NO PURPLE */
+      color: #999;
     }
     .nav-icon { 
       font-size: 1.5rem; 
       margin-bottom: 0.25rem;
       filter: grayscale(100%) brightness(0.7) !important;
       color: #999 !important;
-      transition: all 0.2s;
     }
     .nav-item.active .nav-icon { 
       filter: grayscale(100%) brightness(0.7) !important; 
@@ -192,9 +188,9 @@
   <section class="hero">
     <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="logo">
     
+    <!-- NEW SLOGAN + CLEAN TEXT -->
     <h1 class="headline">
-      <span class="brand-name">Playnfinity</span> — Play and Scroll.<br>
-      Short Games with Zero Install.
+      <span class="brand-name">Playnfinity</span> — Play. Scroll.<br>Play some more.
     </h1>
     
     <p class="subheadline">
@@ -222,7 +218,7 @@
     </div>
   </section>
 
-  <!-- NAV — ALL ICONS GRAY + FULL ICONS RESTORED -->
+  <!-- NAV — ALL GRAY ICONS -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
