@@ -57,7 +57,7 @@
       50% { transform: scale(1.08); }
     }
 
-    /* HEADLINE — PLAYNFINITY VISIBLE */
+    /* HEADLINE — PURE PURPLE GRADIENT + THICK BLACK SHADOW */
     .headline {
       font-size: 2.8rem;
       font-weight: 700;
@@ -67,12 +67,12 @@
     @media (max-width: 640px) { .headline { font-size: 2.2rem; } }
 
     .brand-name {
-      background: linear-gradient(90deg, #c084fc, #e879f9, #f472b6);
+      background: linear-gradient(90deg, #a855f7, #9333ea, #6b21a8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       font-weight: 800;
-      text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 4px 8px rgba(0,0,0,0.7);
+      text-shadow: 0 4px 12px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);
     }
 
     .subheadline {
@@ -83,12 +83,13 @@
       text-shadow: 0 2px 8px rgba(0,0,0,0.7);
     }
     .subheadline a {
-      color: #a3e635; /* YOM GREEN */
+      color: #bfff00; /* BRIGHT LIME GREEN */
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
+      text-shadow: 0 3px 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.7);
     }
     .subheadline a:hover {
-      color: #bef264;
+      color: #ecff9e;
     }
 
     .cta-button {
@@ -143,7 +144,7 @@
       backdrop-filter: blur(10px);
     }
 
-    /* NAV — HOME ICON GRAY + ACTIVE PURPLE */
+    /* NAV — HOME ICON GRAY (FORCE GRAYSCALE) */
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -188,7 +189,7 @@
 </head>
 <body>
   <!-- HERO -->
-  <section class="hero">
+  <section class l="hero">
     <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="logo">
     
     <h1 class="headline">
