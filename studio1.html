@@ -37,7 +37,7 @@
       margin-bottom: 8px; 
       color: white; 
     }
-    body.light h1 { color: #000; } /* FIXED: VISIBLE IN LIGHT MODE */
+    body.light h1 { color: #000; }
 
     p { 
       color: #e0c3fc; 
@@ -102,7 +102,7 @@
     }
     body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
-    /* CLEAN NAV BAR — SINGLE COLOR, CENTERED */
+    /* CLEAN BOTTOM NAV BAR — SINGLE COLOR, CENTERED LOGO */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -132,7 +132,7 @@
       font-size: 1.5rem; 
       display: block; 
       margin-bottom: 0.25rem;
-      filter: grayscale(100%);
+      filter: grayscale(100%); /* SINGLE COLOR */
       transition: filter 0.2s;
     }
     .nav-item.active .nav-icon { filter: none; color: #a855f7; }
@@ -162,14 +162,14 @@
     </div>
   </div>
 
-  <!-- NAV BAR: "Playnfinity" + CENTERED LOGO -->
+  <!-- NAV BAR: LOGO + TEXT CENTERED, "Playnfinity" -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
       <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item">
-      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="nav-icon logo">
+      <img src="https://playnfinity.games/TheLetterP.dark.png" alt="Playnfinity" class="nav-icon logo">
       <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
@@ -232,6 +232,12 @@
         alert('Error: ' + err);
       }
     }
+
+    // Active nav state
+    const currentPage = window.location.pathname.split('/').pop() || 'studio.html';
+    document.querySelectorAll('.nav-item').forEach(item => {
+      if (item.href.includes(currentPage)) item.classList.add('active');
+    });
   </script>
 </body>
 </html>

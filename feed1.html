@@ -129,7 +129,9 @@
   <button class="toggle" onclick="toggleTheme()">🌙</button>
   <button class="feedback-btn" onclick="feedbackModal()">💬</button>
 
-  <div class="container" id="games-container"></div>
+  <div class="container" id="games-container">
+    <!-- Games load here -->
+  </div>
 
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
@@ -137,7 +139,7 @@
       <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item active">
-      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="nav-icon logo">
+      <img src="https://playnfinity.games/TheLetterP.dark.png" alt="Playnfinity" class="nav-icon logo">
       <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
@@ -265,10 +267,17 @@
       localStorage.setItem('playnfinity_feedback', JSON.stringify(feedback));
     }
 
+    // Load theme
     if (localStorage.getItem('theme') === 'light') {
       document.body.classList.add('light');
       document.querySelector('.toggle').textContent = '🌞';
     }
+
+    // Active nav state
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-item').forEach(item => {
+      if (item.href.includes(currentPage)) item.classList.add('active');
+    });
 
     loadGames();
   </script>

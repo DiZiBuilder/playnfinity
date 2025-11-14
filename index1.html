@@ -93,10 +93,7 @@
       align-items: center;
       justify-content: center;
     }
-    body.light .toggle { 
-      background: rgba(255, 255, 255, 0.9); 
-      color: #000; 
-    }
+    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
     /* CLEAN BOTTOM NAV BAR — SINGLE COLOR, CENTERED LOGO */
     .nav-bar {
@@ -112,10 +109,7 @@
       padding: 0.75rem 0;
       z-index: 1000;
     }
-    body.light .nav-bar { 
-      background: rgba(255, 255, 255, 0.9); 
-      border-top: 1px solid #ddd; 
-    }
+    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
     .nav-item {
       color: #999;
       text-decoration: none;
@@ -131,7 +125,7 @@
       font-size: 1.5rem; 
       display: block; 
       margin-bottom: 0.25rem;
-      filter: grayscale(100%);
+      filter: grayscale(100%); /* SINGLE COLOR */
       transition: filter 0.2s;
     }
     .nav-item.active .nav-icon { filter: none; color: #a855f7; }
@@ -139,7 +133,8 @@
       width: 28px; 
       height: 28px; 
       border-radius: 6px;
-      filter: none;
+      filter: none; /* LOGO KEEPS COLOR */
+      margin: 0 auto;
     }
     .nav-item span { line-height: 1; }
 
@@ -158,14 +153,14 @@
     </div>
   </div>
 
-  <!-- NAV BAR: "Playnfinity" + CENTERED LOGO -->
+  <!-- NAV BAR: LOGO + TEXT CENTERED, "Playnfinity" -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item">
-      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="nav-icon logo">
+      <img src="https://playnfinity.games/TheLetterP.dark.png" alt="Playnfinity" class="nav-icon logo">
       <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
