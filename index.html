@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Playnfinity — Play. Scroll. Play some more.</title>
   <link rel="icon" href="favicon.ico" />
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#a855f7">
-  <!-- SEO / SHARE -->
   <meta property="og:title" content="Playnfinity — Play. Scroll. Play some more." />
   <meta property="og:description" content="TikTok for Games on YOM. 100K+ plays. 68% repeat." />
   <meta property="og:image" content="https://playnfinity.games/hero-bg.jpg" />
@@ -18,13 +16,8 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-    
-    body {
-      background: #000;
-      color: white;
-    }
+    body { background: #000; color: white; }
 
-    /* HERO — BG FROM ROOT */
     .hero {
       height: 100vh;
       display: flex;
@@ -33,6 +26,7 @@
       align-items: center;
       text-align: center;
       padding: 2rem;
+      padding-top: 15vh;
       position: relative;
       overflow: hidden;
     }
@@ -47,17 +41,14 @@
     .logo {
       width: 96px;
       height: 96px;
+      max-height: 15vh;
       border-radius: 20px;
       margin-bottom: 1.5rem;
       animation: pulse 2s infinite;
       box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
-    /* HEADLINE — SOLID LIGHT PURPLE + OUTER BLACK SHADOW */
     .headline {
       font-size: 2.8rem;
       font-weight: 700;
@@ -67,7 +58,7 @@
     @media (max-width: 640px) { .headline { font-size: 2.2rem; } }
 
     .brand-name {
-      color: #d8b4fe; /* LIGHT PURPLE */
+      color: #d8b4fe;
       font-weight: 800;
       text-shadow: 0 4px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);
     }
@@ -84,9 +75,6 @@
       text-decoration: none;
       font-weight: 700;
       text-shadow: 0 3px 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.7);
-    }
-    .subheadline a:hover {
-      color: #ecff9e;
     }
 
     .cta-button {
@@ -106,7 +94,6 @@
       box-shadow: 0 15px 35px rgba(168, 85, 247, 0.6);
     }
 
-    /* LIVESTATS */
     .livestats {
       display: flex;
       gap: 2.5rem;
@@ -128,8 +115,8 @@
       opacity: 0.8;
     }
 
-    /* PWA INSTALL */
     .install-btn {
+      display: none !important;
       margin-top: 2rem;
       background: rgba(255,255,255,0.1);
       color: white;
@@ -141,7 +128,6 @@
       backdrop-filter: blur(10px);
     }
 
-    /* NAV — ALL ICONS GRAY (NO ACTIVE COLOR) */
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -158,13 +144,11 @@
       text-decoration: none; 
       font-size: 0.7rem; 
       text-align: center; 
-      display: flex; 
+      display: flex;; 
       flex-direction: column; 
       align-items: center; 
     }
-    .nav-item.active { 
-      color: #999;
-    }
+    .nav-item.active { color: #999; }
     .nav-icon { 
       font-size: 1.5rem; 
       margin-bottom: 0.25rem;
@@ -181,27 +165,33 @@
       border-radius: 6px; 
       filter: grayscale(100%) brightness(0.7) !important; 
     }
+
+    /* FIX: NAV TEXT ALIGNED */
+    .nav-item span:last-child {
+      font-size: 0.7rem !important;
+      line-height: 1.2 !important;
+      margin-top: 3px !important;
+    }
+
+    /* MOBILE HORIZONTAL: LOGO FULLY VISIBLE */
+    @media (orientation: landscape) and (max-height: 600px) {
+      .hero { padding-top: 8vh; }
+      .logo { max-height: 12vh; margin-bottom: 0.8rem; }
+    }
   </style>
 </head>
 <body>
-  <!-- HERO -->
   <section class="hero">
     <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="logo">
-    
-    <!-- NEW SLOGAN + CLEAN TEXT -->
     <h1 class="headline">
       <span class="brand-name">Playnfinity</span> — Play. Scroll.<br>Play some more.
     </h1>
-    
     <p class="subheadline">
       TikTok for Games on <a href="https://yom.net" target="_blank" rel="noopener">YOM</a>.
     </p>
-    
     <button class="cta-button" onclick="window.location.href='feed.html'">Play Now →</button>
-    
-    <button class="install-btn" id="install-btn" style="display:none;">Add to Home Screen</button>
+    <button class="install-btn" id="install-btn">Add to Home Screen</button>
 
-    <!-- LIVESTATS -->
     <div class="livestats">
       <div class="stat">
         <div class="stat-value" id="live-plays">0</div>
@@ -218,7 +208,6 @@
     </div>
   </section>
 
-  <!-- NAV — ALL GRAY ICONS -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
@@ -251,28 +240,17 @@
 
     async function updateStats() {
       try {
-        const { data: sessions } = await supabase
-          .from('game_sessions')
-          .select('created_at')
-          .gte('created_at', new Date(Date.now() - 86400000).toISOString());
-        
-        const { data: interactions } = await supabase
-          .from('game_interactions')
-          .select('type');
-
+        const { data: sessions } = await supabase.from('game_sessions').select('created_at').gte('created_at', new Date(Date.now() - 86400000).toISOString());
+        const { data: interactions } = await supabase.from('game_interactions').select('type');
         const playsToday = sessions?.length || 0;
         const likes = interactions?.filter(i => i.type === 'like').length || 0;
         const activeUsers = new Set(sessions?.map(s => s.user_id)).size || 0;
-
         document.getElementById('live-plays').textContent = playsToday.toLocaleString();
         document.getElementById('live-users').textContent = activeUsers.toLocaleString();
         document.getElementById('live-likes').textContent = likes.toLocaleString();
-      } catch (err) {
-        console.error('Stats error:', err);
-      }
+      } catch (err) { console.error('Stats error:', err); }
     }
-    updateStats();
-    setInterval(updateStats, 10000);
+    updateStats(); setInterval(updateStats, 10000);
 
     let deferredPrompt;
     const installBtn = document.getElementById('install-btn');
