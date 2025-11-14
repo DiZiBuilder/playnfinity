@@ -7,44 +7,136 @@
   <link rel="icon" href="favicon.ico" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; overflow-x: hidden; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
+    
+    /* GRADIENT BACKGROUND */
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #000; color: white;
-      min-height: 100vh; padding-bottom: 5rem;
-      transition: background 0.3s;
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
+      background-attachment: fixed;
+      transition: background 0.5s ease;
     }
-    body.light { background: #f9fafb; color: #000; }
-    .container { max-width: 500px; margin: 0 auto; padding: 1rem; }
+    body.light {
+      background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
+    }
+
+    .container { max-width: 500px; margin: 0 auto; padding: 1rem; padding-bottom: 80px; }
     .game {
-      background: #111; border-radius: 1rem; overflow: hidden; margin: 1rem 0;
-      cursor: pointer; transition: box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      overflow: hidden;
+      margin: 1rem 0;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    body.light .game { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .game:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+    body.light .game {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    .game:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
     .thumb { width: 100%; height: 200px; object-fit: cover; display: block; }
     .info { padding: 1rem; }
     .info h2 { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; }
-    .info p { font-size: 0.875rem; color: #9ca3af; margin: 0.25rem 0; }
+    .info p { font-size: 0.875rem; color: #e0c3fc; margin: 0.25rem 0; }
     body.light .info p { color: #6b7280; }
-    .yom-badge { color: #3b82f6; font-size: 0.75rem; }
+    .yom-badge { color: #a855f7; font-size: 0.75rem; font-weight: bold; }
     .actions { display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.875rem; }
     .likes, .comments { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
     .likes { color: #f59e0b; }
-    .back { text-align: center; margin: 2rem 0; position: fixed; bottom: 1rem; left: 0; right: 0; z-index: 10; }
-    .back a { color: #ec4899; text-decoration: none; font-weight: bold; }
-    .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white; border: none; padding: 0.75rem; border-radius: 50%; cursor: pointer; z-index: 1001; backdrop-filter: blur(10px); font-size: 1.2rem; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-    body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
-    .feedback-btn { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #ec4899; color: white; border: none; padding: 1rem; border-radius: 50%; cursor: pointer; z-index: 1001; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(236,72,153,0.4); }
+
+    /* TOP-RIGHT TOGGLE */
+    .toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      backdrop-filter: blur(12px);
+      font-size: 1.2rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
+
+    /* FEEDBACK BUTTON */
+    .feedback-btn {
+      position: fixed;
+      bottom: 5.5rem;
+      right: 1.5rem;
+      background: #ec4899;
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+    }
+
+    /* CLEAN BOTTOM NAV BAR */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0;
+      z-index: 1000;
+    }
+    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
+    .nav-item { color: #999; text-decoration: none; font-size: 0.7rem; text-align: center; }
+    .nav-item.active { color: #a855f7; }
+    .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+    .nav-icon.logo { width: 28px; height: 28px; border-radius: 6px; }
+
     @media (max-width: 640px) { .thumb { height: 160px; } }
   </style>
 </head>
 <body>
-  <button class="toggle" onclick="toggleDark()">🌙</button>
+  <button class="toggle" onclick="toggleTheme()">🌙</button>
   <button class="feedback-btn" onclick="feedbackModal()">💬</button>
+
   <div class="container" id="games-container">
-    <!-- Games will be inserted here -->
+    <!-- Games load here -->
   </div>
+
+  <!-- CLEAN NAV BAR WITH LOGO -->
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      Home
+    </a>
+    <a href="feed.html" class="nav-item active">
+      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playloop" class="nav-icon logo">
+      Playloop
+    </a>
+    <a href="search.html" class="nav-item">
+      <span class="nav-icon">🔍</span>
+      Search
+    </a>
+    <a href="favorites.html" class="nav-item">
+      <span class="nav-icon">❤️</span>
+      Favorites
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      Profile
+    </a>
+  </nav>
 
   <script>
     const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
@@ -73,13 +165,11 @@
       const container = document.getElementById('games-container');
       container.innerHTML = '';
 
-      // DB GAMES ON TOP
       dbGames.forEach(game => {
-        const div = createGameDiv(game.id, game.title, game.url, game.thumbnail, game.duration + " min", game.tags, game.likes, game.comments);
+        const div = createGameDiv(game.id, game.title, game.url, game.thumbnail, game.duration + " min", game.tags || "Game", game.likes || 0, game.comments || 0);
         container.appendChild(div);
       });
 
-      // STATIC GAMES BELOW
       staticGames.forEach(game => {
         const div = createGameDiv(game.id, game.title, game.url, game.thumb, game.dur, game.tags, game.likes, game.comments);
         container.appendChild(div);
@@ -97,17 +187,19 @@
           <p>${dur} | ${tags}</p>
           <p class="yom-badge">Powered by YOM</p>
           <div class="actions">
-            <div class="likes" onclick="likeGame(${id}, event)">❤️ <span class="count">${likes.toLocaleString()}</span></div>
-            <div class="comments" onclick="commentModal(${id}, event)">💬 ${comments}</div>
+            <div class="likes" onclick="likeGame(${id}, event)">❤️ <span class="count">${(likes || 0).toLocaleString()}</span></div>
+            <div class="comments" onclick="commentModal(${id}, event)">💬 ${(comments || 0)}</div>
           </div>
         </div>
       `;
       return div;
     }
 
-    function toggleDark() {
+    function toggleTheme() {
       document.body.classList.toggle('light');
-      document.querySelector('.toggle').textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+      const isLight = document.body.classList.contains('light');
+      document.querySelector('.toggle').textContent = isLight ? '🌞' : '🌙';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
     }
 
     function playGame(url, id) {
@@ -129,7 +221,8 @@
     function likeGame(id, e) {
       e.stopPropagation();
       const count = e.target.querySelector('.count');
-      const num = parseInt(count.textContent.replace(/[^0-9]/g, '')) + 1;
+      let num = parseInt(count.textContent.replace(/[^0-9]/g, '')) || 0;
+      num++;
       count.textContent = num.toLocaleString();
     }
 
@@ -154,6 +247,12 @@
       const feedback = JSON.parse(localStorage.getItem('playnfinity_feedback') || '[]');
       feedback.push({ gameId, type, text, timestamp: new Date().toISOString(), device: navigator.userAgent });
       localStorage.setItem('playnfinity_feedback', JSON.stringify(feedback));
+    }
+
+    // Load theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+      document.querySelector('.toggle').textContent = '🌞';
     }
 
     loadGames();

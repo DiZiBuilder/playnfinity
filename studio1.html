@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Studio - Playnfinity</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
+    
+    /* GRADIENT BACKGROUND */
+    body {
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
+      background-attachment: fixed;
+      transition: background 0.5s ease;
+    }
+    body.light {
+      background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
+    }
+
+    .container { max-width: 500px; margin: 0 auto; padding: 16px; padding-top: 80px; text-align: center; }
+    .form-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    body.light .form-card {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    h1 { font-size: 2rem; margin-bottom: 8px; }
+    p { color: #e0c3fc; margin-bottom: 32px; font-size: 0.95rem; }
+    body.light p { color: #6b7280; }
+
+    input, button {
+      width: 100%;
+      padding: 16px;
+      margin: 8px 0;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+    input { background: rgba(255, 255, 255, 0.1); color: white; }
+    body.light input { background: #f3f4f6; color: #000; }
+    button {
+      background: linear-gradient(to right, #ec4899, #a855f7);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    button:hover { transform: scale(1.02); }
+
+    .success {
+      background: rgba(6, 78, 59, 0.8);
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 16px;
+      color: #6ee7b7;
+    }
+
+    /* TOP-RIGHT TOGGLE */
+    .toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      backdrop-filter: blur(12px);
+      font-size: 1.2rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
+
+    /* CLEAN NAV BAR */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0;
+      z-index: 1000;
+    }
+    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
+    .nav-item { color: #999; text-decoration: none; font-size: 0.7rem; text-align: center; }
+    .nav-item.active { color: #a855f7; }
+    .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+    .nav-icon.logo { width: 28px; height: 28px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <button class="toggle" onclick="toggleTheme()">🌙</button>
+
+  <div class="container">
+    <div class="form-card">
+      <h1>Studio Dashboard</h1>
+      <p>Submit your YOM game for review</p>
+      <input type="text" placeholder="Game Title" id="title" />
+      <input type="url" placeholder="YOM Stream URL" id="url" />
+      <input type="url" placeholder="Thumbnail URL (optional)" id="thumb" />
+      <input type="number" placeholder="Duration (min)" min="1" max="5" id="dur" />
+      <input type="text" placeholder="Tags (comma separated)" id="tags" />
+      <button onclick="postGame()">Submit for Review</button>
+      <div id="message"></div>
+    </div>
+  </div>
+
+  <!-- CLEAN NAV BAR WITH LOGO -->
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      Home
+    </a>
+    <a href="feed.html" class="nav-item">
+      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playloop" class="nav-icon logo">
+      Playloop
+    </a>
+    <a href="search.html" class="nav-item">
+      <span class="nav-icon">🔍</span>
+      Search
+    </a>
+    <a href="favorites.html" class="nav-item">
+      <span class="nav-icon">❤️</span>
+      Favorites
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <span class="nav-icon">👤</span>
+      Profile
+    </a>
+  </nav>
+
+  <script>
+    const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      document.querySelector('.toggle').textContent = isLight ? '🌞' : '🌙';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+      document.querySelector('.toggle').textContent = '🌞';
+    }
+
+    async function postGame() {
+      const title = document.getElementById('title').value.trim();
+      const url = document.getElementById('url').value.trim();
+      const thumb = document.getElementById('thumb').value.trim();
+      const dur = parseInt(document.getElementById('dur').value) || 3;
+      const tags = document.getElementById('tags').value.trim();
+
+      if (!title || !url) return alert('Title & URL required');
+
+      const payload = { title, url, duration: dur, tags, approved: false };
+      if (thumb) payload.thumbnail = thumb;
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/games`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        document.getElementById('message').innerHTML = '<div class="success">Thank you for submitting the game. Your publishing is under review. The game will be published once the reviewing process is completed.</div>';
+        ['title', 'url', 'thumb', 'dur', 'tags'].forEach(id => document.getElementById(id).value = '');
+      } else {
+        const err = await res.text();
+        alert('Error: ' + err);
+      }
+    }
+  </script>
+</body>
+</html>
