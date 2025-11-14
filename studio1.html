@@ -32,8 +32,18 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    h1 { font-size: 2rem; margin-bottom: 8px; }
-    p { color: #e0c3fc; margin-bottom: 32px; font-size: 0.95rem; }
+    h1 { 
+      font-size: 2rem; 
+      margin-bottom: 8px; 
+      color: white; 
+    }
+    body.light h1 { color: #000; } /* FIXED: VISIBLE IN LIGHT MODE */
+
+    p { 
+      color: #e0c3fc; 
+      margin-bottom: 32px; 
+      font-size: 0.95rem; 
+    }
     body.light p { color: #6b7280; }
 
     input, button {
@@ -45,8 +55,14 @@
       font-size: 1rem;
       outline: none;
     }
-    input { background: rgba(255, 255, 255, 0.1); color: white; }
-    body.light input { background: #f3f4f6; color: #000; }
+    input { 
+      background: rgba(255, 255, 255, 0.1); 
+      color: white; 
+    }
+    body.light input { 
+      background: #f3f4f6; 
+      color: #000; 
+    }
     button {
       background: linear-gradient(to right, #ec4899, #a855f7);
       color: white;
@@ -86,7 +102,7 @@
     }
     body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
-    /* CLEAN NAV BAR */
+    /* CLEAN NAV BAR — SINGLE COLOR, CENTERED */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -101,10 +117,32 @@
       z-index: 1000;
     }
     body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
-    .nav-item { color: #999; text-decoration: none; font-size: 0.7rem; text-align: center; }
+    .nav-item {
+      color: #999;
+      text-decoration: none;
+      font-size: 0.7rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
     .nav-item.active { color: #a855f7; }
-    .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
-    .nav-icon.logo { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-icon { 
+      font-size: 1.5rem; 
+      display: block; 
+      margin-bottom: 0.25rem;
+      filter: grayscale(100%);
+      transition: filter 0.2s;
+    }
+    .nav-item.active .nav-icon { filter: none; color: #a855f7; }
+    .nav-icon.logo { 
+      width: 28px; 
+      height: 28px; 
+      border-radius: 6px;
+      filter: none;
+    }
+    .nav-item span { line-height: 1; }
   </style>
 </head>
 <body>
@@ -124,27 +162,27 @@
     </div>
   </div>
 
-  <!-- CLEAN NAV BAR WITH LOGO -->
+  <!-- NAV BAR: "Playnfinity" + CENTERED LOGO -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
       <span class="nav-icon">🏠</span>
-      Home
+      <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item">
-      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playloop" class="nav-icon logo">
-      Playloop
+      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="nav-icon logo">
+      <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
       <span class="nav-icon">🔍</span>
-      Search
+      <span>Search</span>
     </a>
     <a href="favorites.html" class="nav-item">
       <span class="nav-icon">❤️</span>
-      Favorites
+      <span>Favorites</span>
     </a>
     <a href="profile.html" class="nav-item active">
       <span class="nav-icon">👤</span>
-      Profile
+      <span>Profile</span>
     </a>
   </nav>
 

@@ -9,7 +9,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
     
-    /* FULL GRADIENT BACKGROUND */
+    /* GRADIENT BACKGROUND */
     body {
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
       background-attachment: fixed;
@@ -19,19 +19,86 @@
       background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
     }
 
-    .main-content { min-height: calc(100vh - 80px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; }
-    h1 { font-size: 4.5rem; font-weight: bold; background: linear-gradient(to right, #ec4899, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; }
-    .subtitle { font-size: 1.25rem; color: #e0c3fc; margin: 1rem 0; }
-    .subtitle a { color: #c084fc; text-decoration: none; font-weight: bold; }
+    .main-content { 
+      min-height: calc(100vh - 80px); 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 2rem; 
+      text-align: center; 
+    }
+    h1 { 
+      font-size: 4.5rem; 
+      font-weight: bold; 
+      background: linear-gradient(to right, #ec4899, #a855f7); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      margin-bottom: 1rem; 
+    }
+    .subtitle { 
+      font-size: 1.25rem; 
+      color: #e0c3fc; 
+      margin: 1rem 0; 
+    }
+    .subtitle a { 
+      color: #c084fc; 
+      text-decoration: none; 
+      font-weight: bold; 
+    }
     body.light .subtitle { color: #7c3aed; }
     body.light .subtitle a { color: #6d28d9; }
-    .btn { padding: 1rem 2rem; border-radius: 9999px; font-weight: bold; text-decoration: none; transition: all 0.3s; display: inline-block; margin: 0.5rem; }
-    .btn-primary { background: linear-gradient(to right, #ec4899, #a855f7); color: white; }
-    .btn-secondary { background: transparent; border: 2px solid #ec4899; color: white; }
-    body.light .btn-secondary { border: 2px solid #a855f7; color: #a855f7; }
+
+    .btn { 
+      padding: 1rem 2rem; 
+      border-radius: 9999px; 
+      font-weight: bold; 
+      text-decoration: none; 
+      transition: all 0.3s; 
+      display: inline-block; 
+      margin: 0.5rem; 
+    }
+    .btn-primary { 
+      background: linear-gradient(to right, #ec4899, #a855f7); 
+      color: white; 
+    }
+    .btn-secondary { 
+      background: transparent; 
+      border: 2px solid #ec4899; 
+      color: white; 
+    }
+    body.light .btn-secondary { 
+      border: 2px solid #a855f7; 
+      color: #a855f7; 
+    }
     .btn:hover { transform: scale(1.05); }
 
-    /* CLEAN NAV BAR — SINGLE COLOR ICONS */
+    /* TOP-RIGHT TOGGLE */
+    .toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      backdrop-filter: blur(12px);
+      font-size: 1.2rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.light .toggle { 
+      background: rgba(255, 255, 255, 0.9); 
+      color: #000; 
+    }
+
+    /* CLEAN BOTTOM NAV BAR — SINGLE COLOR, CENTERED LOGO */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -45,19 +112,43 @@
       padding: 0.75rem 0;
       z-index: 1000;
     }
-    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
-    .nav-item { color: #999; text-decoration: none; font-size: 0.7rem; text-align: center; }
+    body.light .nav-bar { 
+      background: rgba(255, 255, 255, 0.9); 
+      border-top: 1px solid #ddd; 
+    }
+    .nav-item {
+      color: #999;
+      text-decoration: none;
+      font-size: 0.7rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
     .nav-item.active { color: #a855f7; }
-    .nav-icon { font-size: 1.5rem; display: block; 0.25rem 0; }
-    .nav-icon.logo { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-icon { 
+      font-size: 1.5rem; 
+      display: block; 
+      margin-bottom: 0.25rem;
+      filter: grayscale(100%);
+      transition: filter 0.2s;
+    }
+    .nav-item.active .nav-icon { filter: none; color: #a855f7; }
+    .nav-icon.logo { 
+      width: 28px; 
+      height: 28px; 
+      border-radius: 6px;
+      filter: none;
+    }
+    .nav-item span { line-height: 1; }
 
-    .toggle { position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white; border: none; padding: 0.75rem; border-radius: 50%; cursor: pointer; z-index: 1001; backdrop-filter: blur(12px); font-size: 1.2rem; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-    body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
     @media (max-width: 640px) { h1 { font-size: 3rem; } }
   </style>
 </head>
 <body>
   <button class="toggle" onclick="toggleTheme()">🌙</button>
+
   <div class="main-content">
     <h1>Playnfinity</h1>
     <p class="subtitle">TikTok for Games on <a href="https://yom.net" target="_blank">YOM</a></p>
@@ -67,27 +158,27 @@
     </div>
   </div>
 
-  <!-- CLEAN NAV BAR WITH LOGO -->
+  <!-- NAV BAR: "Playnfinity" + CENTERED LOGO -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
-      Home
+      <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item">
-      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playloop" class="nav-icon logo">
-      Playloop
+      <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="nav-icon logo">
+      <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
       <span class="nav-icon">🔍</span>
-      Search
+      <span>Search</span>
     </a>
     <a href="favorites.html" class="nav-item">
       <span class="nav-icon">❤️</span>
-      Favorites
+      <span>Favorites</span>
     </a>
     <a href="profile.html" class="nav-item">
       <span class="nav-icon">👤</span>
-      Profile
+      <span>Profile</span>
     </a>
   </nav>
 
@@ -99,11 +190,13 @@
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
     }
 
+    // Load saved theme
     if (localStorage.getItem('theme') === 'light') {
       document.body.classList.add('light');
       document.querySelector('.toggle').textContent = '🌞';
     }
 
+    // Active nav state
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.nav-item').forEach(item => {
       if (item.href.includes(currentPage)) item.classList.add('active');
