@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Playnfinity Feed</title>
   <link rel="icon" href="favicon.ico" />
-  <link rel="stylesheet" href="nav.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
     
+    /* GRADIENT BACKGROUND — CONSISTENT */
     body {
-      background: #000;
-      color: white;
-      transition: background 0.5s;
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
+      background-attachment: fixed;
+      transition: background 0.5s ease;
     }
-    body.light { background: #f9f9fb; }
+    body.light {
+      background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
+    }
 
     .feed-container {
       position: fixed;
@@ -124,6 +126,27 @@
       backdrop-filter: blur(12px);
     }
 
+    .toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      backdrop-filter: blur(12px);
+      font-size: 1.2rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
+
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -149,11 +172,32 @@
       justify-content: center;
     }
     .nav-item.active { color: #a855f7; }
-    .nav-icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
-    .nav-icon.logo { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-icon { 
+      font-size: 1.5rem; 
+      display: block; 
+      margin-bottom: 0.25rem;
+      filter: grayscale(100%) brightness(0.8);
+      color: #999 !important;
+      transition: all 0.2s;
+    }
+    .nav-item.active .nav-icon { 
+      filter: none; 
+      color: #a855f7 !important; 
+    }
+    .nav-icon.logo { 
+      width: 28px; 
+      height: 28px; 
+      border-radius: 6px;
+      filter: none;
+    }
+    .nav-item span { line-height: 1; }
+
+    @media (max-width: 640px) { .thumb { height: 160px; } }
   </style>
 </head>
 <body>
+  <button class="toggle" onclick="toggleTheme()">🌙</button>
+
   <div class="lane-tabs">
     <div class="lane-tab active" data-lane="foryou">For You</div>
     <div class="lane-tab" data-lane="trending">Trending</div>
@@ -177,7 +221,7 @@
 
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
-      <span class="nav-icon">Home</span>
+      <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item active">
@@ -185,15 +229,15 @@
       <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
-      <span class="nav-icon">Search</span>
+      <span class="nav-icon">🔍</span>
       <span>Search</span>
     </a>
     <a href="favorites.html" class="nav-item">
-      <span class="nav-icon">Favorites</span>
+      <span class="nav-icon">❤️</span>
       <span>Favorites</span>
     </a>
     <a href="profile.html" class="nav-item">
-      <span class="nav-icon">Profile</span>
+      <span class="nav-icon">👤</span>
       <span>Profile</span>
     </a>
   </nav>
@@ -202,6 +246,7 @@
   <script>
     const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const staticGames = [
@@ -221,7 +266,7 @@
         card.innerHTML = `
           <div style="position:relative;">
             <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
-            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">Play</div>
+            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">▶</div>
           </div>
           <div class="game-info">
             <div class="game-title">${game.title}</div>
