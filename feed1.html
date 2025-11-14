@@ -64,7 +64,7 @@
       align-items: center;
       justify-content: center;
     }
-    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
+    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #, #000; }
 
     .feedback-btn {
       position: fixed;
@@ -110,10 +110,14 @@
       font-size: 1.5rem; 
       display: block; 
       margin-bottom: 0.25rem;
-      filter: grayscale(100%);
-      transition: filter 0.2s;
+      filter: grayscale(100%) brightness(0.8);
+      color: #999 !important;
+      transition: all 0.2s;
     }
-    .nav-item.active .nav-icon { filter: none; color: #a855f7; }
+    .nav-item.active .nav-icon { 
+      filter: none; 
+      color: #a855f7 !important; 
+    }
     .nav-icon.logo { 
       width: 28px; 
       height: 28px; 
@@ -129,9 +133,7 @@
   <button class="toggle" onclick="toggleTheme()">🌙</button>
   <button class="feedback-btn" onclick="feedbackModal()">💬</button>
 
-  <div class="container" id="games-container">
-    <!-- Games load here -->
-  </div>
+  <div class="container" id="games-container"></div>
 
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
@@ -267,14 +269,12 @@
       localStorage.setItem('playnfinity_feedback', JSON.stringify(feedback));
     }
 
-    // Load theme
     if (localStorage.getItem('theme') === 'light') {
       document.body.classList.add('light');
       document.querySelector('.toggle').textContent = '🌞';
     }
 
-    // Active nav state
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const currentPage = window.location.pathname.split('/').pop() || 'feed.html';
     document.querySelectorAll('.nav-item').forEach(item => {
       if (item.href.includes(currentPage)) item.classList.add('active');
     });

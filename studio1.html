@@ -9,7 +9,6 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
     
-    /* GRADIENT BACKGROUND */
     body {
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
       background-attachment: fixed;
@@ -32,18 +31,9 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    h1 { 
-      font-size: 2rem; 
-      margin-bottom: 8px; 
-      color: white; 
-    }
+    h1 { font-size: 2rem; margin-bottom: 8px; color: white; }
     body.light h1 { color: #000; }
-
-    p { 
-      color: #e0c3fc; 
-      margin-bottom: 32px; 
-      font-size: 0.95rem; 
-    }
+    p { color: #e0c3fc; margin-bottom: 32px; font-size: 0.95rem; }
     body.light p { color: #6b7280; }
 
     input, button {
@@ -55,14 +45,8 @@
       font-size: 1rem;
       outline: none;
     }
-    input { 
-      background: rgba(255, 255, 255, 0.1); 
-      color: white; 
-    }
-    body.light input { 
-      background: #f3f4f6; 
-      color: #000; 
-    }
+    input { background: rgba(255, 255, 255, 0.1); color: white; }
+    body.light input { background: #f3f4f6; color: #000; }
     button {
       background: linear-gradient(to right, #ec4899, #a855f7);
       color: white;
@@ -80,7 +64,6 @@
       color: #6ee7b7;
     }
 
-    /* TOP-RIGHT TOGGLE */
     .toggle {
       position: fixed;
       top: 1rem;
@@ -102,7 +85,6 @@
     }
     body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
-    /* CLEAN BOTTOM NAV BAR — SINGLE COLOR, CENTERED LOGO */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -132,10 +114,14 @@
       font-size: 1.5rem; 
       display: block; 
       margin-bottom: 0.25rem;
-      filter: grayscale(100%); /* SINGLE COLOR */
-      transition: filter 0.2s;
+      filter: grayscale(100%) brightness(0.8);
+      color: #999 !important;
+      transition: all 0.2s;
     }
-    .nav-item.active .nav-icon { filter: none; color: #a855f7; }
+    .nav-item.active .nav-icon { 
+      filter: none; 
+      color: #a855f7 !important; 
+    }
     .nav-icon.logo { 
       width: 28px; 
       height: 28px; 
@@ -162,7 +148,6 @@
     </div>
   </div>
 
-  <!-- NAV BAR: LOGO + TEXT CENTERED, "Playnfinity" -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
       <span class="nav-icon">🏠</span>
@@ -233,7 +218,6 @@
       }
     }
 
-    // Active nav state
     const currentPage = window.location.pathname.split('/').pop() || 'studio.html';
     document.querySelectorAll('.nav-item').forEach(item => {
       if (item.href.includes(currentPage)) item.classList.add('active');
