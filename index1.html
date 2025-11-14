@@ -131,7 +131,7 @@
       backdrop-filter: blur(10px);
     }
 
-    /* NAV — ICONS + TEXT RESTORED, GRAY ONLY */
+    /* NAV — TEXT ALIGNED ACROSS ALL ITEMS */
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -146,7 +146,6 @@
     .nav-item { 
       color: #999; 
       text-decoration: none; 
-      font-size: 0.7rem; 
       text-align: center; 
       display: flex; 
       flex-direction: column; 
@@ -168,6 +167,14 @@
       height: 26px; 
       border-radius: 5px; 
       filter: grayscale(100%) brightness(0.7) !important; 
+    }
+    /* FIX: ALL LABELS SAME HEIGHT & ALIGNMENT */
+    .nav-item span:last-child {
+      font-size: 0.7rem;
+      line-height: 1;
+      margin-top: 2px;
+      display: block;
+      width: 100%;
     }
   </style>
 </head>
@@ -199,7 +206,7 @@
     </div>
   </section>
 
-  <!-- NAV — FULL ICONS + TEXT -->
+  <!-- NAV — ALL TEXT PERFECTLY ALIGNED -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
