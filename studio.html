@@ -7,33 +7,67 @@
   <link rel="icon" href="favicon.ico" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; background: #000; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; transition: background 0.3s ease; }
-    body.light { background: #f9fafb; color: #000; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
+    
+    body {
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
+      background-attachment: fixed;
+      transition: background 0.5s ease;
+    }
+    body.light {
+      background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
+    }
 
     .container { max-width: 500px; margin: 0 auto; padding: 16px; padding-top: 80px; text-align: center; }
-    .form-card { background: #111; border-radius: 16px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    body.light .form-card { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .form-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    body.light .form-card {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
 
-    h1 { font-size: 2rem; margin-bottom: 8px; }
-    p { color: #9ca3af; margin-bottom: 32px; font-size: 0.95rem; }
+    h1 { font-size: 2rem; margin-bottom: 8px; color: white; }
+    body.light h1 { color: #000; }
+    p { color: #e0c3fc; margin-bottom: 32px; font-size: 0.95rem; }
     body.light p { color: #6b7280; }
 
-    input, button { width: 100%; padding: 16px; margin: 8px 0; border-radius: 12px; border: none; font-size: 1rem; outline: none; }
-    input { background: #222; color: white; }
+    input, button {
+      width: 100%;
+      padding: 16px;
+      margin: 8px 0;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+    input { background: rgba(255, 255, 255, 0.1); color: white; }
     body.light input { background: #f3f4f6; color: #000; }
-    button { background: #10b981; color: white; font-weight: bold; cursor: pointer; margin-top: 16px; }
-    button:hover { background: #059669; }
+    button {
+      background: linear-gradient(to right, #ec4899, #a855f7);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    button:hover { transform: scale(1.02); }
 
-    .back { margin-top: 32px; }
-    .back a { color: #ec4899; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
+    .success {
+      background: rgba(6, 78, 59, 0.8);
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 16px;
+      color: #6ee7b7;
+    }
 
-    .success { background: #064e3b; padding: 16px; border-radius: 12px; margin-top: 16px; color: #6ee7b7; }
-
-    /* TOP-RIGHT TOGGLE — MATCHES INDEX & FEED */
     .toggle {
       position: fixed;
       top: 1rem;
-      right: 1rem;  /* ← CHANGED TO RIGHT */
+      right: 1rem;
       background: rgba(0, 0, 0, 0.7);
       color: white;
       border: none;
@@ -48,19 +82,62 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
     }
-    body.light .toggle {
-      background: rgba(255, 255, 255, 0.9);
-      color: #000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
+
+    /* NAV BAR — ICONS ALWAYS GRAY, TEXT PURPLE ON ACTIVE */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0;
+      z-index: 1000;
     }
-    .toggle:hover { transform: scale(1.1); }
+    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
+
+    .nav-item {
+      color: #999;
+      text-decoration: none;
+      font-size: 0.7rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-item.active {
+      color: #a855f7; /* TEXT ONLY */
+    }
+
+    .nav-icon {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 0.25rem;
+      filter: grayscale(100%) brightness(0.8);
+      color: #999 !important; /* FORCE GRAY */
+      transition: filter 0.2s;
+    }
+    .nav-item.active .nav-icon {
+      filter: grayscale(100%) brightness(0.8) !important; /* STAY GRAY */
+      color: #999 !important;
+    }
+    .nav-icon.logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      filter: none;
+    }
+    .nav-item span { line-height: 1; }
   </style>
 </head>
 <body>
-  <!-- TOP-RIGHT TOGGLE -->
-  <button class="toggle" id="theme-toggle">🌙</button>
+  <button class="toggle" onclick="toggleTheme()">🌙</button>
 
   <div class="container">
     <div class="form-card">
@@ -74,33 +151,47 @@
       <button onclick="postGame()">Submit for Review</button>
       <div id="message"></div>
     </div>
-    <div class="back"><a href="index.html">← Back</a></div>
   </div>
+
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="feed.html" class="nav-item">
+      <img src="https://playnfinity.games/TheLetterP.gray.png" alt="Playnfinity" class="nav-icon logo">
+      <span>Playnfinity</span>
+    </a>
+    <a href="search.html" class="nav-item">
+      <span class="nav-icon">🔍</span>
+      <span>Search</span>
+    </a>
+    <a href="favorites.html" class="nav-item">
+      <span class="nav-icon">❤️</span>
+      <span>Favorites</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </a>
+  </nav>
 
   <script>
     const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
 
-    const toggleBtn = document.getElementById('theme-toggle');
-
-    // Load saved theme or system preference
-    if (localStorage.getItem('theme') === 'light' || 
-        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-      document.body.classList.add('light');
-      toggleBtn.textContent = '🌞';
-    }
-
-    // Toggle function
     function toggleTheme() {
       document.body.classList.toggle('light');
       const isLight = document.body.classList.contains('light');
-      toggleBtn.textContent = isLight ? '🌞' : '🌙';
+      document.querySelector('.toggle').textContent = isLight ? '🌞' : '🌙';
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
     }
 
-    toggleBtn.addEventListener('click', toggleTheme);
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+      document.querySelector('.toggle').textContent = '🌞';
+    }
 
-    // Submit game
     async function postGame() {
       const title = document.getElementById('title').value.trim();
       const url = document.getElementById('url').value.trim();
@@ -113,7 +204,7 @@
       const payload = { title, url, duration: dur, tags, approved: false };
       if (thumb) payload.thumbnail = thumb;
 
-      const res = await fetch(`${SUPABUM_URL}/rest/v1/games`, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/games`, {
         method: 'POST',
         headers: {
           'apikey': SUPABASE_ANON_KEY,
@@ -131,6 +222,11 @@
         alert('Error: ' + err);
       }
     }
+
+    const currentPage = window.location.pathname.split('/').pop() || 'studio.html';
+    document.querySelectorAll('.nav-item').forEach(item => {
+      if (item.href.includes(currentPage)) item.classList.add('active');
+    });
   </script>
 </body>
 </html>
