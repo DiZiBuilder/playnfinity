@@ -1,4 +1,4 @@
-// track.js — INCLUDE IN game.html, feed.html, etc.
+// track.js — FULL FINGERPRINT ENGINE
 async function initTracking(gameId, targetDuration = 180) {
   const sessionId = crypto.randomUUID();
   const startTime = Date.now();
@@ -28,7 +28,7 @@ async function initTracking(gameId, targetDuration = 180) {
   })();
   const resolution = `${screen.width}x${screen.height}`;
 
-  // 3. GEO (ipapi.co)
+  // 3. GEO (ipapi.co — free 1K/day)
   let geo = { ip: 'unknown', country_name: 'Unknown', city: 'Unknown' };
   try {
     const res = await fetch('https://ipapi.co/json/');
