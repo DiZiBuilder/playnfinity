@@ -3,80 +3,142 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Playnfinity</title>
+  <title>Playnfinity — Instant Games. No Install.</title>
   <link rel="icon" href="favicon.ico" />
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#a855f7">
+  <!-- SEO / SHARE -->
+  <meta property="og:title" content="Playnfinity — 2-Min Games. Zero Install." />
+  <meta property="og:description" content="100K+ plays. 68% repeat. Play now." />
+  <meta property="og:image" content="https://playnfinity.games/og-image.jpg" />
+  <meta property="og:url" content="https://playnfinity.games" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
     
     body {
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
-      background-attachment: fixed;
-      transition: background 0.5s ease;
+      color: white;
+      transition: background 0.5s;
     }
     body.light {
       background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
     }
 
-    .main-content { 
-      min-height: calc(100vh - 80px); 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      padding: 2rem; 
-      text-align: center; 
+    /* HERO */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
     }
-    h1 { 
-      font-size: 4.5rem; 
-      font-weight: bold; 
-      background: linear-gradient(to right, #ec4899, #a855f7); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-      margin-bottom: 1rem; 
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://playnfinity.games/hero-bg.jpg') center/cover no-repeat;
+      filter: brightness(0.4);
+      z-index: -1;
     }
-    .subtitle { 
-      font-size: 1.25rem; 
-      color: #e0c3fc; 
-      margin: 1rem 0; 
-    }
-    .subtitle a { 
-      color: #c084fc; 
-      text-decoration: none; 
-      font-weight: bold; 
-    }
-    body.light .subtitle { color: #7c3aed; }
-    body.light .subtitle a { color: #6d28d9; }
 
-    .btn { 
-      padding: 1rem 2rem; 
-      border-radius: 9999px; 
-      font-weight: bold; 
-      text-decoration: none; 
-      transition: all 0.3s; 
-      display: inline-block; 
-      margin: 0.5rem; 
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      animation: pulse 2s infinite;
     }
-    .btn-primary { 
-      background: linear-gradient(to right, #ec4899, #a855f7); 
-      color: white; 
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
-    .btn-secondary { 
-      background: transparent; 
-      border: 2px solid #ec4899; 
-      color: white; 
-    }
-    body.light .btn-secondary { 
-      border: 2px solid #a855f7; 
-      color: #a855f7; 
-    }
-    .btn:hover { transform: scale(1.05); }
 
+    .headline {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    @media (max-width: 640px) { .headline { font-size: 2rem; } }
+
+    .subheadline {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+
+    .cta-button {
+      background: #a855f7;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(168, 85, 247, 0.6);
+    }
+
+    /* LIVESTATS */
+    .livestats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .stat {
+      text-align: center;
+      min-width: 120px;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #a855f7;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* NAV — SAME AS FEED2 */
+    .nav-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0;
+      z-index: 1000;
+    }
+    body.light .nav-bar { background: rgba(255,255,255,0.9); border-top: 1px solid #ddd; }
+    .nav-item { color: #999; text-decoration: none; font-size: 0.7rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+    .nav-item.active { color: #a855f7; }
+    .nav-icon { font-size: 1.5rem; margin-bottom: 0.25rem; filter: grayscale(100%) brightness(0.8); }
+    .nav-item.active .nav-icon { filter: none; color: #a855f7 !important; }
+    .nav-icon.logo { width: 28px; height: 28px; border-radius: 6px; filter: none; }
+
+    /* TOGGLE */
     .toggle {
       position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(0, 0, 0, 0.7);
+      top: 1rem; right: 1rem;
+      background: rgba(0,0,0,0.7);
       color: white;
       border: none;
       padding: 0.75rem;
@@ -85,85 +147,49 @@
       z-index: 1001;
       backdrop-filter: blur(12px);
       font-size: 1.2rem;
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
-
-    /* NAV BAR — ICONS ALWAYS GRAY, TEXT PURPLE ON ACTIVE */
-    .nav-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid #333;
-      display: flex;
-      justify-content: space-around;
-      padding: 0.75rem 0;
-      z-index: 1000;
-    }
-    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
-
-    .nav-item {
-      color: #999;
-      text-decoration: none;
-      font-size: 0.7rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .nav-item.active {
-      color: #a855f7; /* TEXT ONLY */
-    }
-
-    .nav-icon {
-      font-size: 1.5rem;
-      display: block;
-      margin-bottom: 0.25rem;
-      filter: grayscale(100%) brightness(0.8);
-      color: #999 !important; /* FORCE GRAY */
-      transition: filter 0.2s;
-    }
-    .nav-item.active .nav-icon {
-      filter: grayscale(100%) brightness(0.8) !important; /* STAY GRAY */
-      color: #999 !important;
-    }
-    .nav-icon.logo {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      filter: none;
-    }
-    .nav-item span { line-height: 1; }
-
-    @media (max-width: 640px) { h1 { font-size: 3rem; } }
+    body.light .toggle { background: rgba(255,255,255,0.9); color: #000; }
   </style>
 </head>
 <body>
-  <button class="toggle" onclick="toggleTheme()">🌙</button>
+  <!-- TOGGLE -->
+  <button class="toggle" id="theme-toggle">🌙</button>
 
-  <div class="main-content">
-    <h1>Playnfinity</h1>
-    <p class="subtitle">TikTok for Games on <a href="https://yom.net" target="_blank">YOM</a></p>
-    <div>
-      <a href="feed.html" class="btn btn-primary">Explore Games</a>
-      <a href="studio.html" class="btn btn-secondary">Studio</a>
+  <!-- HERO -->
+  <section class="hero">
+    <img src="https://playnfinity.games/TheLetterP.white.png" alt="Playnfinity" class="logo">
+    <h1 class="headline">Play 2-Min Games.<br>Zero Install.</h1>
+    <p class="subheadline">100K+ plays. 68% come back. Powered by YOM.</p>
+    <button class="cta-button" onclick="window.location.href='feed2.html'">Play Now →</button>
+
+    <!-- LIVESTATS -->
+    <div class="livestats">
+      <div class="stat">
+        <div class="stat-value" id="live-plays">0</div>
+        <div class="stat-label">Plays Today</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="live-users">0</div>
+        <div class="stat-label">Active Now</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="live-likes">0</div>
+        <div class="stat-label">Likes</div>
+      </div>
     </div>
-  </div>
+  </section>
 
+  <!-- NAV -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
-    <a href="feed.html" class="nav-item">
+    <a href="feed2.html" class="nav-item">
       <img src="https://playnfinity.games/TheLetterP.gray.png" alt="Playnfinity" class="nav-icon logo">
       <span>Playnfinity</span>
     </a>
@@ -181,23 +207,44 @@
     </a>
   </nav>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const supabase = window.supabase.createClient(
+      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
+    );
+
+    // LIVESTATS — REAL-TIME
+    async function updateStats() {
+      const { data: sessions } = await supabase.from('game_sessions').select('created_at').gte('created_at', new Date(Date.now() - 86400000).toISOString());
+      const { data: interactions } = await supabase.from('game_interactions').select('type');
+
+      const playsToday = sessions?.length || 0;
+      const likes = interactions?.filter(i => i.type === 'like').length || 0;
+      const activeUsers = new Set(sessions?.map(s => s.user_id)).size || 0;
+
+      document.getElementById('live-plays').textContent = playsToday.toLocaleString();
+      document.getElementById('live-users').textContent = activeUsers.toLocaleString();
+      document.getElementById('live-likes').textContent = likes.toLocaleString();
+    }
+
+    // Update every 10 sec
+    updateStats();
+    setInterval(updateStats, 10000);
+
+    // THEME
+    const toggleBtn = document.getElementById('theme-toggle');
     function toggleTheme() {
       document.body.classList.toggle('light');
       const isLight = document.body.classList.contains('light');
-      document.querySelector('.toggle').textContent = isLight ? '🌞' : '🌙';
+      toggleBtn.textContent = isLight ? '☀️' : '🌙';
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
     }
-
     if (localStorage.getItem('theme') === 'light') {
       document.body.classList.add('light');
-      document.querySelector('.toggle').textContent = '🌞';
+      toggleBtn.textContent = '☀️';
     }
-
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.nav-item').forEach(item => {
-      if (item.href.includes(currentPage)) item.classList.add('active');
-    });
+    toggleBtn.addEventListener('click', toggleTheme);
   </script>
 </body>
 </html>
