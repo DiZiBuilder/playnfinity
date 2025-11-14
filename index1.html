@@ -9,7 +9,6 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
     
-    /* GRADIENT BACKGROUND */
     body {
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
       background-attachment: fixed;
@@ -73,7 +72,6 @@
     }
     .btn:hover { transform: scale(1.05); }
 
-    /* TOP-RIGHT TOGGLE */
     .toggle {
       position: fixed;
       top: 1rem;
@@ -95,7 +93,7 @@
     }
     body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
-    /* NAV BAR — ALL ICONS GRAYSCALE + GRAY LOGO */
+    /* NAV BAR — ICONS ALWAYS GRAY, TEXT PURPLE ON ACTIVE */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -110,6 +108,7 @@
       z-index: 1000;
     }
     body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
+
     .nav-item {
       color: #999;
       text-decoration: none;
@@ -120,22 +119,25 @@
       align-items: center;
       justify-content: center;
     }
-    .nav-item.active { color: #a855f7; }
-    .nav-icon { 
-      font-size: 1.5rem; 
-      display: block; 
+    .nav-item.active {
+      color: #a855f7; /* TEXT ONLY */
+    }
+
+    .nav-icon {
+      font-size: 1.5rem;
+      display: block;
       margin-bottom: 0.25rem;
       filter: grayscale(100%) brightness(0.8);
+      color: #999 !important; /* FORCE GRAY */
+      transition: filter 0.2s;
+    }
+    .nav-item.active .nav-icon {
+      filter: grayscale(100%) brightness(0.8) !important; /* STAY GRAY */
       color: #999 !important;
-      transition: all 0.2s;
     }
-    .nav-item.active .nav-icon { 
-      filter: none; 
-      color: #a855f7 !important; 
-    }
-    .nav-icon.logo { 
-      width: 28px; 
-      height: 28px; 
+    .nav-icon.logo {
+      width: 28px;
+      height: 28px;
       border-radius: 6px;
       filter: none;
     }
@@ -156,7 +158,6 @@
     </div>
   </div>
 
-  <!-- NAV BAR: GRAY LOGO + ALL ICONS GRAY -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>

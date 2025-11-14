@@ -85,6 +85,7 @@
     }
     body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
+    /* NAV BAR — ICONS ALWAYS GRAY, TEXT PURPLE ON ACTIVE */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -99,6 +100,7 @@
       z-index: 1000;
     }
     body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
+
     .nav-item {
       color: #999;
       text-decoration: none;
@@ -109,22 +111,25 @@
       align-items: center;
       justify-content: center;
     }
-    .nav-item.active { color: #a855f7; }
-    .nav-icon { 
-      font-size: 1.5rem; 
-      display: block; 
+    .nav-item.active {
+      color: #a855f7; /* TEXT ONLY */
+    }
+
+    .nav-icon {
+      font-size: 1.5rem;
+      display: block;
       margin-bottom: 0.25rem;
       filter: grayscale(100%) brightness(0.8);
+      color: #999 !important; /* FORCE GRAY */
+      transition: filter 0.2s;
+    }
+    .nav-item.active .nav-icon {
+      filter: grayscale(100%) brightness(0.8) !important; /* STAY GRAY */
       color: #999 !important;
-      transition: all 0.2s;
     }
-    .nav-item.active .nav-icon { 
-      filter: none; 
-      color: #a855f7 !important; 
-    }
-    .nav-icon.logo { 
-      width: 28px; 
-      height: 28px; 
+    .nav-icon.logo {
+      width: 28px;
+      height: 28px;
       border-radius: 6px;
       filter: none;
     }
