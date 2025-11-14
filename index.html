@@ -57,7 +57,7 @@
       50% { transform: scale(1.08); }
     }
 
-    /* HEADLINE — PURE PURPLE + BLACK SHADOW */
+    /* HEADLINE — LIGHT PURPLE GRADIENT + BLACK SHADOW */
     .headline {
       font-size: 2.8rem;
       font-weight: 700;
@@ -67,7 +67,7 @@
     @media (max-width: 640px) { .headline { font-size: 2.2rem; } }
 
     .brand-name {
-      background: linear-gradient(90deg, #a855f7, #9333ea, #6b21a8);
+      background: linear-gradient(90deg, #e9d5ff, #c4b5fd, #a78bfa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -83,7 +83,7 @@
       text-shadow: 0 2px 8px rgba(0,0,0,0.7);
     }
     .subheadline a {
-      color: #bfff00; /* BRIGHT LIME GREEN */
+      color: #bfff00;
       text-decoration: none;
       font-weight: 700;
       text-shadow: 0 3px 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.7);
@@ -144,7 +144,7 @@
       backdrop-filter: blur(10px);
     }
 
-    /* NAV — GRAY ICONS + ACTIVE PURPLE */
+    /* NAV — ALL ICONS GRAY (NO ACTIVE COLOR) */
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -166,7 +166,7 @@
       align-items: center; 
     }
     .nav-item.active { 
-      color: #a855f7; 
+      color: #999; /* NO PURPLE */
     }
     .nav-icon { 
       font-size: 1.5rem; 
@@ -176,14 +176,14 @@
       transition: all 0.2s;
     }
     .nav-item.active .nav-icon { 
-      filter: none !important; 
-      color: #a855f7 !important; 
+      filter: grayscale(100%) brightness(0.7) !important; 
+      color: #999 !important; 
     }
     .nav-icon.logo { 
       width: 28px; 
       height: 28px; 
       border-radius: 6px; 
-      filter: none !important; 
+      filter: grayscale(100%) brightness(0.7) !important; 
     }
   </style>
 </head>
@@ -201,7 +201,6 @@
       TikTok for Games on <a href="https://yom.net" target="_blank" rel="noopener">YOM</a>.
     </p>
     
-    <!-- FIXED TO feed.html -->
     <button class="cta-button" onclick="window.location.href='feed.html'">Play Now →</button>
     
     <button class="install-btn" id="install-btn" style="display:none;">Add to Home Screen</button>
@@ -223,10 +222,10 @@
     </div>
   </section>
 
-  <!-- NAV — GRAY ICONS + ACTIVE PURPLE -->
+  <!-- NAV — ALL ICONS GRAY + FULL ICONS RESTORED -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
-      <span class="nav-icon">Home</span>
+      <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item">
@@ -234,15 +233,15 @@
       <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
-      <span class="nav-icon">Search</span>
+      <span class="nav-icon">🔍</span>
       <span>Search</span>
     </a>
     <a href="favorites.html" class="nav-item">
-      <span class="nav-icon">Favorites</span>
+      <span class="nav-icon">❤️</span>
       <span>Favorites</span>
     </a>
     <a href="profile.html" class="nav-item">
-      <span class="nav-icon">Profile</span>
+      <span class="nav-icon">👤</span>
       <span>Profile</span>
     </a>
   </nav>
