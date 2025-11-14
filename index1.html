@@ -3,216 +3,273 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Playnfinity — Play. Scroll. Play some more.</title>
+  <title>Playnfinity Feed</title>
   <link rel="icon" href="favicon.ico" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#a855f7">
-  <meta property="og:title" content="Playnfinity — Play. Scroll. Play some more." />
-  <meta property="og:description" content="TikTok for Games on YOM. 100K+ plays. 68% repeat." />
-  <meta property="og:image" content="https://playnfinity.games/hero-bg.jpg" />
-  <meta property="og:url" content="https://playnfinity.games" />
-  <meta name="twitter:card" content="summary_large_image" />
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-    body { background: #000; color: white; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
+    
+    /* GRADIENT BACKGROUND — CONSISTENT */
+    body {
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
+      background-attachment: fixed;
+      transition: background 0.5s ease;
+    }
+    body.light {
+      background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
+    }
 
-    /* HERO — MOBILE HORIZONTAL SAFE */
-    .hero {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 1.5rem;
-      padding-top: 10vh;
-      position: relative;
+    /* COMPACT FEED — RESPONSIVE PC/MOBILE */
+    .feed-container {
+      position: fixed;
+      top: 60px; left: 0; right: 0; bottom: 80px;
       overflow-y: auto;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('hero-bg.jpg') center/cover no-repeat;
-      z-index: -1;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem;
+      padding-bottom: 100px;
     }
 
-    .logo {
-      width: 96px;
-      height: 96px;
-      max-height: 14vh;
-      border-radius: 20px;
-      margin-bottom: 1rem;
-      animation: pulse 2s infinite;
-      box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
-      object-fit: contain;
+    /* LANE TABS — STICKY, RESPONSIVE */
+    .lane-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 100;
+      backdrop-filter: blur(12px);
     }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-
-    .headline {
-      font-size: clamp(1.8rem, 6vw, 2.8rem);
-      font-weight: 700;
-      margin-bottom: 0.8rem;
-      line-height: 1.2;
+    body.light .lane-tabs { background: rgba(255,255,255,0.9); border-bottom: 1px solid #ddd; }
+    .lane-tab {
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      opacity: 0.7;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
     }
-
-    .brand-name {
-      color: #d8b4fe;
-      font-weight: 800;
-      text-shadow: 0 4px 8px rgba(0,0,0,0.8);
-    }
-
-    .subheadline {
-      font-size: clamp(1rem, 4vw, 1.3rem);
-      opacity: 0.9;
-      margin-bottom: 2rem;
-      max-width: 700px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.7);
-    }
-    .subheadline a {
-      color: #bfff00;
-      text-decoration: none;
-      font-weight: 700;
-      text-shadow: 0 3px 8px rgba(0,0,0,0.9);
-    }
-
-    .cta-button {
+    .lane-tab.active {
       background: #a855f7;
+      opacity: 1;
+      color: white;
+    }
+
+    /* COMPACT GAME CARD — RESPONSIVE */
+    .game-card {
+      width: 100%;
+      max-width: 400px; /* PC: Compact */
+      margin: 0 auto 1.5rem;
+      border-radius: 1rem;
+      overflow: hidden;
+      background: rgba(255,255,255,0.05);
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    body.light .game-card { background: rgba(0,0,0,0.05); }
+    .game-card:hover { transform: scale(1.02); }
+    @media (max-width: 640px) { .game-card { max-width: 100%; } }
+
+    .game-thumb {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      position: relative;
+    }
+
+    .game-info {
+      padding: 1rem;
+    }
+    .game-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      font-size: 1.1rem;
+    }
+    .game-duration {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+    }
+    .game-powered {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-bottom: 0.5rem;
+    }
+    .game-stats {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .play-button {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.7);
+      color: white;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      backdrop-filter: blur(8px);
+    }
+
+    /* OVERLAY */
+    .overlay-player {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+    }
+    .overlay-player.active { display: flex; }
+
+    #overlay-iframe {
+      flex: 1;
+      border: none;
+    }
+
+    .overlay-ui {
+      position: absolute;
+      bottom: 100px; left: 0; right: 0;
+      padding: 1rem;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(12px);
+    }
+
+    /* TOGGLE — SUN/MOON ICONS */
+    .toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.7);
       color: white;
       border: none;
-      padding: 0.9rem 2.2rem;
-      border-radius: 3rem;
-      font-size: 1.1rem;
-      font-weight: 600;
+      padding: 0.75rem;
+      border-radius: 50%;
       cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
-    }
-    .cta-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(168, 85, 247, 0.6);
-    }
-
-    .livestats {
+      z-index: 1001;
+      backdrop-filter: blur(12px);
+      font-size: 1.2rem;
+      width: 48px;
+      height: 48px;
       display: flex;
-      gap: 1.2rem;
-      margin-top: 2.5rem;
-      flex-wrap: wrap;
+      align-items: center;
       justify-content: center;
-      padding: 0 1rem;
     }
-    .stat {
-      text-align: center;
-      min-width: 90px;
-      flex: 1;
-    }
-    .stat-value {
-      font-size: clamp(1.6rem, 5vw, 2.2rem);
-      font-weight: 700;
-      color: #a855f7;
-    }
-    .stat-label {
-      font-size: clamp(0.75rem, 3vw, 0.95rem);
-      opacity: 0.8;
-    }
+    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
-    .install-btn {
-      display: none !important;
-      margin-top: 1.5rem;
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 0.7rem 1.5rem;
-      border-radius: 3rem;
-      font-size: 0.9rem;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-    }
-
-    /* NAV — TEXT ALIGNED ACROSS ALL ITEMS */
+    /* NAV BAR — ICONS + LABELS, GRAYSCALE */
     .nav-bar {
       position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.85);
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(16px);
       border-top: 1px solid #333;
       display: flex;
       justify-content: space-around;
-      padding: 0.7rem 0;
+      padding: 0.75rem 0;
       z-index: 1000;
     }
-    .nav-item { 
-      color: #999; 
-      text-decoration: none; 
-      text-align: center; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      gap: 2px;
+    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
+    .nav-item {
+      color: #999;
+      text-decoration: none;
+      font-size: 0.7rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    .nav-item.active { color: #999; }
+/* LIGHT MODE: FORCE DARK TEXT */
+body.light-mode,
+body.light-mode * {
+  color: #000 !important;
+}
+
+/* FEED NAV: ICON ALIGNMENT */
+.feed-nav .nav-icon,
+.feed-nav img {
+  height: 24px !important;
+  width: auto;
+  display: block;
+  margin: 0 auto 4px;
+}
+    .nav-item.active { color: #a855f7; }
     .nav-icon { 
-      font-size: 1.4rem; 
-      filter: grayscale(100%) brightness(0.7) !important;
+      font-size: 1.5rem; 
+      display: block; 
+      margin-bottom: 0.25rem;
+      filter: grayscale(100%) brightness(0.8);
       color: #999 !important;
+      transition: all 0.2s;
     }
     .nav-item.active .nav-icon { 
-      filter: grayscale(100%) brightness(0.7) !important; 
-      color: #999 !important; 
+      filter: none; 
+      color: #a855f7 !important; 
     }
     .nav-icon.logo { 
-      width: 26px; 
-      height: 26px; 
-      border-radius: 5px; 
-      filter: grayscale(100%) brightness(0.7) !important; 
+      width: 28px; 
+      height: 28px; 
+      border-radius: 6px;
+      filter: none;
     }
-    /* FIX: ALL LABELS SAME HEIGHT & ALIGNMENT */
-    .nav-item span:last-child {
-      font-size: 0.7rem;
-      line-height: 1;
-      margin-top: 2px;
-      display: block;
-      width: 100%;
+    .nav-item span { line-height: 1; }
+
+    @media (max-width: 640px) { 
+      .game-thumb { height: 160px; } 
+      .lane-tabs { gap: 0.25rem; }
+      .lane-tab { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
     }
   </style>
 </head>
 <body>
-  <section class="hero">
-    <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="logo">
-    <h1 class="headline">
-      <span class="brand-name">Playnfinity</span> — Play. Scroll.<br>Play some more.
-    </h1>
-    <p class="subheadline">
-      TikTok for Games on <a href="https://yom.net" target="_blank" rel="noopener">YOM</a>.
-    </p>
-    <button class="cta-button" onclick="window.location.href='feed.html'">Play Now →</button>
-    <button class="install-btn" id="install-btn">Add to Home Screen</button>
+  <!-- SUN/MOON TOGGLE -->
+  <button class="toggle" id="theme-toggle">🌙</button>
 
-    <div class="livestats">
-      <div class="stat">
-        <div class="stat-value" id="live-plays">0</div>
-        <div class="stat-label">Plays Today</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value" id="live-users">0</div>
-        <div class="stat-label">Active Now</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value" id="live-likes">0</div>
-        <div class="stat-label">Likes</div>
+  <!-- LANE TABS -->
+  <div class="lane-tabs">
+    <div class="lane-tab active" data-lane="foryou">For You</div>
+    <div class="lane-tab" data-lane="trending">Trending</div>
+    <div class="lane-tab" data-lane="new">New</div>
+    <div class="lane-tab" data-lane="friends">Friends</div>
+  </div>
+
+  <!-- COMPACT FEED -->
+  <div class="feed-container" id="feed"></div>
+
+  <!-- OVERLAY PLAYER -->
+  <div class="overlay-player" id="overlay-player">
+    <iframe id="overlay-iframe" allow="fullscreen"></iframe>
+    <div class="overlay-ui">
+      <div id="overlay-stats">Loading...</div>
+      <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.5rem;">
+        <button onclick="overlayLike()">❤️ <span id="overlay-likes">0</span></button>
+        <button onclick="closeOverlay()">Close</button>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- NAV — ALL TEXT PERFECTLY ALIGNED -->
+  <!-- NAV BAR — ICONS + LABELS, GRAYSCALE -->
   <nav class="nav-bar">
-    <a href="index.html" class="nav-item active">
+    <a href="index.html" class="nav-item">
       <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
-    <a href="feed.html" class="nav-item">
+    <a href="feed.html" class="nav-item active">
       <img src="https://playnfinity.games/TheLetterP.gray.png" alt="Playnfinity" class="nav-icon logo">
       <span>Playnfinity</span>
     </a>
@@ -232,40 +289,88 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const supabase = window.supabase.createClient(
-      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
-    );
+    const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
 
-    async function updateStats() {
-      try {
-        const { data: sessions } = await supabase.from('game_sessions').select('created_at').gte('created_at', new Date(Date.now() - 86400000).toISOString());
-        const { data: interactions } = await supabase.from('game_interactions').select('type');
-        const playsToday = sessions?.length || 0;
-        const likes = interactions?.filter(i => i.type === 'like').length || 0;
-        const activeUsers = new Set(sessions?.map(s => s.user_id)).size || 0;
-        document.getElementById('live-plays').textContent = playsToday.toLocaleString();
-        document.getElementById('live-users').textContent = activeUsers.toLocaleString();
-        document.getElementById('live-likes').textContent = likes.toLocaleString();
-      } catch (err) { console.error('Stats error:', err); }
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const staticGames = [
+      { id: '1', title: "Valley of the Ancient", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png", duration: "2-3 min", tags: "Exploration", plays: 1200, likes: 456 },
+      { id: '2', title: "K4 Rally", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png", duration: "2 min", tags: "Racing", plays: 2500, likes: 789 },
+      { id: '3', title: "Martians vs Roughnecks", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png", duration: "3 min", tags: "Action", plays: 1100, likes: 312 }
+    ];
+
+    function renderFeed() {
+      const feed = document.getElementById('feed');
+      feed.innerHTML = '';
+      staticGames.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div style="position:relative;">
+            <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
+            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">▶</div>
+          </div>
+          <div class="game-info">
+            <div class="game-title">${game.title}</div>
+            <div class="game-duration">${game.duration} | ${game.tags}</div>
+            <div class="game-powered">Powered by YOM</div>
+            <div class="game-stats">
+              <div class="stats-left">
+                <span>❤️ ${game.likes.toLocaleString()}</span>
+                <span>💬 ${game.plays.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        feed.appendChild(card);
+      });
     }
-    updateStats(); setInterval(updateStats, 10000);
 
-    let deferredPrompt;
-    const installBtn = document.getElementById('install-btn');
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'block';
+    window.playGame = function(id, title, likes) {
+      const player = document.getElementById('overlay-player');
+      const iframe = document.getElementById('overlay-iframe');
+      iframe.src = `game.html?id=${id}`;
+      player.classList.add('active');
+      document.getElementById('overlay-stats').textContent = `${title} • ${likes} likes`;
+      document.getElementById('overlay-likes').textContent = likes;
+    };
+
+    window.closeOverlay = function() {
+      document.getElementById('overlay-player').classList.remove('active');
+      document.getElementById('overlay-iframe').src = '';
+    };
+
+    window.overlayLike = function() {
+      const count = document.getElementById('overlay-likes');
+      count.textContent = parseInt(count.textContent) + 1;
+    };
+
+    // === SUN/MOON TOGGLE ===
+    const toggleBtn = document.getElementById('theme-toggle');
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      toggleBtn.textContent = isLight ? '☀️' : '🌙';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+      toggleBtn.textContent = '☀️';
+    } else {
+      toggleBtn.textContent = '🌙';
+    }
+    toggleBtn.addEventListener('click', toggleTheme);
+
+    // Lane switching
+    document.querySelectorAll('.lane-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelector('.lane-tab.active').classList.remove('active');
+        tab.classList.add('active');
+      });
     });
-    installBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        installBtn.style.display = 'none';
-      }
-    });
+
+    renderFeed();
   </script>
 </body>
 </html>
