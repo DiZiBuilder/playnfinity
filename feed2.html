@@ -9,7 +9,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
     
-    /* GRADIENT BACKGROUND */
+    /* GRADIENT BACKGROUND — CONSISTENT */
     body {
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
       background-attachment: fixed;
@@ -19,7 +19,7 @@
       background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
     }
 
-    /* COMPACT FEED */
+    /* COMPACT FEED — RESPONSIVE PC/MOBILE */
     .feed-container {
       position: fixed;
       top: 60px; left: 0; right: 0; bottom: 80px;
@@ -29,16 +29,16 @@
       padding-bottom: 100px;
     }
 
-    /* LANE TABS */
+    /* LANE TABS — STICKY, RESPONSIVE */
     .lane-tabs {
       display: flex;
-      gap: 1rem;
+      gap: 0.5rem;
       padding: 0.75rem 1rem;
       overflow-x: auto;
       white-space: nowrap;
       border-bottom: 1px solid rgba(255,255,255,0.1);
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      position: sticky;
+      top: 0;
       background: rgba(0,0,0,0.9);
       z-index: 100;
       backdrop-filter: blur(12px);
@@ -51,6 +51,7 @@
       opacity: 0.7;
       cursor: pointer;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .lane-tab.active {
       background: #a855f7;
@@ -58,24 +59,27 @@
       color: white;
     }
 
-    /* COMPACT CARD */
+    /* COMPACT GAME CARD — RESPONSIVE */
     .game-card {
       width: 100%;
-      margin-bottom: 1.5rem;
+      max-width: 400px; /* PC: Compact */
+      margin: 0 auto 1.5rem;
       border-radius: 1rem;
       overflow: hidden;
       background: rgba(255,255,255,0.05);
       cursor: pointer;
       transition: transform 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     body.light .game-card { background: rgba(0,0,0,0.05); }
     .game-card:hover { transform: scale(1.02); }
+    @media (max-width: 640px) { .game-card { max-width: 100%; } }
 
     .game-thumb {
       width: 100%;
       height: 200px;
       object-fit: cover;
-      border-radius: 1rem 1rem 0 0;
+      position: relative;
     }
 
     .game-info {
@@ -84,7 +88,7 @@
     .game-title {
       font-weight: 600;
       margin-bottom: 0.25rem;
-      font-size: 1rem;
+      font-size: 1.1rem;
     }
     .game-duration {
       font-size: 0.8rem;
@@ -101,11 +105,6 @@
       opacity: 0.8;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-    }
-    .stats-left, .stats-right {
-      display: flex;
-      gap: 1rem;
       align-items: center;
     }
 
@@ -148,7 +147,7 @@
       backdrop-filter: blur(12px);
     }
 
-    /* TOGGLE */
+    /* TOGGLE — SUN/MOON ICONS */
     .toggle {
       position: fixed;
       top: 1rem;
@@ -170,7 +169,7 @@
     }
     body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
-    /* NAV BAR — EXACT MATCH TO FEED1 */
+    /* NAV BAR — ICONS + LABELS, GRAYSCALE */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -215,11 +214,17 @@
       filter: none;
     }
     .nav-item span { line-height: 1; }
+
+    @media (max-width: 640px) { 
+      .game-thumb { height: 160px; } 
+      .lane-tabs { gap: 0.25rem; }
+      .lane-tab { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+    }
   </style>
 </head>
 <body>
   <!-- SUN/MOON TOGGLE -->
-  <button class="toggle" id="theme-toggle">Moon</button>
+  <button class="toggle" id="theme-toggle">🌙</button>
 
   <!-- LANE TABS -->
   <div class="lane-tabs">
@@ -238,16 +243,16 @@
     <div class="overlay-ui">
       <div id="overlay-stats">Loading...</div>
       <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.5rem;">
-        <button onclick="overlayLike()">Like <span id="overlay-likes">0</span></button>
+        <button onclick="overlayLike()">❤️ <span id="overlay-likes">0</span></button>
         <button onclick="closeOverlay()">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- NAV BAR — ICONS + LABELS -->
+  <!-- NAV BAR — ICONS + LABELS, GRAYSCALE -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
-      <span class="nav-icon">Home</span>
+      <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item active">
@@ -255,15 +260,15 @@
       <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
-      <span class="nav-icon">Search</span>
+      <span class="nav-icon">🔍</span>
       <span>Search</span>
     </a>
     <a href="favorites.html" class="nav-item">
-      <span class="nav-icon">Favorites</span>
+      <span class="nav-icon">❤️</span>
       <span>Favorites</span>
     </a>
     <a href="profile.html" class="nav-item">
-      <span class="nav-icon">Profile</span>
+      <span class="nav-icon">👤</span>
       <span>Profile</span>
     </a>
   </nav>
@@ -272,6 +277,7 @@
   <script>
     const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const staticGames = [
@@ -289,7 +295,7 @@
         card.innerHTML = `
           <div style="position:relative;">
             <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
-            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">Play</div>
+            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">▶</div>
           </div>
           <div class="game-info">
             <div class="game-title">${game.title}</div>
@@ -297,8 +303,8 @@
             <div class="game-powered">Powered by YOM</div>
             <div class="game-stats">
               <div class="stats-left">
-                <span>Heart ${game.likes.toLocaleString()}</span>
-                <span>Speech ${game.plays.toLocaleString()}</span>
+                <span>❤️ ${game.likes.toLocaleString()}</span>
+                <span>💬 ${game.plays.toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -326,19 +332,19 @@
       count.textContent = parseInt(count.textContent) + 1;
     };
 
-    // === THEME TOGGLE ===
+    // === SUN/MOON TOGGLE ===
     const toggleBtn = document.getElementById('theme-toggle');
     function toggleTheme() {
       document.body.classList.toggle('light');
       const isLight = document.body.classList.contains('light');
-      toggleBtn.textContent = isLight ? 'Sun' : 'Moon';
+      toggleBtn.textContent = isLight ? '☀️' : '🌙';
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
     }
     if (localStorage.getItem('theme') === 'light') {
       document.body.classList.add('light');
-      toggleBtn.textContent = 'Sun';
+      toggleBtn.textContent = '☀️';
     } else {
-      toggleBtn.textContent = 'Moon';
+      toggleBtn.textContent = '🌙';
     }
     toggleBtn.addEventListener('click', toggleTheme);
 
