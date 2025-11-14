@@ -9,9 +9,9 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#a855f7">
   <!-- SEO / SHARE -->
-  <meta property="og:title" content="Playnfinity — 2-Min Games. Zero Install." />
+  <meta property="og:title" content="Playnfinity — Plan and Scroll. Short Games with Zero Install." />
   <meta property="og:description" content="100K+ plays. 68% repeat. Play now." />
-  <meta property="og:image" content="https://playnfinity.games/og-image.jpg" />
+  <meta property="og:image" content="https://playnfinity.games/hero-bg.jpg" />
   <meta property="og:url" content="https://playnfinity.games" />
   <meta name="twitter:card" content="summary_large_image" />
 
@@ -44,35 +44,36 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: url('https://playnfinity.games/hero-bg.jpg') center/cover no-repeat;
+      background: url('hero-bg.jpg') center/cover no-repeat;
       filter: brightness(0.4);
       z-index: -1;
     }
 
     .logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 16px;
-      margin-bottom: 1rem;
+      width: 96px;
+      height: 96px;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
       animation: pulse 2s infinite;
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
     }
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      50% { transform: scale(1.08); }
     }
 
     .headline {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 700;
       margin-bottom: 1rem;
       line-height: 1.2;
     }
-    @media (max-width: 640px) { .headline { font-size: 2rem; } }
+    @media (max-width: 640px) { .headline { font-size: 2.2rem; } }
 
     .subheadline {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       opacity: 0.9;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
       max-width: 600px;
     }
 
@@ -80,42 +81,56 @@
       background: #a855f7;
       color: white;
       border: none;
-      padding: 1rem 2rem;
+      padding: 1rem 2.5rem;
       border-radius: 3rem;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
       box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
     }
     .cta-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(168, 85, 247, 0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(168, 85, 247, 0.6);
     }
 
     /* LIVESTATS */
     .livestats {
       display: flex;
-      gap: 2rem;
+      gap: 2.5rem;
       margin-top: 3rem;
       flex-wrap: wrap;
       justify-content: center;
     }
     .stat {
       text-align: center;
-      min-width: 120px;
+      min-width: 130px;
     }
     .stat-value {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 700;
       color: #a855f7;
     }
     .stat-label {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       opacity: 0.8;
     }
 
-    /* NAV — SAME AS FEED2 */
+    /* PWA INSTALL BUTTON */
+    .install-btn {
+      margin-top: 2rem;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.8rem 1.8rem;
+      border-radius: 3rem;
+      font-size: 1rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    body.light .install-btn { background: rgba(0,0,0,0.1); color: #000; border: 1px solid rgba(0,0,0,0.2); }
+
+    /* NAV */
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -161,10 +176,12 @@
 
   <!-- HERO -->
   <section class="hero">
-    <img src="https://playnfinity.games/TheLetterP.white.png" alt="Playnfinity" class="logo">
+    <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="logo">
     <h1 class="headline">Play 2-Min Games.<br>Zero Install.</h1>
     <p class="subheadline">100K+ plays. 68% come back. Powered by YOM.</p>
     <button class="cta-button" onclick="window.location.href='feed2.html'">Play Now →</button>
+    
+    <button class="install-btn" id="install-btn" style="display:none;">Add to Home Screen</button>
 
     <!-- LIVESTATS -->
     <div class="livestats">
@@ -185,7 +202,7 @@
 
   <!-- NAV -->
   <nav class="nav-bar">
-    <a href="index.html" class="nav-item active">
+    <a href="index1.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
@@ -214,7 +231,7 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
     );
 
-    // LIVESTATS — REAL-TIME
+    // LIVESTATS
     async function updateStats() {
       const { data: sessions } = await supabase.from('game_sessions').select('created_at').gte('created_at', new Date(Date.now() - 86400000).toISOString());
       const { data: interactions } = await supabase.from('game_interactions').select('type');
@@ -227,8 +244,6 @@
       document.getElementById('live-users').textContent = activeUsers.toLocaleString();
       document.getElementById('live-likes').textContent = likes.toLocaleString();
     }
-
-    // Update every 10 sec
     updateStats();
     setInterval(updateStats, 10000);
 
@@ -245,6 +260,23 @@
       toggleBtn.textContent = '☀️';
     }
     toggleBtn.addEventListener('click', toggleTheme);
+
+    // PWA INSTALL
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-btn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+    });
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      }
+    });
   </script>
 </body>
 </html>
