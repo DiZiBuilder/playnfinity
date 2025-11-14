@@ -95,7 +95,7 @@
     }
     body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #000; }
 
-    /* CLEAN BOTTOM NAV BAR — SINGLE COLOR, CENTERED LOGO */
+    /* NAV BAR — ALL ICONS GRAYSCALE + GRAY LOGO */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -125,16 +125,19 @@
       font-size: 1.5rem; 
       display: block; 
       margin-bottom: 0.25rem;
-      filter: grayscale(100%); /* SINGLE COLOR */
-      transition: filter 0.2s;
+      filter: grayscale(100%) brightness(0.8);
+      color: #999 !important;
+      transition: all 0.2s;
     }
-    .nav-item.active .nav-icon { filter: none; color: #a855f7; }
+    .nav-item.active .nav-icon { 
+      filter: none; 
+      color: #a855f7 !important; 
+    }
     .nav-icon.logo { 
       width: 28px; 
       height: 28px; 
       border-radius: 6px;
-      filter: none; /* LOGO KEEPS COLOR */
-      margin: 0 auto;
+      filter: none;
     }
     .nav-item span { line-height: 1; }
 
@@ -153,7 +156,7 @@
     </div>
   </div>
 
-  <!-- NAV BAR: LOGO + TEXT CENTERED, "Playnfinity" -->
+  <!-- NAV BAR: GRAY LOGO + ALL ICONS GRAY -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
@@ -185,13 +188,11 @@
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
     }
 
-    // Load saved theme
     if (localStorage.getItem('theme') === 'light') {
       document.body.classList.add('light');
       document.querySelector('.toggle').textContent = '🌞';
     }
 
-    // Active nav state
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.nav-item').forEach(item => {
       if (item.href.includes(currentPage)) item.classList.add('active');
