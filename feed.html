@@ -101,6 +101,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 0;
     }
     .play-button {
       position: absolute;
@@ -272,10 +273,8 @@ body.light-mode * {
             <div class="game-duration">${game.duration} | ${game.tags}</div>
             <div class="game-powered">Powered by YOM</div>
             <div class="game-stats">
-              <div class="stats-left">
-                <span>❤️ ${game.likes.toLocaleString()}</span>
-                <span>💬 ${game.plays.toLocaleString()}</span>
-              </div>
+              <span>❤️ ${game.likes.toLocaleString()}</span>
+              <span>💬 ${game.plays.toLocaleString()}</span>
             </div>
           </div>
         `;
