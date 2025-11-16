@@ -144,7 +144,7 @@
       text-decoration: none; 
       font-size: 0.7rem; 
       text-align: center; 
-      display: flex;; 
+      display: flex; 
       flex-direction: column; 
       align-items: center; 
     }
@@ -173,10 +173,19 @@
       margin-top: 3px !important;
     }
 
-    /* MOBILE HORIZONTAL: LOGO FULLY VISIBLE */
-    @media (orientation: landscape) and (max-height: 600px) {
-      .hero { padding-top: 8vh; }
-      .logo { max-height: 12vh; margin-bottom: 0.8rem; }
+    /* FINAL FIX: MOBILE HORIZONTAL — LOGO FULLY VISIBLE */
+    @media (orientation: landscape) {
+      .hero { 
+        padding-top: 5vh !important; 
+        justify-content: flex-start; 
+      }
+      .logo { 
+        max-height: 10vh !important; 
+        margin: 2vh auto 1vh; 
+      }
+      .headline, .subheadline, .cta-button, .livestats { 
+        margin-bottom: 1vh; 
+      }
     }
   </style>
 </head>
