@@ -5,150 +5,145 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Playnfinity Feed</title>
   <link rel="icon" href="favicon.ico" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#a855f7">
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-    body { background: #000; color: white; transition: all 0.3s; }
-    body.light-mode { background: #fff; }
-
-    /* LIGHT MODE: FORCE DARK TEXT — FULLY VISIBLE */
-    body.light-mode,
-    body.light-mode * {
-      color: #000 !important;
-      background: transparent !important;
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
+   
+    /* GRADIENT BACKGROUND — CONSISTENT */
+    body {
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
+      background-attachment: fixed;
+      transition: background 0.5s ease;
     }
-    body.light-mode .game-title,
-    body.light-mode .game-desc,
-    body.light-mode .like-count,
-    body.light-mode .comment-count,
-    body.light-mode .username,
-    body.light-mode .time-ago {
-      color: #000 !important;
+    body.light {
+      background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
     }
-
-    /* FEED NAV ICON ALIGNMENT */
-    .feed-nav .nav-icon,
-    .feed-nav img {
-      height: 24px !important;
-      width: auto;
-      display: block;
-      margin: 0 auto 4px;
-    }
-
+    /* COMPACT FEED — RESPONSIVE PC/MOBILE */
     .feed-container {
-      padding-bottom: 80px;
-      padding-top: 60px;
-    }
-
-    .feed-nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(16px);
+      top: 60px; left: 0; right: 0; bottom: 80px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem;
+      padding-bottom: 100px;
+    }
+    /* LANE TABS — STICKY, RESPONSIVE */
+    .lane-tabs {
       display: flex;
-      justify-content: space-around;
-      padding: 0.8rem 0;
-      z-index: 1000;
-      border-bottom: 1px solid #333;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 100;
+      backdrop-filter: blur(12px);
     }
-    .feed-nav a {
-      color: #999;
-      text-decoration: none;
-      font-size: 0.85rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    body.light .lane-tabs { background: rgba(255,255,255,0.9); border-bottom: 1px solid #ddd; }
+    .lane-tab {
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      opacity: 0.7;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
     }
-    .feed-nav a.active {
-      color: #a855f7;
+    .lane-tab.active {
+      background: #a855f7;
+      opacity: 1;
+      color: white;
     }
-    .feed-nav .nav-icon {
-      font-size: 1.4rem;
-      margin-bottom: 0.25rem;
-    }
-
+    /* COMPACT GAME CARD — RESPONSIVE */
     .game-card {
-      margin: 1rem auto;
-      max-width: 380px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 16px;
+      width: 100%;
+      max-width: 400px; /* PC: Compact */
+      margin: 0 auto 1.5rem;
+      border-radius: 1rem;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      background: rgba(255,255,255,0.05);
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    body.light-mode .game-card {
-      background: rgba(0,0,0,0.05);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
+    body.light .game-card { background: rgba(0,0,0,0.05); }
+    .game-card:hover { transform: scale(1.02); }
+    @media (max-width: 640px) { .game-card { max-width: 100%; } }
     .game-thumb {
       width: 100%;
-      height: 480px;
+      height: 200px;
       object-fit: cover;
-      background: #111;
+      position: relative;
     }
-
     .game-info {
       padding: 1rem;
     }
     .game-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-      color: #fff;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      font-size: 1.1rem;
     }
-    body.light-mode .game-title { color: #000 !important; }
-
-    .game-desc {
-      font-size: 0.95rem;
+    .game-duration {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+    }
+    .game-powered {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-bottom: 0.5rem;
+    }
+    .game-stats {
+      font-size: 0.8rem;
       opacity: 0.8;
-      margin-bottom: 0.8rem;
-      color: #ccc;
-    }
-    body.light-mode .game-desc { color: #444 !important; }
-
-    .game-meta {
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
-      opacity: 0.7;
+      align-items: center;
     }
-    .like-count, .comment-count {
+    .play-button {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.7);
+      color: white;
+      width: 56px; height: 56px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 0.3rem;
-    }
-
-    .action-bar {
-      display: flex;
-      justify-content: space-around;
-      padding: 0.8rem 0;
-      border-top: 1px solid #333;
-      background: rgba(0,0,0,0.3);
-    }
-    body.light-mode .action-bar {
-      background: rgba(0,0,0,0.1);
-      border-top: 1px solid #ddd;
-    }
-    .action-btn {
-      background: none;
-      border: none;
-      color: #999;
+      justify-content: center;
       font-size: 1.4rem;
-      cursor: pointer;
-      padding: 0.5rem;
+      backdrop-filter: blur(8px);
     }
-    .action-btn.liked {
-      color: #e91e63;
+    /* OVERLAY */
+    .overlay-player {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
     }
-
+    .overlay-player.active { display: flex; }
+    #overlay-iframe {
+      flex: 1;
+      border: none;
+    }
+    .overlay-ui {
+      position: absolute;
+      bottom: 100px; left: 0; right: 0;
+      padding: 1rem;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(12px);
+    }
+    /* NAV BAR — ICONS + LABELS, GRAYSCALE */
     .nav-bar {
       position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.85);
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(16px);
       border-top: 1px solid #333;
       display: flex;
@@ -156,64 +151,82 @@
       padding: 0.75rem 0;
       z-index: 1000;
     }
-    .nav-item { 
-      color: #999; 
-      text-decoration: none; 
-      font-size: 0.7rem; 
-      text-align: center; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      gap: 2px;
+    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
+    .nav-item {
+      color: #999;
+      text-decoration: none;
+      font-size: 0.7rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    .nav-item.active { color: #999; }
-    .nav-icon { 
-      font-size: 1.4rem; 
-      filter: grayscale(100%) brightness(0.7) !important;
+/* LIGHT MODE: FORCE DARK TEXT */
+body.light-mode,
+body.light-mode * {
+  color: #000 !important;
+}
+/* FEED NAV: ICON ALIGNMENT */
+.feed-nav .nav-icon,
+.feed-nav img {
+  height: 24px !important;
+  width: auto;
+  display: block;
+  margin: 0 auto 4px;
+}
+    .nav-item.active { color: #a855f7; }
+    .nav-icon {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 0.25rem;
+      filter: grayscale(100%) brightness(0.8);
       color: #999 !important;
+      transition: all 0.2s;
     }
-    .nav-item.active .nav-icon { 
-      filter: grayscale(100%) brightness(0.7) !important; 
-      color: #999 !important; 
+    .nav-item.active .nav-icon {
+      filter: none;
+      color: #a855f7 !important;
     }
-    .nav-icon.logo { 
-      width: 26px; 
-      height: 26px; 
-      border-radius: 5px; 
-      filter: grayscale(100%) brightness(0.7) !important; 
+    .nav-icon.logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      filter: none;
+    }
+    .nav-item span { line-height: 1; }
+    @media (max-width: 640px) {
+      .game-thumb { height: 160px; }
+      .lane-tabs { gap: 0.25rem; }
+      .lane-tab { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
     }
   </style>
 </head>
 <body>
-  <!-- FEED NAV -->
-  <nav class="feed-nav">
-    <a href="#" class="active">
-      <span class="nav-icon">🏆</span>
-      <span>For You</span>
-    </a>
-    <a href="#">
-      <span class="nav-icon">🔥</span>
-      <span>Trending</span>
-    </a>
-    <a href="#">
-      <span class="nav-icon">🎮</span>
-      <span>Arcade</span>
-    </a>
-    <a href="#">
-      <span class="nav-icon">🧩</span>
-      <span>Puzzle</span>
-    </a>
-  </nav>
-
-  <!-- FEED -->
-  <div class="feed-container" id="feed">
-    <!-- Games loaded via JS -->
+  <!-- LANE TABS -->
+  <div class="lane-tabs">
+    <div class="lane-tab active" data-lane="foryou">For You</div>
+    <div class="lane-tab" data-lane="trending">Trending</div>
+    <div class="lane-tab" data-lane="new">New</div>
+    <div class="lane-tab" data-lane="friends">Friends</div>
   </div>
-
-  <!-- BOTTOM NAV -->
+  <!-- COMPACT FEED -->
+  <div class="feed-container" id="feed"></div>
+  <!-- OVERLAY PLAYER -->
+  <div class="overlay-player" id="overlay-player">
+    <iframe id="overlay-iframe" allow="fullscreen"></iframe>
+    <div class="overlay-ui">
+      <div id="overlay-stats">Loading...</div>
+      <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.5rem;">
+        <button onclick="overlayLike()">❤️ <span id="overlay-likes">0</span></button>
+        <button onclick="closeOverlay()">Close</button>
+      </div>
+    </div>
+  </div>
+  <!-- NAV BAR — ICONS + LABELS, GRAYSCALE -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
-      <span class="nav-icon">🏠</span>
+      <span class="nav-icon">Home</span>
       <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item active">
@@ -221,64 +234,84 @@
       <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
-      <span class="nav-icon">🔍</span>
+      <span class="nav-icon">Search</span>
       <span>Search</span>
     </a>
     <a href="favorites.html" class="nav-item">
-      <span class="nav-icon">❤️</span>
+      <span class="nav-icon">Favorites</span>
       <span>Favorites</span>
     </a>
-    <a href="profile.html" class="nav-item">
-      <span class="nav-icon">👤</span>
+    <a href="profile.html" class="nav hurricanes-item">
+      <span class="nav-icon">Profile</span>
       <span>Profile</span>
     </a>
   </nav>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const supabase = window.supabase.createClient(
-      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
-    );
-
-    // APPLY SAVED THEME (FROM PROFILE SETTINGS)
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-mode');
-    }
-
-    // LOAD GAMES
-    async function loadFeed() {
-      const { data: games } = await supabase.from('games').select('*').order('created_at', { ascending: false });
+    const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg IstE7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const staticGames = [
+      { id: '1', title: "Valley of the Ancient", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png", duration: "2-3 min", tags: "Exploration", plays: 1200, likes: 456 },
+      { id: '2', title: "K4 Rally", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png", duration: "2 min", tags: "Racing", plays: 2500, likes: 789 },
+      { id: '3', title: "Martians vs Roughnecks", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png", duration: "3 min", tags: "Action", plays: 1100, likes: 312 }
+    ];
+    function renderFeed() {
       const feed = document.getElementById('feed');
-      feed.innerHTML = games.map(game => `
-        <div class="game-card" onclick="playGame('${game.id}')">
-          <img src="${game.thumbnail || 'https://via.placeholder.com/380x480'}" class="game-thumb" alt="${game.title}">
+      feed.innerHTML = '';
+      staticGames.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div style="position:relative;">
+            <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
+            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">Play</div>
+          </div>
           <div class="game-info">
             <div class="game-title">${game.title}</div>
-            <div class="game-desc">${game.description}</div>
-            <div class="game-meta">
-              <span class="like-count">❤️ ${game.likes || 0}</span>
-              <span class="comment-count">💬 ${game.comments || 0}</span>
+            <div class="game-duration">${game.duration} | ${game.tags}</div>
+            <div class="game-powered">Powered by YOM</div>
+            <div class="game-stats">
+              <div class="stats-left">
+                <span>❤️ ${game.likes.toLocaleString()}</span>
+                <span>Play ${game.plays.toLocaleString()}</span>
+              </div>
             </div>
           </div>
-          <div class="action-bar">
-            <button class="action-btn" onclick="event.stopPropagation(); likeGame('${game.id}', this)">❤️</button>
-            <button class="action-btn">💬</button>
-            <button class="action-btn">↗️</button>
-          </div>
-        </div>
-      `).join('');
+        `;
+        feed.appendChild(card);
+      });
     }
-    loadFeed();
+    window.playGame = function(id, title, likes) {
+      const player = document.getElementById('overlay-player');
+      const iframe = document.getElementById('overlay-iframe');
+      iframe.src = `game.html?id=${id}`;
+      player.classList.add('active');
+      document.getElementById('overlay-stats').textContent = `${title} • ${likes} likes`;
+      document.getElementById('overlay-likes').textContent = likes;
+    };
+    window.closeOverlay = function() {
+      document.getElementById('overlay-player').classList.remove('active');
+      document.getElementById('overlay-iframe').src = '';
+    };
+    window.overlayLike = function() {
+      const count = document.getElementById('overlay-likes');
+      count.textContent = parseInt(count.textContent) + 1;
+    };
 
-    function playGame(id) {
-      window.location.href = `game.html?id=${id}`;
+    // APPLY SAVED THEME FROM PROFILE (NO TOGGLE HERE)
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
     }
 
-    async function likeGame(id, btn) {
-      btn.classList.toggle('liked');
-      // TODO: Save to Supabase
-    }
+    // Lane switching
+    document.querySelectorAll('.lane-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelector('.lane-tab.active').classList.remove('active');
+        tab.classList.add('active');
+      });
+    });
+    renderFeed();
   </script>
 </body>
 </html>
