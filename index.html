@@ -149,37 +149,18 @@
       padding: 0.75rem 0;
       z-index: 1000;
     }
-    .nav-item { 
-      color: #999; 
-      text-decoration: none; 
-      font-size: 0.7rem; 
-      text-align: center; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
+    .nav-item {
+      width: 20%;
+      text-align: center;
     }
-    .nav-item.active { color: #999; }
-    .nav-icon { 
-      font-size: 1.5rem; 
-      margin-bottom: 0.25rem;
-      filter: grayscale(100%) brightness(0.7) !important;
-      color: #999 !important;
+    .nav-icon {
+      width: 28px;
+      height: 28px;
+      filter: grayscale(100%) brightness(0.7);
+      transition: all 0.2s;
     }
-    .nav-item.active .nav-icon { 
-      filter: grayscale(100%) brightness(0.7) !important; 
-      color: #999 !important; 
-    }
-    .nav-icon.logo { 
-      width: 28px; 
-      height: 28px; 
-      border-radius: 6px; 
-      filter: grayscale(100%) brightness(0.7) !important; 
-    }
-
-    .nav-item span:last-child {
-      font-size: 0.7rem !important;
-      line-height: 1.2 !important;
-      margin-top: 3px !important;
+    .nav-item.active .nav-icon {
+      filter: none;
     }
 
     @media (orientation: landscape) {
@@ -229,26 +210,22 @@
     </div>
   </section>
 
+  <!-- === NEW NAV BAR V2.2 === -->
   <nav class="nav-bar">
-    <a href="index.html" class="nav-item active">
-      <span class="nav-icon">🏠</span>
-      <span>Home</span>
+    <a href="index.html" class="nav-item active" data-page="home">
+      <img src="https://playnfinity.games/app/home.ab.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
     </a>
-    <a href="feed.html" class="nav-item">
-      <img src="https://playnfinity.games/TheLetterP.gray.png" alt="Playnfinity" class="nav-icon logo">
-      <span>Playnfinity</span>
+    <a href="feed.html" class="nav-item" data-page="playnfinity">
+      <img src="https://playnfinity.games/app/letterp.gr.png" alt="Playnfinity" class="nav-icon" data-active="https://playnfinity.games/app/letterp.ab.png">
     </a>
-    <a href="search.html" class="nav-item">
-      <span class="nav-icon">🔍</span>
-      <span>Search</span>
+    <a href="explore.html" class="nav-item" data-page="explore">
+      <img src="https://playnfinity.games/app/explore.gr.png" alt="Explore" class="nav-icon" data-active="https://playnfinity.games/app/explore.ab.png">
     </a>
-    <a href="favorites.html" class="nav-item">
-      <span class="nav-icon">❤️</span>
-      <span>Favorites</span>
+    <a href="trending.html" class="nav-item" data-page="trending">
+      <img src="https://playnfinity.games/app/fav.gr.png" alt="Trending" class="nav-icon" data-active="https://playnfinity.games/app/fav.ab.png">
     </a>
-    <a href="profile.html" class="nav-item">
-      <span class="nav-icon">👤</span>
-      <span>Profile</span>
+    <a href="profile.html" class="nav-item" data-page="profile">
+      <img src="https://playnfinity.games/app/profile.gr.png" alt="Login" class="nav-icon" data-active="https://playnfinity.games/app/profile.ab.png">
     </a>
   </nav>
 
@@ -288,6 +265,31 @@
         installBtn.style.display = 'none';
       }
     });
+
+    // NAV BAR LOGIC
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        document.querySelectorAll('.nav-item').forEach(i => {
+          i.classList.remove('active');
+          const img = i.querySelector('.nav-icon');
+          img.src = img.src.replace('.ab.png', '.gr.png');
+        });
+        this.classList.add('active');
+        const img = this.querySelector('.nav-icon');
+        img.src = img.dataset.active;
+      });
+    });
+
+    async function checkLogin() {
+      const { data: { user } } = await supabase.auth.getUser();
+      const profileImg = document.querySelector('[data-page="profile"] img');
+      if (user) {
+        profileImg.alt = 'Profile';
+      } else {
+        profileImg.alt = 'Login';
+      }
+    }
+    checkLogin();
   </script>
 </body>
 </html>

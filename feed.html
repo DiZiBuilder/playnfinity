@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Playnfinity Feed</title>
   <link rel="icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#a855f7">
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
    
     /* GRADIENT BACKGROUND — CONSISTENT */
     body {
@@ -59,7 +62,7 @@
     /* COMPACT GAME CARD — RESPONSIVE */
     .game-card {
       width: 100%;
-      max-width: 400px; /* PC: Compact */
+      max-width: 400px;
       margin: 0 auto 1.5rem;
       border-radius: 1rem;
       overflow: hidden;
@@ -138,13 +141,11 @@
       background: rgba(0,0,0,0.7);
       backdrop-filter: blur(12px);
     }
-    /* NAV BAR — ICONS + LABELS, GRAYSCALE */
+    /* NAV BAR */
     .nav-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.85);
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.85);
       backdrop-filter: blur(16px);
       border-top: 1px solid #333;
       display: flex;
@@ -152,50 +153,19 @@
       padding: 0.75rem 0;
       z-index: 1000;
     }
-    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
     .nav-item {
-      color: #999;
-      text-decoration: none;
-      font-size: 0.7rem;
+      width: 20%;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
     }
-/* LIGHT MODE: FORCE DARK TEXT */
-body.light-mode,
-body.light-mode * {
-  color: #000 !important;
-}
-/* FEED NAV: ICON ALIGNMENT */
-.feed-nav .nav-icon,
-.feed-nav img {
-  height: 24px !important;
-  width: auto;
-  display: block;
-  margin: 0 auto 4px;
-}
-    .nav-item.active { color: #a855f7; }
     .nav-icon {
-      font-size: 1.5rem;
-      display: block;
-      margin-bottom: 0.25rem;
-      filter: grayscale(100%) brightness(0.8);
-      color: #999 !important;
+      width: 28px;
+      height: 28px;
+      filter: grayscale(100%) brightness(0.7);
       transition: all 0.2s;
     }
     .nav-item.active .nav-icon {
       filter: none;
-      color: #a855f7 !important;
     }
-    .nav-icon.logo {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      filter: none;
-    }
-    .nav-item span { line-height: 1; }
     @media (max-width: 640px) {
       .game-thumb { height: 160px; }
       .lane-tabs { gap: 0.25rem; }
@@ -224,29 +194,26 @@ body.light-mode * {
       </div>
     </div>
   </div>
-  <!-- NAV BAR — ICONS + LABELS, GRAYSCALE -->
+
+  <!-- NAV BAR V2.2 -->
   <nav class="nav-bar">
-    <a href="index.html" class="nav-item">
-      <span class="nav-icon">🏠</span>
-      <span>Home</span>
+    <a href="index.html" class="nav-item" data-page="home">
+      <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
     </a>
-    <a href="feed.html" class="nav-item active">
-      <img src="https://playnfinity.games/TheLetterP.gray.png" alt="Playnfinity" class="nav-icon logo">
-      <span>Playnfinity</span>
+    <a href="feed.html" class="nav-item active" data-page="playnfinity">
+      <img src="https://playnfinity.games/app/letterp.ab.png" alt="Playnfinity" class="nav-icon" data-active="https://playnfinity.games/app/letterp.ab.png">
     </a>
-    <a href="search.html" class="nav-item">
-      <span class="nav-icon">🔍</span>
-      <span>Search</span>
+    <a href="explore.html" class="nav-item" data-page="explore">
+      <img src="https://playnfinity.games/app/explore.gr.png" alt="Explore" class="nav-icon" data-active="https://playnfinity.games/app/explore.ab.png">
     </a>
-    <a href="favorites.html" class="nav-item">
-      <span class="nav-icon">❤️</span>
-      <span>Favorites</span>
+    <a href="trending.html" class="nav-item" data-page="trending">
+      <img src="https://playnfinity.games/app/fav.gr.png" alt="Trending" class="nav-icon" data-active="https://playnfinity.games/app/fav.ab.png">
     </a>
-    <a href="profile.html" class="nav-item">
-      <span class="nav-icon">👤</span>
-      <span>Profile</span>
+    <a href="profile.html" class="nav-item" data-page="profile">
+      <img src="https://playnfinity.games/app/profile.gr.png" alt="Login" class="nav-icon" data-active="https://playnfinity.games/app/profile.ab.png">
     </a>
   </nav>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
@@ -257,6 +224,7 @@ body.light-mode * {
       { id: '2', title: "K4 Rally", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png", duration: "2 min", tags: "Racing", plays: 2500, likes: 789 },
       { id: '3', title: "Martians vs Roughnecks", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png", duration: "3 min", tags: "Action", plays: 1100, likes: 312 }
     ];
+
     function renderFeed() {
       const feed = document.getElementById('feed');
       feed.innerHTML = '';
@@ -281,6 +249,7 @@ body.light-mode * {
         feed.appendChild(card);
       });
     }
+
     window.playGame = function(id, title, likes) {
       const player = document.getElementById('overlay-player');
       const iframe = document.getElementById('overlay-iframe');
@@ -298,18 +267,42 @@ body.light-mode * {
       count.textContent = parseInt(count.textContent) + 1;
     };
 
-    // APPLY SAVED THEME FROM PROFILE (NO TOGGLE HERE)
     if (localStorage.getItem('theme') === 'light') {
       document.body.classList.add('light');
     }
 
-    // Lane switching
     document.querySelectorAll('.lane-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelector('.lane-tab.active').classList.remove('active');
         tab.classList.add('active');
       });
     });
+
+    // NAV BAR LOGIC
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        document.querySelectorAll('.nav-item').forEach(i => {
+          i.classList.remove('active');
+          const img = i.querySelector('.nav-icon');
+          img.src = img.src.replace('.ab.png', '.gr.png');
+        });
+        this.classList.add('active');
+        const img = this.querySelector('.nav-icon');
+        img.src = img.dataset.active;
+      });
+    });
+
+    async function checkLogin() {
+      const { data: { user } } = await supabase.auth.getUser();
+      const profileImg = document.querySelector('[data-page="profile"] img');
+      if (user) {
+        profileImg.alt = 'Profile';
+      } else {
+        profileImg.alt = 'Login';
+      }
+    }
+    checkLogin();
+
     renderFeed();
   </script>
 </body>
