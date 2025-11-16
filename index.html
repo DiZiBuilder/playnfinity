@@ -46,6 +46,8 @@
       margin-bottom: 1.5rem;
       animation: pulse 2s infinite;
       box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+      object-fit: contain; /* NEVER STRETCH */
+      width: auto;
     }
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
@@ -166,14 +168,13 @@
       filter: grayscale(100%) brightness(0.7) !important; 
     }
 
-    /* FIX: NAV TEXT ALIGNED */
     .nav-item span:last-child {
       font-size: 0.7rem !important;
       line-height: 1.2 !important;
       margin-top: 3px !important;
     }
 
-    /* FINAL FIX: MOBILE HORIZONTAL — LOGO FULLY VISIBLE */
+    /* MOBILE HORIZONTAL: COMPACT */
     @media (orientation: landscape) {
       .hero { 
         padding-top: 5vh !important; 
@@ -186,6 +187,11 @@
       .headline, .subheadline, .cta-button, .livestats { 
         margin-bottom: 1vh; 
       }
+    }
+
+    /* DESKTOP: LOWER TEXT (NOT TOO TOP) */
+    @media (min-width: 768px) {
+      .hero { padding-top: 10vh !important; }
     }
   </style>
 </head>
