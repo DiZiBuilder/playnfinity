@@ -226,7 +226,7 @@ body.light-mode * {
   <!-- NAV BAR — ICONS + LABELS, GRAYSCALE -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item">
-      <span class="nav-icon">Home</span>
+      <span class="nav-icon">🏠</span>
       <span>Home</span>
     </a>
     <a href="feed.html" class="nav-item active">
@@ -234,22 +234,22 @@ body.light-mode * {
       <span>Playnfinity</span>
     </a>
     <a href="search.html" class="nav-item">
-      <span class="nav-icon">Search</span>
+      <span class="nav-icon">🔍</span>
       <span>Search</span>
     </a>
     <a href="favorites.html" class="nav-item">
-      <span class="nav-icon">Favorites</span>
+      <span class="nav-icon">❤️</span>
       <span>Favorites</span>
     </a>
-    <a href="profile.html" class="nav hurricanes-item">
-      <span class="nav-icon">Profile</span>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
       <span>Profile</span>
     </a>
   </nav>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg IstE7-6oA8m8_FJev209UDeuvDDcxsCREWI';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const staticGames = [
       { id: '1', title: "Valley of the Ancient", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png", duration: "2-3 min", tags: "Exploration", plays: 1200, likes: 456 },
@@ -265,7 +265,7 @@ body.light-mode * {
         card.innerHTML = `
           <div style="position:relative;">
             <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
-            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">Play</div>
+            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">▶</div>
           </div>
           <div class="game-info">
             <div class="game-title">${game.title}</div>
@@ -274,7 +274,7 @@ body.light-mode * {
             <div class="game-stats">
               <div class="stats-left">
                 <span>❤️ ${game.likes.toLocaleString()}</span>
-                <span>Play ${game.plays.toLocaleString()}</span>
+                <span>💬 ${game.plays.toLocaleString()}</span>
               </div>
             </div>
           </div>
