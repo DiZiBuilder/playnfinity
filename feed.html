@@ -91,6 +91,17 @@
     .game-info {
       padding: 1rem;
     }
+    .game-info * {
+      color: #ffffff !important;
+    }
+    .game-info .game-duration,
+    .game-info .game-powered,
+    .game-info .game-stats {
+      opacity: 0.85 !important;
+    }
+    .game-stats span {
+      font-weight: 500;
+    }
     .game-title {
       font-weight: 600;
       margin-bottom: 0.25rem;
@@ -98,17 +109,14 @@
     }
     .game-duration {
       font-size: 0.8rem;
-      opacity: 0.7;
       margin-bottom: 0.5rem;
     }
     .game-powered {
       font-size: 0.75rem;
-      opacity: 0.6;
       margin-bottom: 0.5rem;
     }
     .game-stats {
       font-size: 0.8rem;
-      opacity: 0.8;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -148,6 +156,7 @@
       padding: 1rem;
       background: rgba(0,0,0,0.7);
       backdrop-filter: blur(12px);
+      color: white;
     }
     /* NAV BAR */
     .nav-bar {
@@ -193,7 +202,7 @@
   <div class="feed-container" id="feed"></div>
   <!-- OVERLAY PLAYER -->
   <div class="overlay-player" id="overlay-player">
-    <iframe	w id="overlay-iframe" allow="fullscreen"></iframe>
+    <iframe id="overlay-iframe" allow="fullscreen"></iframe>
     <div class="overlay-ui">
       <div id="overlay-title" style="font-weight:600; font-size:1.1rem; margin-bottom:0.5rem;"></div>
       <div id="overlay-stats" style="opacity:0.8;"></div>
