@@ -53,12 +53,16 @@
       cursor: pointer;
       transition: all 0.2s;
       white-space: nowrap;
+      color: white !important;
+      font-weight: 500;
     }
+    body.light .lane-tab { color: #000 !important; }
     .lane-tab.active {
       background: #a855f7;
       opacity: 1;
-      color: white;
+      color: white !important;
     }
+    body.light .lane-tab.active { color: white !important; }
     /* COMPACT GAME CARD — RESPONSIVE */
     .game-card {
       width: 100%;
@@ -66,12 +70,16 @@
       margin: 0 auto 1.5rem;
       border-radius: 1rem;
       overflow: hidden;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.08) !important;
       cursor: pointer;
       transition: transform 0.2s;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
-    body.light .game-card { background: rgba(0,0,0,0.05); }
+    body.light .game-card { 
+      background: rgba(0, 0, 0, 0.08) !important; 
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
     .game-card:hover { transform: scale(1.02); }
     @media (max-width: 640px) { .game-card { max-width: 100%; } }
     .game-thumb {
@@ -185,12 +193,13 @@
   <div class="feed-container" id="feed"></div>
   <!-- OVERLAY PLAYER -->
   <div class="overlay-player" id="overlay-player">
-    <iframe id="overlay-iframe" allow="fullscreen"></iframe>
+    <iframe	w id="overlay-iframe" allow="fullscreen"></iframe>
     <div class="overlay-ui">
-      <div id="overlay-stats">Loading...</div>
-      <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.5rem;">
-        <button onclick="overlayLike()">❤️ <span id="overlay-likes">0</span></button>
-        <button onclick="closeOverlay()">Close</button>
+      <div id="overlay-title" style="font-weight:600; font-size:1.1rem; margin-bottom:0.5rem;"></div>
+      <div id="overlay-stats" style="opacity:0.8;"></div>
+      <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.75rem;">
+        <button onclick="overlayLike()" style="background:none; border:none; color:white; font-size:1.2rem;">❤️ <span id="overlay-likes">0</span></button>
+        <button onclick="closeOverlay()" style="background:rgba(255,255,255,0.15); color:white; padding:0.4rem 1rem; border-radius:1rem; font-size:0.9rem;">Close</button>
       </div>
     </div>
   </div>
@@ -255,7 +264,8 @@
       const iframe = document.getElementById('overlay-iframe');
       iframe.src = `game.html?id=${id}`;
       player.classList.add('active');
-      document.getElementById('overlay-stats').textContent = `${title} • ${likes} likes`;
+      document.getElementById('overlay-title').textContent = title;
+      document.getElementById('overlay-stats').textContent = `${likes} likes • Powered by YOM`;
       document.getElementById('overlay-likes').textContent = likes;
     };
     window.closeOverlay = function() {
