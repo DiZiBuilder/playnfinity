@@ -45,9 +45,17 @@
       border-radius: 20px;
       margin-bottom: 1.5rem;
       animation: pulse 2s infinite;
-      box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
-      object-fit: contain; /* NEVER STRETCH */
+      object-fit: contain;
       width: auto;
+      position: relative;
+    }
+    .logo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+      z-index: -1;
     }
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
@@ -174,7 +182,6 @@
       margin-top: 3px !important;
     }
 
-    /* MOBILE HORIZONTAL: COMPACT */
     @media (orientation: landscape) {
       .hero { 
         padding-top: 5vh !important; 
@@ -189,7 +196,6 @@
       }
     }
 
-    /* DESKTOP: LOWER TEXT (NOT TOO TOP) */
     @media (min-width: 768px) {
       .hero { padding-top: 10vh !important; }
     }
