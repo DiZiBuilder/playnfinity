@@ -1,0 +1,147 @@
+<!-- profile.html — FULL CODE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile — Playnfinity</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; }
+    body { background: #000; color: white; }
+    .profile-container { padding: 2rem; max-width: 500px; margin: 0 auto; }
+    .guest-cta { text-align: center; padding: 4rem; }
+    .guest-cta button { background: #a855f7; color: white; border: none; padding: 1rem 2rem; border-radius: 3rem; font-size: 1.1rem; cursor: pointer; margin: 1rem; }
+    .settings { margin-top: 2rem; }
+    .setting { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #333; }
+    .setting:last-child { border-bottom: none; }
+    .favorites { margin-top: 2rem; }
+    .favorite-game { display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid #333; }
+    .favorite-game img { width: 60px; height: 60px; border-radius: 8px; margin-right: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h1>Profile</h1>
+    <div id="profile-content">
+      <!-- GUEST VIEW -->
+      <div id="guest-view" class="guest-cta">
+        <h2>Welcome to Playnfinity!</h2>
+        <p>Login to unlock favorites, personalized feeds, and more.</p>
+        <button onclick="loginWithGoogle()">Login with Google</button>
+        <button onclick="loginWithFacebook()">Login with Facebook</button>
+      </div>
+
+      <!-- LOGGED-IN VIEW -->
+      <div id="user-view" style="display:none;">
+        <div class="settings">
+          <h2>Settings</h2>
+          <div class="setting">
+            <span>Dark Mode</span>
+            <button onclick="toggleTheme()">Toggle</button>
+          </div>
+          <div class="setting">
+            <span>Personalized Feed</span>
+            <button onclick="toggleAlgo()">On/Off</button>
+          </div>
+          <div class="setting">
+            <span>Notifications</span>
+            <button onclick="toggleNotifs()">On/Off</button>
+          </div>
+        </div>
+        <div class="favorites">
+          <h2>Your Favorites</h2>
+          <div id="favorites-list">
+            <!-- Games loaded from Supabase -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV BAR V2.2 (SAME AS OTHER PAGES) -->
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-item" data-page="home">
+      <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
+    </a>
+    <a href="feed.html" class="nav-item" data-page="playnfinity">
+      <img src="https://playnfinity.games/app/letterp.gr.png" alt="Playnfinity" class="nav-icon" data-active="https://playnfinity.games/app/letterp.ab.png">
+    </a>
+    <a href="explore.html" class="nav-item" data-page="explore">
+      <img src="https://playnfinity.games/app/explore.gr.png" alt="Explore" class="nav-icon" data-active="https://playnfinity.games/app/explore.ab.png">
+    </a>
+    <a href="trending.html" class="nav-item" data-page="trending">
+      <img src="https://playnfinity.games/app/fav.gr.png" alt="Trending" class="nav-icon" data-active="https://playnfinity.games/app/fav.ab.png">
+    </a>
+    <a href="profile.html" class="nav-item active" data-page="profile">
+      <img src="https://playnfinity.games/app/profile.ab.png" alt="Profile" class="nav-icon" data-active="https://playnfinity.games/app/profile.ab.png">
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabase = window.supabase.createClient('https://yfrgxmpbdbkfwzwbtfrt.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI');
+
+    // CHECK AUTH STATUS
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        document.getElementById('guest-view').style.display = 'none';
+        document.getElementById('user-view').style.display = 'block';
+        loadFavorites();
+      } else {
+        document.getElementById('guest-view').style.display = 'block';
+        document.getElementById('user-view').style.display = 'none';
+      }
+    }
+
+    function loginWithGoogle() {
+      supabase.auth.signInWithOAuth({ provider: 'google' });
+    }
+
+    function loginWithFacebook() {
+      supabase.auth.signInWithOAuth({ provider: 'facebook' });
+    }
+
+    async function loadFavorites() {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: favorites } = await supabase.from('user_favorites').select('game_id').eq('user_id', user.id);
+      const favoritesList = document.getElementById('favorites-list');
+      favoritesList.innerHTML = favorites.map(fav => `<div class="favorite-game"><img src="${fav.thumbnail}" alt="">${fav.title}</div>`).join('');
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    }
+
+    function toggleAlgo() {
+      // Toggle personalized feed
+      localStorage.setItem('personalized', localStorage.getItem('personalized') === 'on' ? 'off' : 'on');
+    }
+
+    function toggleNotifs() {
+      // Toggle push notifications
+      localStorage.setItem('notifications', localStorage.getItem('notifications') === 'on' ? 'off' : 'on');
+    }
+
+    // NAV BAR LOGIC (SAME AS OTHER PAGES)
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        document.querySelectorAll('.nav-item').forEach(i => {
+          i.classList.remove('active');
+          const img = i.querySelector('.nav-icon');
+          img.src = img.src.replace('.ab.png', '.gr.png');
+        });
+        this.classList.add('active');
+        const img = this.querySelector('.nav-icon');
+        img.src = img.dataset.active;
+      });
+    });
+
+    checkAuth();
+  </script>
+</body>
+</html>
