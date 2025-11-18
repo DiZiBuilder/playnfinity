@@ -66,7 +66,7 @@
     .brand-name {
       color: #d8b4fe;
       font-weight: 800;
-      text-shadow: 0 4px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);
+      text-shadow: 0 4px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.2);
     }
     .subheadline {
       font-size: 1.3rem;
@@ -173,9 +173,10 @@
 </head>
 <body>
   <section class="hero">
-    <!-- VIDEO BACKGROUND -->
-    <video class="hero-video" autoplay muted loop playsinline>
+    <!-- FIXED & LOOPING VIDEO BACKGROUND -->
+    <video class="hero-video" autoplay muted loop playsinline preload="auto">
       <source src="https://playnfinity.games/hero-bg.mp4" type="video/mp4">
+      Your browser does not support video.
     </video>
 
     <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="logo">
@@ -203,7 +204,7 @@
     </div>
   </section>
 
-  <!-- === NEW NAV BAR V2.2 === -->
+  <!-- NAV BAR V2.2 -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active" data-page="home">
       <img src="https://playnfinity.games/app/home.ab.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
@@ -241,6 +242,7 @@
       } catch (err) { console.error('Stats error:', err); }
     }
     updateStats(); setInterval(updateStats, 10000);
+
     let deferredPrompt;
     const installBtn = document.getElementById('install-btn');
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -256,6 +258,7 @@
         installBtn.style.display = 'none';
       }
     });
+
     // NAV BAR LOGIC
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', function(e) {
@@ -269,6 +272,7 @@
         img.src = img.dataset.active;
       });
     });
+
     async function checkLogin() {
       const { data: { user } } = await supabase.auth.getUser();
       const profileImg = document.querySelector('[data-page="profile"] img');
