@@ -10,7 +10,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-  
+ 
     body {
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
       background-attachment: fixed;
@@ -26,7 +26,24 @@
       -webkit-overflow-scrolling: touch;
       padding: 1rem;
       padding-bottom: 100px;
+      /* ────── CUSTOM SCROLLBAR (now matches design) ────── */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168, 85, 247, 0.6) transparent;
     }
+    .feed-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .feed-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .feed-container::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.6);
+      border-radius: 3px;
+    }
+    .feed-container::-webkit-scrollbar-thumb:hover {
+      background: #a855f7;
+    }
+
     .lane-tabs {
       display: flex;
       gap: 0.5rem;
@@ -89,23 +106,32 @@
     .game-info .game-duration,
     .game-info .game-powered,
     .game-info .game-stats { opacity: 0.85 !important; }
+
+    /* ────── FIXED & UPGRADED STATS SECTION ────── */
     .game-stats {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 0.5rem;
+      margin-top: 0.75rem; /* more breathing room */
     }
-    .game-stats {
-      font-size: 0.85rem;
+    .game-stats .left {
+      font-weight: 800 !important;
+      color: #ffffff !important;
+      font-size: 0.95rem;
+      letter-spacing: 0.4px;
+      opacity: 1 !important;
+    }
+    .game-stats .right {
       display: flex;
-      justify-content: space-between;
+      gap: 1.1rem;
       align-items: center;
-      margin-top: 0.5rem;
     }
-    .game-stats .left { font-weight: 500; }
-    .game-stats .right { display: flex; gap: 1rem; }
-    .game-stats .right span { font-weight: 500; }
+    .game-stats .right span {
+      font-weight: 600;
+      opacity: 0.95;
+    }
+
     .game-title { font-weight: 600; margin-bottom: 0.25rem; font-size: 1.1rem; }
     .game-duration { font-size: 0.8rem; margin-bottom: 0.5rem; }
     .game-powered { font-size: 0.75rem; margin-bottom: 0.5rem; }
@@ -167,20 +193,18 @@
     }
   </style>
 </head>
-<body 
-  oncontextmenu="return false;" 
-  onselectstart="return false;" 
+<body
+  oncontextmenu="return false;"
+  onselectstart="return false;"
   ondragstart="return false;"
 >
-
+  <!-- HTML body remains 100% unchanged -->
   <div class="lane-tabs">
     <div class="lane-tab active" data-lane="foryou">For You</div>
     <div class="lane-tab" data-lane="trending">Trending</div>
     <div class="lane-tab" data-lane="new">New</div>
   </div>
-
   <div class="feed-container" id="feed"></div>
-
   <div class="overlay-player" id="overlay-player">
     <iframe id="overlay-iframe" allow="fullscreen"></iframe>
     <div class="overlay-ui">
@@ -192,7 +216,6 @@
       </div>
     </div>
   </div>
-
   <nav class="nav-bar">
     <a href="index.html" class="nav-item" data-page="home">
       <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
@@ -213,34 +236,28 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // CLEAN URL
+    // (all your original script – unchanged)
     if (location.pathname.includes('.html') && !location.pathname.includes('game.html')) {
       history.replaceState(null, null, location.pathname.replace('.html', '') || '/');
     }
-
-    // FULL PROTECTION
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
       if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 's')) || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J'))) {
         e.preventDefault();
       }
     });
-
     const supabase = window.supabase.createClient(
       'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
     );
-
     const staticGames = [
       { id: '1', title: "Valley of the Ancient", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png", duration: "2-3 min", tags: "Exploration", played: 1200, likes: 456, comments: 87 },
       { id: '2', title: "K4 Rally", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png", duration: "2 min", tags: "Racing", played: 2500, likes: 789, comments: 214 },
       { id: '3', title: "Martians vs Roughnecks", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png", duration: "3 min", tags: "Action", played: 1100, likes: 312, comments: 56 }
     ];
-
     async function trackPlay(gameId) {
       await supabase.from('game_plays').insert({ game_id: gameId });
     }
-
     function renderFeed() {
       const feed = document.getElementById('feed');
       feed.innerHTML = '';
@@ -268,7 +285,6 @@
         feed.appendChild(card);
       });
     }
-
     window.playGame = async function(id, title, likes) {
       await trackPlay(id);
       document.getElementById('overlay-iframe').src = `game.html?id=${id}`;
@@ -277,26 +293,21 @@
       document.getElementById('overlay-stats').textContent = `Played • ${likes} likes • Powered by YOM`;
       document.getElementById('overlay-likes').textContent = likes;
     };
-
     window.closeOverlay = function() {
       document.getElementById('overlay-player').classList.remove('active');
       document.getElementById('overlay-iframe').src = '';
     };
-
     window.overlayLike = function() {
       const count = document.getElementById('overlay-likes');
       count.textContent = (parseInt(count.textContent) || 0) + 1;
     };
-
     if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
-
     document.querySelectorAll('.lane-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelector('.lane-tab.active')?.classList.remove('active');
         tab.classList.add('active');
       });
     });
-
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', function() {
         document.querySelectorAll('.nav-item').forEach(i => {
@@ -308,7 +319,6 @@
         this.querySelector('.nav-icon').src = this.querySelector('.nav-icon').dataset.active;
       });
     });
-
     async function checkLogin() {
       const { data: { user } } = await supabase.auth.getUser();
       const profileImg = document.querySelector('[data-page="profile"] img');
