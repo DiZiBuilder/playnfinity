@@ -171,14 +171,12 @@
     }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
   <section class="hero">
-    <!-- FIXED & LOOPING VIDEO BACKGROUND -->
     <video class="hero-video" autoplay muted loop playsinline preload="auto">
       <source src="https://playnfinity.games/hero-bg.mp4" type="video/mp4">
       Your browser does not support video.
     </video>
-
     <img src="https://playnfinity.games/FirstDesign192x192.png" alt="Playnfinity" class="logo">
     <h1 class="headline">
       <span class="brand-name">Playnfinity</span> — Play. Scroll.<br>Play some more.
@@ -204,7 +202,6 @@
     </div>
   </section>
 
-  <!-- NAV BAR V2.2 -->
   <nav class="nav-bar">
     <a href="index.html" class="nav-item active" data-page="home">
       <img src="https://playnfinity.games/app/home.ab.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
@@ -225,6 +222,20 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // === TASK 1: CLEAN URLS (NO .html) ===
+    if (location.pathname.includes('.html') && !location.pathname.includes('game.html')) {
+      const cleanPath = location.pathname.replace('.html', '');
+      history.replaceState(null, null, cleanPath || '/');
+    }
+
+    // === TASK 2: SOURCE CODE PROTECTION ===
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C')) || (e.ctrlKey && e.key === 'u')) {
+        e.preventDefault();
+      }
+    });
+
     const supabase = window.supabase.createClient(
       'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
@@ -259,7 +270,6 @@
       }
     });
 
-    // NAV BAR LOGIC
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', function(e) {
         document.querySelectorAll('.nav-item').forEach(i => {
@@ -276,11 +286,8 @@
     async function checkLogin() {
       const { data: { user } } = await supabase.auth.getUser();
       const profileImg = document.querySelector('[data-page="profile"] img');
-      if (user) {
-        profileImg.alt = 'Profile';
-      } else {
-        profileImg.alt = 'Login';
-      }
+      if (user) profileImg.alt = 'Profile';
+      else profileImg.alt = 'Login';
     }
     checkLogin();
   </script>
