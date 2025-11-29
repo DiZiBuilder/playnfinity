@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Playnfinity</title>
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,18 +29,6 @@
       height: 100vh;
       border: none;
       z-index: 1;
-      pointer-events: auto;
-    }
-
-    /* Transparent gesture overlay — this captures swipe even over iframe */
-    #gestureOverlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 2;
-      pointer-events: auto;
-      background: transparent;
     }
 
     .title {
@@ -89,7 +78,7 @@
       backdrop-filter: blur(20px);
       border-radius: 0 0 20px 20px;
       z-index: 100;
-      transition: top 0.4s ease;
+      transition: top 0.4s cubic-bezier(0.22,1,0.36,1);
     }
 
     .panel {
@@ -108,7 +97,12 @@
     }
     .panel.open { top: 0; }
 
-    .panel h3 { margin: 20px 0 10px; font-weight: 600; font-size: 18px; }
+    .panel h3 {
+      margin: 20px 0 10px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
     .panel button {
       margin: 12px auto;
       width: 80%;
@@ -122,7 +116,10 @@
       box-shadow: 0 10px 30px rgba(168,85,247,0.4);
       cursor: pointer;
     }
-    .panel button.close-btn { background: #333; }
+
+    .panel button.close-btn {
+      background: #333;
+    }
 
     .navbar {
       position: fixed;
@@ -138,19 +135,30 @@
       align-items: center;
       z-index: 1000;
     }
-    .navbar img { width: 28px; height: 28px; filter: brightness(0.7); }
-    .navbar a:hover img, .navbar a.active img { filter: none; }
+    .navbar img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.7);
+      transition: none;
+    }
+    .navbar a:hover img,
+    .navbar a.active img {
+      filter: none;
+    }
 
+    /* Custom scrollbar from feed.html */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.6); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.6);
+      border-radius: 3px;
+    }
     ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
   </style>
 </head>
 <body>
 
   <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
-  <div id="gestureOverlay"></div>
 
   <div class="title" id="title">Loading...</div>
   <div class="heartbeat" id="heart">❤️</div>
@@ -183,7 +191,9 @@
     document.oncontextmenu = document.onselectstart = document.ondragstart = () => false;
     document.body.style.userSelect = 'none';
     document.addEventListener('keydown', e => {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey) || (e.ctrlKey && 'uicjs'.includes(e.key.toLowerCase()))) e.preventDefault();
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey) || (e.ctrlKey && 'uicjs'.includes(e.key.toLowerCase()))) {
+        e.preventDefault();
+      }
     });
 
     // Supabase
@@ -192,17 +202,19 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
     );
 
+    // Games list (add all your games here)
     const games = [
       { id: '1', title: 'Valley of the Ancient', url: 'https://yom.net/embed/valley-of-the-ancient' },
       { id: '2', title: 'K4 Rally', url: 'https://yom.net/embed/k4-rally' },
       { id: '3', title: 'Martians vs Roughnecks', url: 'https://yom.net/embed/martians-vs-roughnecks' }
-      // ← Add all your games here
     ];
 
     let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
     let currentGame = games[currentIndex];
-    let tapCount = 0, tapTimer = null;
+    let tapCount = 0;
+    let tapTimer = null;
 
+    // Load current game
     function loadGame() {
       document.getElementById('game').src = currentGame.url + '?autoplay=1&t=' + Date.now();
       document.getElementById('title').textContent = currentGame.title;
@@ -211,44 +223,67 @@
       if (typeof initTracking === 'function') initTracking(currentGame.id);
     }
 
-    // Double-tap = Like
-    document.getElementById('gestureOverlay').addEventListener('click', () => {
+    // Double-tap = Like + Heart animation
+    document.getElementById('game').addEventListener('click', () => {
       tapCount++;
-      if (tapCount === 1) tapTimer = setTimeout(() => tapCount = 0, 400);
+      if (tapCount === 1) {
+        tapTimer = setTimeout(() => { tapCount = 0; }, 400);
+      }
       if (tapCount === 2) {
-        clearTimeout(tapTimer); tapCount = 0;
+        clearTimeout(tapTimer);
+        tapCount = 0;
         document.getElementById('heart').classList.add('show');
         setTimeout(() => document.getElementById('heart').classList.remove('show'), 600);
-        supabase.from('game_interactions').insert({ game_id: currentGame.id, type: 'like' });
+
+        // Track like
+        supabase.from('game_interactions').insert({
+          game_id: currentGame.id,
+          type: 'like',
+          timestamp: new Date().toISOString()
+        });
       }
     });
 
-    // SWIPE & PULL-DOWN — works even over iframe
+    // Swipe handling
     let startY = 0;
-    const overlay = document.getElementById('gestureOverlay');
+    const iframe = document.getElementById('game');
 
-    overlay.addEventListener('touchstart', e => { startY = e.touches[0].screenY; }, { passive: true });
-    overlay.addEventListener('touchmove', e => {
+    iframe.addEventListener('touchstart', e => {
+      startY = e.touches[0].screenY;
+    }, { passive: true });
+
+    iframe.addEventListener('touchmove', e => {
       const delta = startY - e.touches[0].screenY;
       document.getElementById('pulltab').style.top = Math.max(-40, Math.min(0, delta - 20)) + 'px';
       if (delta > 100) document.getElementById('panel').classList.add('open');
     }, { passive: true });
-    overlay.addEventListener('touchend', e => {
+
+    iframe.addEventListener('touchend', e => {
       const delta = startY - e.changedTouches[0].screenY;
       document.getElementById('pulltab').style.top = '0px';
-      if (Math.abs(delta) < 130) { document.getElementById('panel').classList.remove('open'); return; }
-      currentIndex = delta > 0 ? (currentIndex + 1) % games.length : (currentIndex - 1 + games.length) % games.length;
+
+      if (Math.abs(delta) < 130) {
+        document.getElementById('panel').classList.remove('open');
+        return;
+      }
+
+      // Swipe up = next, swipe down = previous
+      if (delta > 0) {
+        currentIndex = (currentIndex + 1) % games.length;
+      } else {
+        currentIndex = (currentIndex - 1 + games.length) % games.length;
+      }
       currentGame = games[currentIndex];
       history.replaceState(null, null, '?id=' + currentGame.id);
       document.getElementById('title').classList.remove('show');
       document.getElementById('panel').classList.remove('open');
       loadGame();
-      supabase.from('game_interactions').insert({ game_id: currentGame.id, type: 'swipe' });
     });
 
-    // Mouse wheel
-    overlay.addEventListener('wheel', e => {
+    // Mouse wheel support (desktop)
+    iframe.addEventListener('wheel', e => {
       e.preventDefault();
+      if (Math.abs(e.deltaY) < 50) return;
       currentIndex = e.deltaY > 0 ? (currentIndex + 1) % games.length : (currentIndex - 1 + games.length) % games.length;
       currentGame = games[currentIndex];
       history.replaceState(null, null, '?id=' + currentGame.id);
@@ -256,17 +291,23 @@
       loadGame();
     }, { passive: false });
 
+    // Panel functions
     function shareGame() {
-      if (navigator.share) navigator.share({ title: currentGame.title, url: location.href });
-      else { navigator.clipboard.writeText(location.href); alert('Copied!'); }
+      if (navigator.share) {
+        navigator.share({ title: currentGame.title, url: location.href });
+      } else {
+        navigator.clipboard.writeText(location.href);
+        alert('Link copied to clipboard!');
+      }
       supabase.from('game_interactions').insert({ game_id: currentGame.id, type: 'share' });
     }
 
     function requestFullscreen() {
       const g = document.getElementById('game');
-      g.requestFullscreen?.() || g.webkitRequestFullscreen?.();
+      g.requestFullscreen?.() || g.webkitRequestFullscreen?.() || g.mozRequestFullScreen?.();
     }
 
+    // Initial load
     loadGame();
   </script>
 </body>
