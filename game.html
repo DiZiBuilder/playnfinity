@@ -4,16 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Playnfinity</title>
-  <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#a855f7" />
+  <meta name="theme-color" content="#000000" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       height: 100%;
       overflow: hidden;
-      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
-      font-family: system-ui, -apple-system, sans-serif;
+      background: #000;
+      font-family: -apple-system, system-ui, sans-serif;
       color: white;
       -webkit-user-select: none;
       user-select: none;
@@ -21,155 +20,160 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    #yom-player {
+    #game {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
       border: none;
       z-index: 1;
-      background: #000;
     }
 
     .title {
       position: fixed;
-      top: 20px;
-      left: 16px;
-      z-index: 100;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(20px);
-      padding: 14px 24px;
-      border-radius: 40px;
-      font-weight: 700;
-      font-size: 18px;
-      max-width: 70%;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(20,20,30,0.8);
+      backdrop-filter: blur(30px);
+      padding: 12px 28px;
+      border-radius: 22px;
+      font-weight: 600;
+      font-size: 17px;
+      max-width: 85%;
+      text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      border: 1px solid rgba(168,85,247,0.4);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
     .close {
       position: fixed;
-      top: 20px;
-      right: 16px;
+      top: 18px;
+      right: 18px;
       z-index: 1001;
-      width: 56px;
-      height: 56px;
-      background: rgba(0,0,0,0.7);
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(20px);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
-      font-weight: 300;
+      font-size: 24px;
       cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.2);
-      transition: all 0.2s;
     }
-    .close:hover { background: rgba(220,38,38,0.8); transform: scale(1.1); }
 
-    .actions {
+    .trigger {
       position: fixed;
-      right: 12px;
-      bottom: 120px;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-      align-items: center;
-    }
-
-    .action-btn {
-      width: 74px;
-      height: 74px;
-      background: rgba(255,255,255,0.22);
-      backdrop-filter: blur(24px);
+      bottom: 100px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
       border-radius: 50%;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      border: 3px solid rgba(255,255,255,0.3);
-      box-shadow: 0 14px 40px rgba(0,0,0,0.7);
-      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-size: 28px;
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
     }
+    .trigger.show { opacity: 1; pointer-events: all; }
 
-    .action-btn:hover {
-      transform: translateY(-10px) scale(1.25);
-      background: #a855f7;
-      border-color: #a855f7;
-      box-shadow: 0 0 50px rgba(168, 85, 247, 0.9);
+    .panel {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      max-width: 400px;
+      height: 100%;
+      background: rgba(0,0,0,0.96);
+      backdrop-filter: blur(40px);
+      z-index: 999;
+      transition: right 0.45s cubic-bezier(0.22,1,0.36,1);
+      padding: 100px 30px 30px;
+      overflow-y: auto;
     }
+    .panel.open { right: 0; }
 
-    .action-btn:active {
-      transform: scale(1.45);
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 0;
+      font-size: 18px;
+      font-weight: 500;
     }
+    .item .icon { font-size: 32px; }
+    .item .count { margin-left: auto; font-weight: 700; font-size: 19px; }
 
-    .action-btn .icon {
-      font-size: 36px;
-      margin-bottom: 6px;
-    }
-
-    .action-btn .count {
-      font-weight: 900;
-      font-size: 15px;
-      text-shadow: 0 2px 8px black;
-    }
-
-    .nav-bar {
+    .navbar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(0,0,0,0.96);
-      backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(255,255,255,0.12);
-      padding: 14px 0;
+      height: 84px;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(30px);
+      border-top: 1px solid rgba(255,255,255,0.08);
       display: flex;
       justify-content: space-around;
+      align-items: center;
       z-index: 1000;
     }
-
-    .nav-bar img {
-      width: 34px;
-      height: 34px;
-      filter: grayscale(100%) brightness(0.6);
-      transition: all 0.3s;
+    .navbar a img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.7);
+      transition: none;
     }
-
-    .nav-bar a:hover img {
+    .navbar a:hover img,
+    .navbar a.active img {
       filter: none;
-      transform: scale(1.2);
     }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.6);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
   </style>
 </head>
 <body>
 
-  <iframe id="yom-player" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
+  <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
 
-  <div class="title" id="game-title">Loading...</div>
+  <div class="title" id="title">Loading...</div>
   <div class="close" onclick="history.back()">×</div>
 
-  <div class="actions">
-    <div class="action-btn" onclick="likeGame(event)">
+  <div class="trigger" id="trigger">⋯</div>
+
+  <div class="panel" id="panel">
+    <div class="item" onclick="likeGame()">
       <div class="icon">❤️</div>
+      <div>Likes</div>
       <div class="count" id="likes">0</div>
     </div>
-    <div class="action-btn" onclick="openComments(event)">
-      <div class="icon">💬</div>
-      <div class="count" id="comments">0</div>
-    </div>
-    <div class="action-btn" onclick="shareGame(event)">
+    <div class="item" onclick="shareGame()">
       <div class="icon">📤</div>
-      <div class="count">Share</div>
+      <div>Share</div>
+    </div>
+    <div class="item">
+      <div class="icon">💬</div>
+      <div>Comments</div>
+      <div class="count" id="comments">0</div>
     </div>
   </div>
 
-  <nav class="nav-bar">
+  <nav class="navbar">
     <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
     <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
     <a href="/explore.html"><img src="https://playnfinity.games/app/explore.gr.png"></a>
@@ -185,97 +189,79 @@
       history.replaceState(null, null, location.pathname.replace('.html', '') + location.search);
     }
 
-    // TOTAL LOCKDOWN
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('selectstart', e => e.preventDefault());
-    document.addEventListener('dragstart', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey) || (e.ctrlKey && 'uicjs'.includes(e.key.toLowerCase()))) {
-        e.preventDefault();
-      }
-    });
+    // TOTAL LOCKDOWN — left click is dead
+    document.oncontextmenu = document.onselectstart = document.ondragstart = () => false;
+    document.body.style.pointerEvents = 'none';
+    document.getElementById('game').style.pointerEvents = 'auto';
 
+    // Show trigger on any tap
+    let hideTimeout;
+    document.getElementById('game').addEventListener('touchstart', () => {
+      clearTimeout(hideTimeout);
+      document.getElementById('trigger').classList.add('show');
+      hideTimeout = setTimeout(() => document.getElementById('trigger').classList.remove('show'), 4000);
+    }, { passive: true });
+
+    // Toggle side panel
+    document.getElementById('trigger').onclick = (e) => {
+      e.stopPropagation();
+      document.getElementById('panel').classList.toggle('open');
+    };
+
+    // Supabase
     const supabase = window.supabase.createClient(
       'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
     );
 
-    const urlParams = new URLSearchParams(location.search);
-    let currentGameId = urlParams.get('id') || '1';
-
+    // Your full games array (add all your games here)
     const games = [
       { id: '1', title: 'Valley of the Ancient', url: 'https://yom.net/embed/valley-of-the-ancient', likes: 456, comments: 89 },
       { id: '2', title: 'K4 Rally', url: 'https://yom.net/embed/k4-rally', likes: 789, comments: 123 },
       { id: '3', title: 'Martians vs Roughnecks', url: 'https://yom.net/embed/martians-vs-roughnecks', likes: 312, comments: 45 }
-      // Add all your games here
+      // ← keep all your games here
     ];
 
-    let currentIndex = games.findIndex(g => g.id === currentGameId);
-    if (currentIndex === -1) currentIndex = 0;
+    let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
     let currentGame = games[currentIndex];
 
-    function loadCurrentGame() {
-      document.getElementById('yom-player').src = currentGame.url;
-      document.getElementById('game-title').textContent = currentGame.title;
+    function loadGame() {
+      document.getElementById('game').src = currentGame.url + '?t=' + Date.now();
+      document.getElementById('title').textContent = currentGame.title;
       document.getElementById('likes').textContent = currentGame.likes || 0;
       document.getElementById('comments').textContent = currentGame.comments || 0;
-
-      if (typeof initTracking === 'function') {
-        initTracking(currentGame.id);
-      }
+      if (typeof initTracking === 'function') initTracking(currentGame.id);
     }
 
-    function likeGame(e) {
-      e.stopPropagation();
-      const likesEl = document.getElementById('likes');
-      likesEl.textContent = parseInt(likesEl.textContent) + 1;
+    function likeGame() {
+      document.getElementById('likes').textContent++;
       supabase.from('game_interactions').insert({ game_id: currentGame.id, type: 'like' });
     }
 
-    function openComments(e) {
-      e.stopPropagation();
-      // Future comment panel
-    }
-
-    function shareGame(e) {
-      e.stopPropagation();
-      const url = location.href;
+    function shareGame() {
       if (navigator.share) {
-        navigator.share({ title: currentGame.title, url });
+        navigator.share({ title: currentGame.title, url: location.href });
       } else {
-        navigator.clipboard.writeText(url);
-        alert('Link copied!');
+        navigator.clipboard.writeText(location.href);
+        alert('Copied!');
       }
     }
 
-    // SWIPE NAVIGATION — PERFECT
+    // SWIPE = scrolling to next/previous game
     let startY = 0;
-    const iframe = document.getElementById('yom-player');
+    document.getElementById('game').addEventListener('touchstart', e => startY = e.touches[0].screenY, { passive: true });
+    document.getElementById('game').addEventListener('touchend', e => {
+      const delta = startY - e.changedTouches[0].screenY;
+      if (Math.abs(delta) < 150) return;
 
-    iframe.addEventListener('touchstart', e => {
-      startY = e.touches[0].screenY;
-    }, { passive: true });
-
-    iframe.addEventListener('touchend', e => {
-      const deltaY = startY - e.changedTouches[0].screenY;
-      if (Math.abs(deltaY) < 130) return;
-
-      if (deltaY > 0) {
-        // Swipe up → next game
-        currentIndex = (currentIndex + 1) % games.length;
-      } else {
-        // Swipe down → previous game
-        currentIndex = currentIndex === 0 ? games.length - 1 : currentIndex - 1;
-      }
-
+      currentIndex = delta > 0 ? (currentIndex + 1) % games.length : (currentIndex - 1 + games.length) % games.length;
       currentGame = games[currentIndex];
-      currentGameId = currentGame.id;
-      history.replaceState(null, null, `?id=${currentGameId}`);
-      loadCurrentGame();
+      history.replaceState(null, null, '?id=' + currentGame.id);
+      loadGame();
+      document.getElementById('panel').classList.remove('open');
     });
 
-    // Initial load
-    loadCurrentGame();
+    loadGame();
   </script>
 </body>
 </html>
