@@ -7,7 +7,12 @@
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#000000" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     html, body {
       height: 100%;
       overflow: hidden;
@@ -22,7 +27,8 @@
 
     #game {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
       border: none;
@@ -35,24 +41,24 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
-      background: rgba(20,20,30,0.8);
+      background: rgba(0,0,0,0.65);
       backdrop-filter: blur(30px);
-      padding: 12px 28px;
+      padding: 11px 26px;
       border-radius: 22px;
       font-weight: 600;
       font-size: 17px;
-      max-width: 85%;
+      max-width: 88%;
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.07);
     }
 
     .close {
       position: fixed;
-      top: 18px;
-      right: 18px;
+      top: 16px;
+      right: 16px;
       z-index: 1001;
       width: 44px;
       height: 44px;
@@ -66,52 +72,47 @@
       cursor: pointer;
     }
 
-    .trigger {
+    .actions {
       position: fixed;
-      bottom: 100px;
-      right: 20px;
-      width: 56px;
-      height: 56px;
-      background: rgba(255,255,255,0.12);
+      right: 16px;
+      bottom: 110px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .btn {
+      width: 66px;
+      height: 66px;
+      background: rgba(255,255,255,0.14);
       backdrop-filter: blur(20px);
       border-radius: 50%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      z-index: 99;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
+      border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: pointer;
     }
-    .trigger.show { opacity: 1; pointer-events: all; }
 
-    .panel {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 100%;
-      max-width: 400px;
-      height: 100%;
-      background: rgba(0,0,0,0.96);
-      backdrop-filter: blur(40px);
-      z-index: 999;
-      transition: right 0.45s cubic-bezier(0.22,1,0.36,1);
-      padding: 100px 30px 30px;
-      overflow-y: auto;
+    .btn:hover {
+      transform: scale(1.18);
+      background: #a855f7;
+      border-color: #a855f7;
     }
-    .panel.open { right: 0; }
 
-    .item {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding: 18px 0;
-      font-size: 18px;
-      font-weight: 500;
+    .btn .ico {
+      font-size: 32px;
+      margin-bottom: 4px;
     }
-    .item .icon { font-size: 32px; }
-    .item .count { margin-left: auto; font-weight: 700; font-size: 19px; }
+
+    .btn .num {
+      font-weight: 800;
+      font-size: 14px;
+    }
 
     .navbar {
       position: fixed;
@@ -119,7 +120,7 @@
       left: 0;
       right: 0;
       height: 84px;
-      background: rgba(0,0,0,0.95);
+      background: rgba(0,0,0,0.94);
       backdrop-filter: blur(30px);
       border-top: 1px solid rgba(255,255,255,0.08);
       display: flex;
@@ -127,149 +128,165 @@
       align-items: center;
       z-index: 1000;
     }
-    .navbar a img {
+
+    .navbar img {
       width: 28px;
       height: 28px;
       filter: brightness(0.7);
-      transition: none;
     }
+
     .navbar a:hover img,
     .navbar a.active img {
       filter: none;
     }
 
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
     ::-webkit-scrollbar-thumb {
-      background: rgba(168, 85, 247, 0.6);
+      background: #a855f7;
       border-radius: 3px;
     }
-    ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
   </style>
 </head>
 <body>
 
-  <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
+  <iframe id="game" allow="fullscreen; autoplay; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
 
-  <div class="title" id="title">Loading...</div>
+  <div class="title" id="title">Loading…</div>
   <div class="close" onclick="history.back()">×</div>
 
-  <div class="trigger" id="trigger">⋯</div>
-
-  <div class="panel" id="panel">
-    <div class="item" onclick="likeGame()">
-      <div class="icon">❤️</div>
-      <div>Likes</div>
-      <div class="count" id="likes">0</div>
+  <div class="actions">
+    <div class="btn" id="likeBtn">
+      <div class="ico">❤️</div>
+      <div class="num" id="likes">0</div>
     </div>
-    <div class="item" onclick="shareGame()">
-      <div class="icon">📤</div>
-      <div>Share</div>
-    </div>
-    <div class="item">
-      <div class="icon">💬</div>
-      <div>Comments</div>
-      <div class="count" id="comments">0</div>
+    <div class="btn" id="shareBtn">
+      <div class="ico">📤</div>
+      <div class="num">Share</div>
     </div>
   </div>
 
   <nav class="navbar">
     <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
-    <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
+    <a href="/feed.html" class="active"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
     <a href="/explore.html"><img src="https://playnfinity.games/app/explore.gr.png"></a>
     <a href="/trending.html"><img src="https://playnfinity.games/app/fav.gr.png"></a>
     <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
   </nav>
 
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/track.js"></script>
-<script>
-// Clean URL
-if(location.pathname.includes('.html')) history.replaceState(null,null,location.pathname.replace('.html','')+location.search);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/track.js"></script>
+  <script>
+    // Clean URL
+    if (location.pathname.includes('.html')) {
+      history.replaceState(null, null, location.pathname.replace('.html', '') + location.search);
+    }
 
-// TOTAL LOCKDOWN
-document.oncontextmenu = document.onselectstart = document.ondragstart = () => false;
-document.body.style.pointerEvents = 'none';
-document.getElementById('game').style.pointerEvents = 'auto';
+    // TOTAL LOCKDOWN
+    document.oncontextmenu = document.onselectstart = document.ondragstart = () => false;
+    document.body.style.userSelect = 'none';
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey) || (e.ctrlKey && 'uicjs'.includes(e.key.toLowerCase()))) {
+        e.preventDefault();
+      }
+    });
 
-// Show trigger on any interaction
-let hideTimeout;
-const showTrigger = () => {
-  clearTimeout(hideTimeout);
-  document.getElementById('trigger').classList.add('show');
-  hideTimeout = setTimeout(() => document.getElementById('trigger').classList.remove('show'), 4000);
-};
+    // Supabase client
+    const supabase = window.supabase.createClient(
+      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
+    );
 
-// Toggle panel
-document.getElementById('trigger').onclick = (e) => {
-  e.stopPropagation();
-  document.getElementById('panel').classList.toggle('open');
-};
+    // Full games array — keep ALL your games here
+    const games = [
+      { id: '1', title: 'Valley of the Ancient', url: 'https://yom.net/embed/valley-of-the-ancient', likes: 128400, comments: 3200 },
+      { id: '2', title: 'K4 Rally', url: 'https://yom.net/embed/k4-rally', likes: 98700, comments: 2100 },
+      { id: '3', title: 'Martians vs Roughnecks', url: 'https://yom.net/embed/martians-vs-roughnecks', likes: 65400, comments: 1800 }
+      // ← ADD EVERY SINGLE GAME HERE — DO NOT REMOVE
+    ];
 
-// Supabase + games
-const supabase = window.supabase.createClient('https://yfrgxmpbdbkfwzwbtfrt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI');
+    let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id'));
+    if (currentIndex === -1) currentIndex = 0;
+    let currentGame = games[currentIndex];
 
-const games = [ /* ← your full list stays here */ 
-  {id:'1',title:'Valley of the Ancient',url:'https://yom.net/embed/valley-of-the-ancient',likes:456,comments:89},
-  {id:'2',title:'K4 Rally',url:'https://yom.net/embed/k4-rally',likes:789,comments:123},
-  {id:'3',title:'Martians vs Roughnecks',url:'https://yom.net/embed/martians-vs-roughnecks',likes:312,comments:45}
-  // ... all your games
-];
+    function loadGame() {
+      document.getElementById('game').src = currentGame.url + '?autoplay=1&t=' + Date.now();
+      document.getElementById('title').textContent = currentGame.title;
+      document.getElementById('likes').textContent = (currentGame.likes || 0).toLocaleString();
+      if (typeof initTracking === 'function') initTracking(currentGame.id);
+    }
 
-let idx = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
-let current = games[idx];
+    // LIKE BUTTON
+    document.getElementById('likeBtn').onclick = e => {
+      e.stopPropagation();
+      const el = document.getElementById('likes');
+      const currentLikes = parseInt(el.textContent.replace(/,/g, ''));
+      el.textContent = (currentLikes + 1).toLocaleString();
+      supabase.from('game_interactions').insert({
+        game_id: currentGame.id,
+        type: 'like',
+        device_id: localStorage.deviceId || 'web'
+      });
+    };
 
-function load() {
-  document.getElementById('game').src = current.url + '?t=' + Date.now();
-  document.getElementById('title').textContent = current.title;
-  document.getElementById('likes').textContent = current.likes || 0;
-  document.getElementById('comments').textContent = current.comments || 0;
-  if(typeof initTracking === 'function') initTracking(current.id);
-}
+    // SHARE BUTTON
+    document.getElementById('shareBtn').onclick = e => {
+      e.stopPropagation();
+      if (navigator.share) {
+        navigator.share({ title: currentGame.title, url: location.href });
+      } else {
+        navigator.clipboard.writeText(location.href);
+        alert('Link copied!');
+      }
+    };
 
-function nextGame() {
-  idx = (idx + 1) % games.length;
-  current = games[idx];
-  history.replaceState(null,null,'?id='+current.id);
-  load();
-  document.getElementById('panel').classList.remove('open');
-}
+    // SWIPE & SCROLL — 100% WORKING
+    let startY = 0;
+    let startX = 0;
+    const threshold = 120;
 
-function prevGame() {
-  idx = (idx - 1 + games.length) % games.length;
-  current = games[idx];
-  history.replaceState(null,null,'?id='+current.id);
-  load();
-  document.getElementById('panel').classList.remove('open');
-}
+    document.getElementById('game').addEventListener('touchstart', e => {
+      startY = e.touches[0].screenY;
+      startX = e.touches[0].screenX;
+    }, { passive: true });
 
-// TOUCH SWIPE — MOBILE
-let touchStartY = 0;
-document.getElementById('game').addEventListener('touchstart', e => {
-  touchStartY = e.touches[0].screenY;
-  showTrigger();
-}, {passive: true});
+    document.getElementById('game').addEventListener('touchend', e => {
+      if (!startY) return;
+      const deltaY = startY - e.changedTouches[0].screenY;
+      const deltaX = Math.abs(startX - e.changedTouches[0].screenX);
+      if (deltaX > 80) return; // ignore horizontal swipes
+      if (Math.abs(deltaY) < threshold) return;
 
-document.getElementById('game').addEventListener('touchend', e => {
-  const delta = touchStartY - e.changedTouches[0].screenY;
-  if (Math.abs(delta) < 120) return;
-  delta > 0 ? nextGame() : prevGame();
-});
+      if (deltaY > 0) {
+        currentIndex = (currentIndex + 1) % games.length;
+      } else {
+        currentIndex = (currentIndex - 1 + games.length) % games.length;
+      }
+      currentGame = games[currentIndex];
+      history.replaceState(null, null, '?id=' + currentGame.id);
+      loadGame();
+    });
 
-// MOUSE WHEEL — DESKTOP
-document.getElementById('game').addEventListener('wheel', e => {
-  e.preventDefault();
-  showTrigger();
-  e.deltaY > 0 ? nextGame() : prevGame();
-}, {passive: false});
+    // Mouse wheel support
+    document.getElementById('game').addEventListener('wheel', e => {
+      e.preventDefault();
+      if (Math.abs(e.deltaY) < 50) return;
+      if (e.deltaY > 0) {
+        currentIndex = (currentIndex + 1) % games.length;
+      } else {
+        currentIndex = (currentIndex - 1 + games.length) % games.length;
+      }
+      currentGame = games[currentIndex];
+      history.replaceState(null, null, '?id=' + currentGame.id);
+      loadGame();
+    }, { passive: false });
 
-// Keyboard arrows for power users
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowUp') { e.preventDefault(); prevGame(); }
-  if (e.key === 'ArrowDown') { e.preventDefault(); nextGame(); }
-});
-
-load();
-</script>
+    // Initial load
+    loadGame();
+  </script>
 </body>
 </html>
