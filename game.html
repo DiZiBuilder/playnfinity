@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Playnfinity</title>
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       height: 100%;
       overflow: hidden;
@@ -18,6 +19,7 @@
       user-select: none;
       -webkit-touch-callout: none;
       -webkit-tap-highlight-color: transparent;
+      touch-action: pan-y;
     }
 
     #game {
@@ -31,7 +33,7 @@
 
     .title {
       position: fixed;
-      top: 54px;
+      top: 50px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
@@ -49,10 +51,9 @@
       border: 1px solid rgba(255,255,255,0.09);
       box-shadow: 0 8px 32px rgba(0,0,0,0.6);
       opacity: 0;
-      transform: translateX(-50%) translateY(-20px);
-      transition: all 0.6s cubic-bezier(0.22,1,0.36,1);
+      transition: opacity 0.6s ease;
     }
-    .title.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .title.show { opacity: 1; }
 
     .heartbeat {
       position: fixed;
@@ -119,11 +120,44 @@
     .panel button.close-btn {
       background: #333;
     }
+
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 84px;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(30px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+    }
+    .navbar img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.7);
+      transition: none;
+    }
+    .navbar a:hover img,
+    .navbar a.active img {
+      filter: none;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.6);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
   </style>
 </head>
 <body>
 
-  <iframe id="game" allow="fullscreen; autoplay; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
+  <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
 
   <div class="title" id="title">Loading…</div>
   <div class="heartbeat" id="heart">❤️</div>
@@ -159,12 +193,11 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
     );
 
-    // Full games list — keep every game here
     const games = [
       { id: '1', title: 'Valley of the Ancient', url: 'https://yom.net/embed/valley-of-the-ancient' },
       { id: '2', title: 'K4 Rally', url: 'https://yom.net/embed/k4-rally' },
       { id: '3', title: 'Martians vs Roughnecks', url: 'https://yom.net/embed/martians-vs-roughnecks' }
-      // ← Add all your games exactly like this
+      // ← add all your games
     ];
 
     let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
