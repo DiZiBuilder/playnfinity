@@ -16,7 +16,7 @@
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
       background-attachment: fixed;
       color: white;
-      user-select: none;           /* ← KILLS ALL SELECTION */
+      user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
       -webkit-tap-highlight-color: transparent;
@@ -30,7 +30,8 @@
       z-index: 1;
     }
 
-    .game-info-top {
+    /* Game Title – Top Left */
+    .game-title {
       position: fixed;
       top: 1.5rem;
       left: 1.5rem;
@@ -41,8 +42,10 @@
       border-radius: 2rem;
       font-size: 1rem;
       font-weight: 600;
+      max-width: 70%;
     }
 
+    /* Close Button – Top Right */
     .close-btn {
       position: fixed;
       top: 1.5rem;
@@ -60,19 +63,20 @@
       border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .floating-actions {
+    /* Floating Action Buttons – Right Side (TikTok Style) */
+    .actions {
       position: fixed;
-      bottom: 100px;
       right: 1.5rem;
-      z-index: 100;
+      bottom: 100px;
       display: flex;
       flex-direction: column;
       gap: 1.2rem;
-      align-items: center;
+      z-index: 100;
     }
 
-    .action-btn {
-      width: 64px; height: 64px;
+    .action {
+      width: 64px;
+      height: 64px;
       background: rgba(255,255,255,0.15);
       backdrop-filter: blur(12px);
       border-radius: 50%;
@@ -85,26 +89,24 @@
       border: 2px solid rgba(255,255,255,0.2);
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
-    .action-btn:hover { transform: scale(1.1); background: #a855f7; border-color: #a855f7; }
-    .action-btn .icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
-    .action-btn .count { font-size: 0.85rem; font-weight: 700; }
 
-    #comments {
-      display: none;
-      position: fixed;
-      bottom: 100px;
-      left: 1rem;
-      right: 5rem;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(12px);
-      border-radius: 1rem;
-      padding: 1rem;
-      max-height: 300px;
-      overflow-y: auto;
-      z-index: 99;
-      border: 1px solid rgba(255,255,255,0.15);
+    .action:hover {
+      transform: scale(1.12);
+      background: #a855f7;
+      border-color: #a855f7;
     }
 
+    .action .icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .action .num {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Bottom Navigation */
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -116,44 +118,52 @@
       padding: 0.75rem 0;
       z-index: 1000;
     }
-    .nav-item { width: 20%; text-align: center; }
+
+    .nav-item {
+      width: 20%;
+      text-align: center;
+    }
+
     .nav-icon {
-      width: 28px; height: 28px;
+      width: 28px;
+      height: 28px;
       filter: grayscale(100%) brightness(0.7);
       transition: all 0.2s;
     }
+
     .nav-item:hover .nav-icon,
-    .nav-item.active .nav-icon { filter: none !important; }
+    .nav-item.active .nav-icon {
+      filter: none !important;
+    }
   </style>
 </head>
-<body 
-  oncontextmenu="return false;" 
-  onselectstart="return false;" 
-  ondragstart="return false;"
-  onclick="return false;">
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
   <iframe id="yom-player" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
 
-  <div class="game-info-top" id="game-title">Loading...</div>
-  <div class="close-btn" onclick="closeGame()">X</div>
+  <!-- Game Title -->
+  <div class="game-title" id="game-title">Loading...</div>
 
-  <div class="floating-actions">
-    <div class="action-btn" onclick="likeGame(event)">
-      <div class="icon">Heart</div>
-      <div class="count" id="likes">0</div>
+  <!-- Close Button -->
+  <div class="close-btn" onclick="history.back()">X</div>
+
+  <!-- Floating Actions -->
+  <div class="actions">
+    <div class="action" onclick="likeGame(event)">
+      <div class="icon">❤️</div>
+      <div class="num" id="likes">0</div>
     </div>
-    <div class="action-btn" onclick="toggleComments(event)">
-      <div class="icon">Chat</div>
-      <div class="count" id="comment-count">0</div>
+    <div class="action" onclick="toggleComments(event)">
+      <div class="icon">💬</div>
+      <div class="num" id="comment-count">0</div>
     </div>
-    <div class="action-btn" onclick="shareGame(event)">
-      <div class="icon">Share</div>
-      <div class="count">Share</div>
+    <div class="action" onclick="shareGame(event)">
+      <div class="icon">📤</div>
+      <div class="num">Share</div>
     </div>
   </div>
 
-  <div id="comments"></div>
-
+  <!-- Bottom Nav -->
   <nav class="nav-bar">
     <a href="/" class="nav-item"><img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png"></a>
     <a href="/feed.html" class="nav-item"><img src="https://playnfinity.games/app/letterp.gr.png" alt="Feed" class="nav-icon" data-active="https://playnfinity.games/app/letterp.ab.png"></a>
@@ -165,47 +175,49 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="track.js"></script>
   <script>
-    // 1. CLEAN URL (no .html ever)
+    // Clean URL
     if (location.pathname.includes('.html')) {
       history.replaceState(null, null, location.pathname.replace('.html', '') + location.search);
     }
 
-    // 2. TOTAL LEFT-CLICK & DEV TOOLS LOCKDOWN
+    // Full protection
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => e.preventDefault());
     document.addEventListener('dragstart', e => e.preventDefault());
     document.addEventListener('keydown', e => {
-      if (e.key === 'F12' || (e.ctrlKey && (e.shiftKey || ['I','C','J','U','S'].includes(e.key)))) {
+      if (e.key === 'F12' || (e.ctrlKey && ['u','s','i','c','j'].includes(e.key.toLowerCase())) || (e.ctrlKey && e.shiftKey)) {
         e.preventDefault();
       }
     });
 
-    const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(
+      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
+    );
 
-    const urlParams = new URLSearchParams(location.search);
-    const gameId = urlParams.get('id') || '1';
+    const params = new URLSearchParams(location.search);
+    let gameId = params.get('id') || '1';
     let gameData = null;
 
     const staticGames = [
-      { id: '1', title: "Valley of the Ancient", url: "https://yom.net/embed/valley-of-the-ancient", duration: 180, tags: "Exploration", likes: 456, comments: 89 },
-      { id: '2', title: "K4 Rally", url: "https://yom.net/embed/k4-rally", duration: 120, tags: "Racing", likes: 789, comments: 123 },
-      { id: '3', title: "Martians vs Roughnecks", url: "https://yom.net/embed/martians-vs-roughnecks", duration: 180, tags: "Action", likes: 312, comments: 45 }
-      // ← add all your games here
+      { id: '1', title: "Valley of the Ancient", url: "https://yom.net/embed/valley-of-the-ancient", duration: 180, likes: 456, comments: 89 },
+      { id: '2', title: "K4 Rally", url: "https://yom.net/embed/k4-rally", duration: 120, likes: 789, comments: 123 },
+      { id: '3', title: "Martians vs Roughnecks", url: "https://yom.net/embed/martians-vs-roughnecks", duration: 180, likes: 312, comments: 45 }
+      // Add more games here
     ];
 
-    let currentGameIndex = staticGames.findIndex(g => g.id === gameId);
-    if (currentGameIndex === -1) currentGameIndex = 0;
+    let currentIndex = staticGames.findIndex(g => g.id === gameId);
+    if (currentIndex === -1) currentIndex = 0;
 
     async function loadGame() {
-      const { data } = await supabase.from('games').select('*').eq('id', gameId).single();
-      gameData = data || staticGames[currentGameIndex];
+      const { data } = await supabase.from('games').select('*').eq('id', gameId).single().catch(() => ({ data: null }));
+      gameData = data || staticGames[currentIndex];
 
       document.getElementById('yom-player').src = gameData.url;
       document.getElementById('game-title').textContent = gameData.title;
       document.getElementById('likes').textContent = gameData.likes || 0;
       document.getElementById('comment-count').textContent = gameData.comments || 0;
+
       if (typeof initTracking === 'function') initTracking(gameId, gameData.duration || 180);
     }
 
@@ -214,37 +226,34 @@
       el.textContent = parseInt(el.textContent) + 1;
       supabase.from('game_interactions').insert({ game_id: gameId, type: 'like' });
     }
-    function toggleComments(e) { e.stopPropagation();
-      const p = document.getElementById('comments');
-      p.style.display = p.style.display === 'block' ? 'none' : 'block';
-    }
+
+    function toggleComments(e) { e.stopPropagation(); /* future panel */ }
     function shareGame(e) { e.stopPropagation();
       if (navigator.share) navigator.share({ title: gameData.title, url: location.href });
-      else { navigator.clipboard.writeText(location.href); alert('Link copied!'); }
-      supabase.from('game_interactions').insert({ game_id: gameId, type: 'share' });
+      else { navigator.clipboard.writeText(location.href); alert('Copied!'); }
     }
-    function closeGame() { history.back(); }
 
-    // Swipe navigation
+    // Swipe Navigation
     let startY = 0;
-    document.getElementById('yom-player').addEventListener('touchstart', e => startY = e.touches[0].screenY, {passive:true});
+    document.getElementById('yom-player').addEventListener('touchstart', e => startY = e.touches[0].screenY, {passive: true});
     document.getElementById('yom-player').addEventListener('touchend', e => {
-      const dist = startY - e.changedTouches[0].screenY;
-      if (Math.abs(dist) < 100) return;
-      dist > 0 ? nextGame() : prevGame();
-    }, {passive:true});
+      const delta = startY - e.changedTouches[0].screenY;
+      if (Math.abs(delta) < 100) return;
+      delta > 0 ? nextGame() : prevGame();
+    });
 
     function nextGame() {
-      currentGameIndex = (currentGameIndex + 1) % staticGames.length;
-      loadGameByIndex(currentGameIndex);
+      currentIndex = (currentIndex + 1) % staticGames.length;
+      changeGame(currentIndex);
     }
     function prevGame() {
-      currentGameIndex = currentGameIndex === 0 ? staticGames.length - 1 : currentGameIndex - 1;
-      loadGameByIndex(currentGameIndex);
+      currentIndex = currentIndex === 0 ? staticGames.length - 1 : currentIndex - 1;
+      changeGame(currentIndex);
     }
-    function loadGameByIndex(i) {
+    function changeGame(i) {
       const g = staticGames[i];
       history.replaceState(null, null, `?id=${g.id}`);
+      gameId = g.id;
       gameData = g;
       document.getElementById('yom-player').src = g.url;
       document.getElementById('game-title').textContent = g.title;
