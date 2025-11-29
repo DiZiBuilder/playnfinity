@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Explore — Playnfinity</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#a855f7">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; background: #000; color: white; }
+    body.light { background: #fff; color: #000; }
+
+    /* SAME GRADIENT + DARK MODE AS FEED */
+    body { 
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
+      background-attachment: fixed;
+    }
+    body.light {
+      background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
+    }
+
+    .search-container {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 1rem;
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    body.light .search-container { background: rgba(255,255,255,0.9); border-bottom: 1px solid #ddd; }
+
+    #search-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border-radius: 3rem;
+      border: none;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+    body.light #search-input { background: rgba(0,0,0,0.1); color: #000; }
+    #search-input::placeholder { color: rgba(255,255,255,0.6); }
+    body.light #search-input::placeholder { color: rgba(0,0,0,0.6); }
+
+    .categories {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+    .categories::-webkit-scrollbar { display: none; }
+    .category-pill {
+      padding: 0.6rem 1.2rem;
+      border-radius: 2rem;
+      background: rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    body.light .category-pill { background: rgba(0,0,0,0.1); }
+    .category-pill.active, .category-pill:hover {
+      background: #a855f7;
+    }
+
+    .games-grid {
+      padding: 1rem;
+      padding-top: 140px; /* space for fixed search + categories */
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media (min-width: 768px) {
+      .games-grid { grid-template-columns: repeat(5, 1fr); gap: 1.5rem; }
+    }
+    .game-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 1rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    body.light .game-card { background: rgba(0,0,0,0.08); }
+    .game-card:hover { transform: scale(1.05); }
+    .game-thumb {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+    .game-info {
+      padding: 0.8rem;
+    }
+    .game-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .game-meta {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .nav-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0;
+      z-index: 1000;
+    }
+    .nav-item { width: 20%; text-align: center; }
+    .nav-icon { width: 28px; height: 28px; filter: grayscale(100%) brightness(0.7); transition: all 0.2s; }
+    .nav-item.active .nav-icon { filter: none; }
+  </style>
+</head>
+<body>
+  <div class="search-container">
+    <input type="text" id="search-input" placeholder="Search games, genres, creators...">
+  </div>
+
+  <div class="categories">
+    <div class="category-pill active" data-category="all">All</div>
+    <div class="category-pill" data-category="action">Action</div>
+    <div class="category-pill" data-category="racing">Racing</div>
+    <div class="category-pill" data-category="puzzle">Puzzle</div>
+    <div class="category-pill" data-category="multiplayer">Multiplayer</div>
+    <div class="category-pill" data-category="short">Short (<2 min)</div>
+    <div class="category-pill" data-category="new">New</div>
+    <div class="category-pill" data-category="trending">Trending</div>
+    <div class="category-pill" data-category="mostplayed">Most Played</div>
+    <div class="category-pill" data-category="mostliked">Most Liked</div>
+    <div class="category-pill" data-category="free">Free</div>
+    <div class="category-pill" data-category="yom">YOM Verified</div>
+  </div>
+
+  <div class="games-grid" id="games-grid">
+    <!-- Games injected here by JS -->
+  </div>
+
+  <!-- NAV BAR — EXPLORE ACTIVE -->
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-item" data-page="home">
+      <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
+    </a>
+    <a href="feed.html" class="nav-item" data-page="playnfinity">
+      <img src="https://playnfinity.games/app/letterp.gr.png" alt="Playnfinity" class="nav-icon" data-active="https://playnfinity.games/app/letterp.ab.png">
+    </a>
+    <a href="explore.html" class="nav-item active" data-page="explore">
+      <img src="https://playnfinity.games/app/explore.ab.png" alt="Explore" class="nav-icon" data-active="https://playnfinity.games/app/explore.ab.png">
+    </a>
+    <a href="trending.html" class="nav-item" data-page="trending">
+      <img src="https://playnfinity.games/app/fav.gr.png" alt="Trending" class="nav-icon" data-active="https://playnfinity.games/app/fav.ab.png">
+    </a>
+    <a href="profile.html" class="nav-item" data-page="profile">
+      <img src="https://playnfinity.games/app/profile.gr.png" alt="Login" class="nav-icon" data-active="https://playnfinity.games/app/profile.ab.png">
+    </a>
+  </nav>
+
+  <script>
+    // Your same Supabase + staticGames array (copy from feed.html)
+    const staticGames = [ /* same as feed.html */ ];
+
+    function renderGames(filter = '', category = 'all') {
+      const grid = document.getElementById('games-grid');
+      grid.innerHTML = '';
+      staticGames
+        .filter(game => {
+          if (category !== 'all' && !game.tags.toLowerCase().includes(category)) return false;
+          if (filter && !game.title.toLowerCase().includes(filter.toLowerCase()) && !game.tags.toLowerCase().includes(filter.toLowerCase())) return false;
+          return true;
+        })
+        .forEach(game => {
+          const card = document.createElement('div');
+          card.className = 'game-card';
+          card.innerHTML = `
+            <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
+            <div class="game-info">
+              <div class="game-title">${game.title}</div>
+              <div class="game-duration">${game.duration} | ${game.tags}</div>
+              <div class="game-powered">Powered by YOM</div>
+            </div>
+          `;
+          card.onclick = () => playGame(game.id, game.title, game.likes);
+          grid.appendChild(card);
+        });
+    }
+
+    // Live search
+    document.getElementById('search-input').addEventListener('input', e => {
+      renderGames(e.target.value);
+    });
+
+    // Category pills
+    document.querySelectorAll('.category-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelector('.category-pill.active').classList.remove('active');
+        pill.classList.add('active');
+        renderGames('', pill.dataset.category);
+      });
+    });
+
+    // Initial render
+    renderGames();
+  </script>
+</body>
+</html>
