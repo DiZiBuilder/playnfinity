@@ -181,87 +181,95 @@
     <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
   </nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/track.js"></script>
-  <script>
-    // Clean URL
-    if (location.pathname.includes('.html')) {
-      history.replaceState(null, null, location.pathname.replace('.html', '') + location.search);
-    }
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/track.js"></script>
+<script>
+// Clean URL
+if(location.pathname.includes('.html')) history.replaceState(null,null,location.pathname.replace('.html','')+location.search);
 
-    // TOTAL LOCKDOWN — left click is dead
-    document.oncontextmenu = document.onselectstart = document.ondragstart = () => false;
-    document.body.style.pointerEvents = 'none';
-    document.getElementById('game').style.pointerEvents = 'auto';
+// TOTAL LOCKDOWN
+document.oncontextmenu = document.onselectstart = document.ondragstart = () => false;
+document.body.style.pointerEvents = 'none';
+document.getElementById('game').style.pointerEvents = 'auto';
 
-    // Show trigger on any tap
-    let hideTimeout;
-    document.getElementById('game').addEventListener('touchstart', () => {
-      clearTimeout(hideTimeout);
-      document.getElementById('trigger').classList.add('show');
-      hideTimeout = setTimeout(() => document.getElementById('trigger').classList.remove('show'), 4000);
-    }, { passive: true });
+// Show trigger on any interaction
+let hideTimeout;
+const showTrigger = () => {
+  clearTimeout(hideTimeout);
+  document.getElementById('trigger').classList.add('show');
+  hideTimeout = setTimeout(() => document.getElementById('trigger').classList.remove('show'), 4000);
+};
 
-    // Toggle side panel
-    document.getElementById('trigger').onclick = (e) => {
-      e.stopPropagation();
-      document.getElementById('panel').classList.toggle('open');
-    };
+// Toggle panel
+document.getElementById('trigger').onclick = (e) => {
+  e.stopPropagation();
+  document.getElementById('panel').classList.toggle('open');
+};
 
-    // Supabase
-    const supabase = window.supabase.createClient(
-      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
-    );
+// Supabase + games
+const supabase = window.supabase.createClient('https://yfrgxmpbdbkfwzwbtfrt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI');
 
-    // Your full games array (add all your games here)
-    const games = [
-      { id: '1', title: 'Valley of the Ancient', url: 'https://yom.net/embed/valley-of-the-ancient', likes: 456, comments: 89 },
-      { id: '2', title: 'K4 Rally', url: 'https://yom.net/embed/k4-rally', likes: 789, comments: 123 },
-      { id: '3', title: 'Martians vs Roughnecks', url: 'https://yom.net/embed/martians-vs-roughnecks', likes: 312, comments: 45 }
-      // ← keep all your games here
-    ];
+const games = [ /* ← your full list stays here */ 
+  {id:'1',title:'Valley of the Ancient',url:'https://yom.net/embed/valley-of-the-ancient',likes:456,comments:89},
+  {id:'2',title:'K4 Rally',url:'https://yom.net/embed/k4-rally',likes:789,comments:123},
+  {id:'3',title:'Martians vs Roughnecks',url:'https://yom.net/embed/martians-vs-roughnecks',likes:312,comments:45}
+  // ... all your games
+];
 
-    let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
-    let currentGame = games[currentIndex];
+let idx = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
+let current = games[idx];
 
-    function loadGame() {
-      document.getElementById('game').src = currentGame.url + '?t=' + Date.now();
-      document.getElementById('title').textContent = currentGame.title;
-      document.getElementById('likes').textContent = currentGame.likes || 0;
-      document.getElementById('comments').textContent = currentGame.comments || 0;
-      if (typeof initTracking === 'function') initTracking(currentGame.id);
-    }
+function load() {
+  document.getElementById('game').src = current.url + '?t=' + Date.now();
+  document.getElementById('title').textContent = current.title;
+  document.getElementById('likes').textContent = current.likes || 0;
+  document.getElementById('comments').textContent = current.comments || 0;
+  if(typeof initTracking === 'function') initTracking(current.id);
+}
 
-    function likeGame() {
-      document.getElementById('likes').textContent++;
-      supabase.from('game_interactions').insert({ game_id: currentGame.id, type: 'like' });
-    }
+function nextGame() {
+  idx = (idx + 1) % games.length;
+  current = games[idx];
+  history.replaceState(null,null,'?id='+current.id);
+  load();
+  document.getElementById('panel').classList.remove('open');
+}
 
-    function shareGame() {
-      if (navigator.share) {
-        navigator.share({ title: currentGame.title, url: location.href });
-      } else {
-        navigator.clipboard.writeText(location.href);
-        alert('Copied!');
-      }
-    }
+function prevGame() {
+  idx = (idx - 1 + games.length) % games.length;
+  current = games[idx];
+  history.replaceState(null,null,'?id='+current.id);
+  load();
+  document.getElementById('panel').classList.remove('open');
+}
 
-    // SWIPE = scrolling to next/previous game
-    let startY = 0;
-    document.getElementById('game').addEventListener('touchstart', e => startY = e.touches[0].screenY, { passive: true });
-    document.getElementById('game').addEventListener('touchend', e => {
-      const delta = startY - e.changedTouches[0].screenY;
-      if (Math.abs(delta) < 150) return;
+// TOUCH SWIPE — MOBILE
+let touchStartY = 0;
+document.getElementById('game').addEventListener('touchstart', e => {
+  touchStartY = e.touches[0].screenY;
+  showTrigger();
+}, {passive: true});
 
-      currentIndex = delta > 0 ? (currentIndex + 1) % games.length : (currentIndex - 1 + games.length) % games.length;
-      currentGame = games[currentIndex];
-      history.replaceState(null, null, '?id=' + currentGame.id);
-      loadGame();
-      document.getElementById('panel').classList.remove('open');
-    });
+document.getElementById('game').addEventListener('touchend', e => {
+  const delta = touchStartY - e.changedTouches[0].screenY;
+  if (Math.abs(delta) < 120) return;
+  delta > 0 ? nextGame() : prevGame();
+});
 
-    loadGame();
-  </script>
+// MOUSE WHEEL — DESKTOP
+document.getElementById('game').addEventListener('wheel', e => {
+  e.preventDefault();
+  showTrigger();
+  e.deltaY > 0 ? nextGame() : prevGame();
+}, {passive: false});
+
+// Keyboard arrows for power users
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp') { e.preventDefault(); prevGame(); }
+  if (e.key === 'ArrowDown') { e.preventDefault(); nextGame(); }
+});
+
+load();
+</script>
 </body>
 </html>
