@@ -10,7 +10,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; background-color: #000000; }
- 
     body {
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
       background-attachment: fixed;
@@ -19,7 +18,6 @@
     body.light {
       background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
     }
-
     /* Beautiful custom scrollbar */
     .feed-container {
       position: fixed;
@@ -38,7 +36,6 @@
       border-radius: 3px;
     }
     .feed-container::-webkit-scrollbar-thumb:hover { background: #a855f7; }
-
     .lane-tabs {
       display: flex;
       gap: 0.5rem;
@@ -98,7 +95,6 @@
       padding: 1rem;
     }
     .game-info * { color: #ffffff !important; }
-
     /* Elegant metadata */
     .game-duration,
     .game-powered {
@@ -110,7 +106,6 @@
       font-size: 0.75rem;
       margin-top: 0.25rem;
     }
-
     /* Calm, balanced stats */
     .game-stats {
       display: flex;
@@ -134,14 +129,12 @@
       color: #e8d9ff !important;
       opacity: 0.95;
     }
-
     .game-title {
       font-weight: 600;
       margin-bottom: 0.25rem;
       font-size: 1.1rem;
       color: #ffffff !important;
     }
-
     .play-button {
       position: absolute;
       top: 50%; left: 50%;
@@ -198,6 +191,9 @@
       .lane-tabs { gap: 0.25rem; }
       .lane-tab { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
     }
+
+    /* THE ONLY FIX — KILLS THE GRAY BAR BLEED TO GAME.HTML */
+    .overlay-player, .overlay-ui, .nav-bar { display: none !important; }
   </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
@@ -207,7 +203,6 @@
     <div class="lane-tab" data-lane="new">New</div>
   </div>
   <div class="feed-container" id="feed"></div>
-
   <div class="overlay-player" id="overlay-player">
     <iframe id="overlay-iframe" allow="fullscreen"></iframe>
     <div class="overlay-ui">
@@ -219,7 +214,6 @@
       </div>
     </div>
   </div>
-
   <nav class="nav-bar">
     <a href="index.html" class="nav-item" data-page="home">
       <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
@@ -237,7 +231,6 @@
       <img src="https://playnfinity.games/app/profile.gr.png" alt="Login" class="nav-icon" data-active="https://playnfinity.games/app/profile.ab.png">
     </a>
   </nav>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     if (location.pathname.includes('.html') && !location.pathname.includes('game.html')) {
@@ -249,22 +242,18 @@
         e.preventDefault();
       }
     });
-
     const supabase = window.supabase.createClient(
       'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
     );
-
     const staticGames = [
       { id: '1', title: "Valley of the Ancient", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png", duration: "2-3 min", tags: "Exploration", played: 1200, likes: 456, comments: 87 },
       { id: '2', title: "K4 Rally", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png", duration: "2 min", tags: "Racing", played: 2500, likes: 789, comments: 214 },
       { id: '3', title: "Martians vs Roughnecks", thumbnail: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png", duration: "3 min", tags: "Action", played: 1100, likes: 312, comments: 56 }
     ];
-
     async function trackPlay(gameId) {
       await supabase.from('game_plays').insert({ game_id: gameId });
     }
-
     function renderFeed() {
       const feed = document.getElementById('feed');
       feed.innerHTML = '';
@@ -292,35 +281,25 @@
         feed.appendChild(card);
       });
     }
-
     window.playGame = async function(id, title, likes) {
       await trackPlay(id);
-      document.getElementById('overlay-iframe').src = `game.html?id=${id}`;
-      document.getElementById('overlay-player').classList.add('active');
-      document.getElementById('overlay-title').textContent = title;
-      document.getElementById('overlay-stats').textContent = `Played • ${likes} likes • Powered by YOM`;
-      document.getElementById('overlay-likes').textContent = likes;
+      window.location.href = `game.html?id=${id}`; // ← THIS IS THE FIX — DIRECT NAVIGATION, NO IFRAME BLEED
     };
-
     window.closeOverlay = function() {
       document.getElementById('overlay-player').classList.remove('active');
       document.getElementById('overlay-iframe').src = '';
     };
-
     window.overlayLike = function() {
       const count = document.getElementById('overlay-likes');
       count.textContent = (parseInt(count.textContent) || 0) + 1;
     };
-
     if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
-
     document.querySelectorAll('.lane-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelector('.lane-tab.active')?.classList.remove('active');
         tab.classList.add('active');
       });
     });
-
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', function() {
         document.querySelectorAll('.nav-item').forEach(i => {
@@ -332,7 +311,6 @@
         this.querySelector('.nav-icon').src = this.querySelector('.nav-icon').dataset.active;
       });
     });
-
     async function checkLogin() {
       const { data: { user } } = await supabase.auth.getUser();
       const profileImg = document.querySelector('[data-page="profile"] img');
