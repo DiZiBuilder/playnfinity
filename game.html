@@ -37,7 +37,7 @@
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      z-index: 3;
+      z-index: 2;
       pointer-events: auto;
       background: transparent;
     }
@@ -217,6 +217,8 @@
 
     let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
     let currentGame = games[currentIndex];
+    let tapCount = 0;
+    let tapTimer = null;
 
     // Load current game
     function loadGame() {
@@ -224,11 +226,10 @@
       document.getElementById('title').textContent = currentGame.title;
       document.getElementById('panelTitle').textContent = currentGame.title;
       document.getElementById('title').classList.add('show');
+      if (typeof initTracking === 'function') initTracking(currentGame.id);
     }
 
-    // Double-tap = Like
-    let tapCount = 0;
-    let tapTimer = null;
+    // Double-tap = Like + Heart animation
     const overlay = document.getElementById('gestureOverlay');
     overlay.addEventListener('click', () => {
       tapCount++;
