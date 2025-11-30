@@ -12,7 +12,7 @@
     html, body {
       height: 100%;
       overflow: hidden;
-      background: #000;
+      background: #000 !important;
       font-family: -apple-system, system-ui, sans-serif;
       color: white;
       -webkit-user-select: none;
@@ -30,6 +30,7 @@
       border: none;
       z-index: 1;
       pointer-events: none;
+      background: #000;
     }
 
     #overlay {
@@ -80,11 +81,11 @@
       line-height: 1.4;
       transition: opacity 0.5s ease, transform 0.5s ease;
       transform: translateY(0);
+      pointer-events: none;
     }
     .infobox.hide {
       opacity: 0;
       transform: translateY(20px);
-      pointer-events: none;
     }
 
     .heart {
@@ -111,7 +112,6 @@
       backdrop-filter: blur(20px);
       border-radius: 0 0 20px 20px;
       z-index: 100;
-      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
     }
 
     .panel {
@@ -130,12 +130,7 @@
     }
     .panel.open { top: 0; }
 
-    .panel h3 {
-      margin: 20px 0 10px;
-      font-weight: 600;
-      font-size: 18px;
-    }
-
+    .panel h3 { margin: 20px 0 10px; font-weight: 600; font-size: 18px; }
     .panel button {
       margin: 12px auto;
       width: 80%;
@@ -149,10 +144,7 @@
       box-shadow: 0 10px 30px rgba(168,85,247,0.4);
       cursor: pointer;
     }
-
-    .panel button.close-btn {
-      background: #333;
-    }
+    .panel button.close-btn { background: #333; }
 
     .navbar {
       position: fixed;
@@ -168,19 +160,12 @@
       align-items: center;
       z-index: 1000;
     }
-    .navbar img {
-      width: 28px;
-      height: 28px;
-      filter: brightness(0.7);
-    }
+    .navbar img { width: 28px; height: 28px; filter: brightness(0.7); }
     .navbar a.active img { filter: none; }
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(168, 85, 247, 0.6);
-      border-radius: 3px;
-    }
+    ::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.6); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
 
     @keyframes beat {
@@ -267,55 +252,50 @@
     }
     loadGame();
 
-    let taps = 0;
-    let tapTimer;
+    // Double-tap like
+    let taps = 0, tapTimer;
     overlay.addEventListener('click', () => {
       taps++;
-      if (taps === 1) {
-        tapTimer = setTimeout(() => { taps = 0; }, 400);
-      } else {
-        clearTimeout(tapTimer);
-        taps = 0;
+      if (taps === 1) tapTimer = setTimeout(() => taps = 0, 400);
+      else { clearTimeout(tapTimer); taps = 0;
         document.getElementById('heart').classList.add('show');
         setTimeout(() => document.getElementById('heart').classList.remove('show'), 600);
       }
     });
 
+    // VERTICAL SWIPE — PREVENT PULL-TO-REFRESH + ENABLE BOTH DIRECTIONS
     let startY = 0;
-    overlay.ontouchstart = e => startY = e.touches[0].screenY;
-    overlay.ontouchend = e => {
+    overlay.addEventListener('touchstart', e => { startY = e.touches[0].screenY; }, {passive: true});
+    overlay.addEventListener('touchmove', e => { e.preventDefault(); }, {passive: false});
+    overlay.addEventListener('touchend', e => {
       const delta = startY - e.changedTouches[0].screenY;
       if (Math.abs(delta) > 150) {
-        currentIndex = delta > 0 
-          ? (currentIndex + 1) % games.length 
-          : (currentIndex - 1 + games.length) % games.length;
+        currentIndex = delta > 0 ? (currentIndex + 1) % games.length : (currentIndex - 1 + games.length) % games.length;
         currentGame = games[currentIndex];
         history.replaceState(null, null, '?id=' + currentGame.id);
         titleEl.classList.remove('show');
         panel.classList.remove('open');
         loadGame();
       }
-    };
+    });
 
-    let edgeStartX = 0;
-    overlay.addEventListener('touchstart', e => {
-      if (e.touches[0].screenX < 60) edgeStartX = e.touches[0].screenX;
-    }, {passive: true});
+    // Left-edge swipe menu
+    let edgeX = 0;
+    overlay.addEventListener('touchstart', e => { if (e.touches[0].screenX < 60) edgeX = e.touches[0].screenX; }, {passive: true});
     overlay.addEventListener('touchmove', e => {
-      if (edgeStartX && e.touches[0].screenX - edgeStartX > 100) {
+      if (edgeX && e.touches[0].screenX - edgeX > 100) {
         panel.classList.add('open');
         infobox.classList.remove('hide');
-        edgeStartX = 0;
+        edgeX = 0;
       }
     });
-    overlay.addEventListener('touchend', () => edgeStartX = 0);
+    overlay.addEventListener('touchend', () => edgeX = 0);
 
+    // Desktop wheel
     overlay.onwheel = e => {
       e.preventDefault();
       if (Math.abs(e.deltaY) < 50) return;
-      currentIndex = e.deltaY > 0 
-        ? (currentIndex + 1) % games.length 
-        : (currentIndex - 1 + games.length) % games.length;
+      currentIndex = e.deltaY > 0 ? (currentIndex + 1) % games.length : (currentIndex - 1 + games.length) % games.length;
       currentGame = games[currentIndex];
       history.replaceState(null, null, '?id=' + currentGame.id);
       titleEl.classList.remove('show');
