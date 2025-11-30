@@ -216,12 +216,22 @@
     <button onclick="goFullscreen(event)">Enter Fullscreen</button>
     <button class="close-btn" onclick="closePanel(event)">Close Menu</button>
   </div>
-  <nav class="navbar">
-    <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
-    <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
-    <a href="/explore.html"><img src="https://playnfinity.games/app/explore.gr.png"></a>
-    <a href="/trending.html"><img src="https://playnfinity.games/app/fav.gr.png"></a>
-    <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-item" data-page="home">
+      <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
+    </a>
+    <a href="feed.html" class="nav-item active" data-page="playnfinity">
+      <img src="https://playnfinity.games/app/letterp.ab.png" alt="Playnfinity" class="nav-icon" data-active="https://playnfinity.games/app/letterp.ab.png">
+    </a>
+    <a href="explore.html" class="nav-item" data-page="explore">
+      <img src="https://playnfinity.games/app/explore.gr.png" alt="Explore" class="nav-icon" data-active="https://playnfinity.games/app/explore.ab.png">
+    </a>
+    <a href="trending.html" class="nav-item" data-page="trending">
+      <img src="https://playnfinity.games/app/fav.gr.png" alt="Trending" class="nav-icon" data-active="https://playnfinity.games/app/fav.ab.png">
+    </a>
+    <a href="profile.html" class="nav-item" data-page="profile">
+      <img src="https://playnfinity.games/app/profile.gr.png" alt="Login" class="nav-icon" data-active="https://playnfinity.games/app/profile.ab.png">
+    </a>
   </nav>
   <script>
     if (location.pathname.includes('.html')) {
