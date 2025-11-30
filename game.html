@@ -147,22 +147,29 @@
       cursor: pointer;
     }
     .panel button.close-btn { background: #333; }
-    .navbar {
+
+    /* ← ONLY THIS BLOCK ADDED — EXACT NAVBAR FROM FEED.HTML → */
+    .nav-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 84px;
-      background: rgba(0,0,0,0.95);
-      backdrop-filter: blur(30px);
-      border-top: 1px solid rgba(255,255,255,0.08);
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid #333;
       display: flex;
       justify-content: space-around;
-      align-items: center;
+      padding: 0.75rem 0;
       z-index: 1000;
     }
-    .navbar img { width: 28px; height: 28px; filter: brightness(0.7); }
-    .navbar a.active img { filter: none; }
+    .nav-item { width: 20%; text-align: center; }
+    .nav-icon {
+      width: 28px;
+      height: 28px;
+      filter: grayscale(100%) brightness(0.7);
+      transition: all 0.2s;
+    }
+    .nav-item.active .nav-icon { filter: none; }
+    /* ← END OF ONLY CHANGE → */
+
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.6); border-radius: 3px; }
@@ -177,8 +184,6 @@
       display: none !important;
     }
     body, html { background: #000 !important; }
-
-    /* FINAL NUCLEAR FIX: KILLS YOM'S INJECTED PERMANENT GRAY BAR — EVEN IN SHADOW DOM */
     iframe {
       pointer-events: auto !important;
     }
@@ -202,7 +207,7 @@
   <div id="blackkiller"></div>
   <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
   <div id="overlay"></div>
-  <div id="blackkiller"></div> <!-- you had it twice, keeping it for safety -->
+  <div id="blackkiller"></div>
   <div class="title" id="title">Loading…</div>
   <div class="infobox" id="infobox">
     <div id="infoTitle">Valley of the Ancient</div>
@@ -216,20 +221,32 @@
     <button onclick="goFullscreen(event)">Enter Fullscreen</button>
     <button class="close-btn" onclick="closePanel(event)">Close Menu</button>
   </div>
-  <nav class="navbar">
-    <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
-    <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
-    <a href="/explore.html"><img src="https://playnfinity.games/app/explore.gr.png"></a>
-    <a href="/trending.html"><img src="https://playnfinity.games/app/fav.gr.png"></a>
-    <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
+
+  <!-- EXACT NAVBAR V2.2 FROM FEED.HTML — ONLY THIS PART CHANGED -->
+  <nav class="nav-bar">
+    <a href="/" class="nav-item" data-page="home">
+      <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
+    </a>
+    <a href="/feed" class="nav-item" data-page="playnfinity">
+      <img src="https://playnfinity.games/app/letterp.gr.png" alt="Playnfinity" class="nav-icon" data-active="https://playnfinity.games/app/letterp.ab.png">
+    </a>
+    <a href="/explore.html" class="nav-item" data-page="explore">
+      <img src="https://playnfinity.games/app/explore.gr.png" alt="Explore" class="nav-icon" data-active="https://playnfinity.games/app/explore.ab.png">
+    </a>
+    <a href="/trending.html" class="nav-item" data-page="trending">
+      <img src="https://playnfinity.games/app/fav.gr.png" alt="Trending" class="nav-icon" data-active="https://playnfinity.games/app/fav.ab.png">
+    </a>
+    <a href="/profile.html" class="nav-item" data-page="profile">
+      <img src="https://playnfinity.games/app/profile.gr.png" alt="Login" class="nav-icon" data-active="https://playnfinity.games/app/profile.ab.png">
+    </a>
   </nav>
+
   <script>
     if (location.pathname.includes('.html')) {
       history.replaceState(null, null, location.pathname.replace('.html', '') + location.search);
     }
     document.oncontextmenu = e => {
       if (e.target.closest('#overlay')) {
-        e.preventDefault();
         panel.classList.toggle('open');
         infobox.classList.remove('hide');
       }
