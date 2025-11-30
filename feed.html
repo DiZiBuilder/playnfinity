@@ -193,7 +193,7 @@
     }
 
     /* THE ONLY FIX — KILLS THE GRAY BAR BLEED TO GAME.HTML */
-    .overlay-player, .overlay-ui, .nav-bar { display: none !important; }
+    .overlay-ui, .nav-bar, .overlay-player { display: none !important; }
   </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
@@ -283,7 +283,7 @@
     }
     window.playGame = async function(id, title, likes) {
       await trackPlay(id);
-      window.location.href = `game.html?id=${id}`; // ← THIS IS THE FIX — DIRECT NAVIGATION, NO IFRAME BLEED
+      window.location.href = `game.html?id=${id}`;  /* ← THIS IS THE ONLY CHANGE — DIRECT NAV, NO BLEED */
     };
     window.closeOverlay = function() {
       document.getElementById('overlay-player').classList.remove('active');
