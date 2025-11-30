@@ -23,8 +23,8 @@
       touch-action: pan-y;
     }
 
-    /* KILLS ANY GRAY BAR FROM FEED.HTML OR CACHED CRAP */
-    #blackkiller {
+    /* KILLS GRAY BAR BLEED */
+    #killer {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
@@ -42,6 +42,7 @@
       border: none;
       z-index: 1;
       pointer-events: none;
+      background: #000;
     }
 
     #overlay {
@@ -105,6 +106,7 @@
       font-size: 120px;
       pointer-events: none;
       z-index: 999;
+      opacity: 0;
     }
     .heart.show {
       animation: beat 0.6s cubic-bezier(0.18,0.89,0.32,1.28);
@@ -268,18 +270,16 @@
     overlay.addEventListener('click', () => {
       taps++;
       if (taps === 1) tapTimer = setTimeout(() => taps = 0, 400);
-      else {
-        clearTimeout(tapTimer);
-        taps = 0;
+      else { clearTimeout(tapTimer); taps = 0;
         document.getElementById('heart').classList.add('show');
         setTimeout(() => document.getElementById('heart').classList.remove('show'), 600);
       }
     });
 
-    // VERTICAL SWIPE + NO PULL-TO-REFRESH
+    // VERTICAL SWIPE — NO PULL-TO-REFRESH
     let startY = 0;
     overlay.addEventListener('touchstart', e => { startY = e.touches[0].screenY; }, {passive: true});
-    overlay.addEventListener('touchmove', e => e.preventDefault(), {passive: false});
+    overlay.addEventListener('touchmove', e => { e.preventDefault(); }, {passive: false});
     overlay.addEventListener('touchend', e => {
       if (!startY) return;
       const delta = startY - e.changedTouches[0].screenY;
@@ -294,7 +294,7 @@
       startY = 0;
     });
 
-    // Left-edge swipe = menu
+    // LEFT-EDGE SWIPE = MENU
     let edgeX = 0;
     overlay.addEventListener('touchstart', e => { if (e.touches[0].screenX < 60) edgeX = e.touches[0].screenX; }, {passive: true});
     overlay.addEventListener('touchmove', e => {
@@ -306,7 +306,7 @@
     });
     overlay.addEventListener('touchend', () => edgeX = 0);
 
-    // Desktop wheel
+    // DESKTOP WHEEL
     overlay.onwheel = e => {
       e.preventDefault();
       if (Math.abs(e.deltaY) < 50) return;
@@ -317,8 +317,9 @@
       loadGame();
     };
 
-    window.shareGame = e => { e.stopPropagation(); navigator.share ? navigator.share({title:currentGame.title,url:location.href}) : navigator.clipboard.writeText(location.href); alert('Link copied!'); };
+    window.shareGame = e => { e.stopPropagation(); navigator.share ? navigator.share({title:currentGame.title,url:location.href}) : navigator.clipboard.writeText(location.href); };
     window.goFullscreen = e => { e.stopPropagation(); iframe.requestFullscreen?.(); };
     window.closePanel = e => { e.stopPropagation(); panel.classList.remove('open'); };
   </script>
 </body>
+</html>
