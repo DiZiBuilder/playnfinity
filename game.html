@@ -24,8 +24,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:-ap
 .navbar{position:fixed;bottom:0;width:100%;height:84px;background:rgba(0,0,0,.95);backdrop-filter:blur(30px);border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-around;align-items:center;z-index:1000}
 .navbar img{width:28px;height:28px;filter:brightness(0.7)}
 .navbar a.active img{filter:none}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(168,85,247,.6);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:#a855f7}
 @keyframes h{0%{transform:translate(-50%,-50%) scale(0);opacity:1}50%{transform:translate(-50%,-50%) scale(1.4)}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
@@ -44,7 +43,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:-ap
   <h3 id="panelTitle"></h3>
   <button onclick="shareGame(event)">Share This Game</button>
   <button onclick="requestFullscreen(event)">Enter Fullscreen</button>
-  <button class="close-btn" onclick="closePanel(event)">Close Player</button>
+  <button class="close-btn" onclick="togglePanel(event)">Close Menu</button>
 </div>
 
 <nav class="navbar">
@@ -67,27 +66,29 @@ const games=[
   {id:'3',title:'Martians vs Roughnecks',url:'https://yom.net/embed/martians-vs-roughnecks'}
 ];
 
-let idx=games.findIndex(g=>g.id===new URLSearchParams(location.search).get('id'))||0;
-let current=games[idx];
+let idx = games.findIndex(g=>g.id===new URLSearchParams(location.search).get('id'))||0;
+let current = games[idx];
 
-const iframe=document.getElementById('game');
-const title=document.getElementById('title');
-const panelTitle=document.getElementById('panelTitle');
-const overlay=document.getElementById('overlay');
-const panel=document.getElementById('panel');
-const pulltab=document.querySelector('.pulltab');
+const iframe = document.getElementById('game');
+const title = document.getElementById('title');
+const panelTitle = document.getElementById('panelTitle');
+const overlay = document.getElementById('overlay');
+const panel = document.getElementById('panel');
+const pulltab = document.querySelector('.pulltab');
 
 function loadGame(){
-  iframe.src=current.url+'?autoplay=1&t='+Date.now();
-  title.textContent=panelTitle.textContent=current.title;
-  title.classList.add('show');
+  iframe.src = current.url + '?autoplay=1&t=' + Date.now();
+  title.textContent = current.title;
+  panelTitle.textContent = current.title;
+  setTimeout(() => title.classList.add('show'), 100); // ensures title updates
 }
 loadGame();
 
 // Double-tap like
-let taps=0,timer;
-overlay.onclick=()=>{
-  taps++; if(taps===1) timer=setTimeout(()=>{taps=0},400);
+let taps=0, timer;
+overlay.onclick = () => {
+  taps++;
+  if(taps===1) timer=setTimeout(()=>{taps=0},400);
   else{clearTimeout(timer);taps=0;
     document.getElementById('heart').classList.add('show');
     setTimeout(()=>document.getElementById('heart').classList.remove('show'),600);
@@ -95,48 +96,52 @@ overlay.onclick=()=>{
 };
 
 // Swipe + Panel
-let startY=0,pulled=false;
-overlay.ontouchstart=e=>startY=e.touches[0].screenY;
-overlay.ontouchmove=e=>{
-  const delta=startY-e.touches[0].screenY;
-  if(delta>0){
-    pulltab.style.transform=`translateX(-50%) translateY(${Math.min(40,delta)}px)`;
-    if(delta>80){panel.classList.add('open');pulled=true}
+let startY=0, pulled=false;
+overlay.ontouchstart = e => startY = e.touches[0].screenY;
+
+overlay.ontouchmove = e => {
+  const delta = startY - e.touches[0].screenY;
+  if(delta > 0){
+    pulltab.style.transform = `translateX(-50%) translateY(${Math.min(40,delta)}px)`;
+    if(delta > 80){ panel.classList.add('open'); pulled = true; }
   }
 };
-overlay.ontouchend=()=>{
-  pulltab.style.transform='translateX(-50%)';
-  const delta=startY-(event.changedTouches?.[0]?.screenY||startY);
-  if(!pulled && Math.abs(delta)>150){
-    idx=delta>0?(idx+1)%games.length:(idx-1+games.length)%games.length;
-    current=games[idx];
+
+overlay.ontouchend = e => {
+  pulltab.style.transform = 'translateX(-50%)';
+  const delta = startY - (e.changedTouches[0].screenY);
+  
+  if(!pulled && Math.abs(delta) > 150){
+    idx = delta > 0 ? (idx + 1) % games.length : (idx - 1 + games.length) % games.length;
+    current = games[idx];
     history.replaceState(null,null,'?id='+current.id);
     title.classList.remove('show');
     panel.classList.remove('open');
     loadGame();
   }
-  pulled=false;
+  pulled = false;
 };
 
-// Desktop: wheel + right-click panel
-overlay.onwheel=e=>{
+// Desktop support
+overlay.onwheel = e => {
   e.preventDefault();
-  if(Math.abs(e.deltaY)<50)return;
-  idx=e.deltaY>0?(idx+1)%games.length:(idx-1+games.length)%games.length;
-  current=games[idx];
+  if(Math.abs(e.deltaY)<50) return;
+  idx = e.deltaY>0 ? (idx+1)%games.length : (idx-1+games.length)%games.length;
+  current = games[idx];
   history.replaceState(null,null,'?id='+current.id);
   title.classList.remove('show');
   loadGame();
 };
-overlay.oncontextmenu=e=>{
+
+overlay.oncontextmenu = e => {
   e.preventDefault();
   panel.classList.toggle('open');
 };
 
 // Panel actions
-window.shareGame=e=>{e.stopPropagation();navigator.share?navigator.share({title:current.title,url:location.href}):navigator.clipboard.writeText(location.href)};
-window.requestFullscreen=e=>{e.stopPropagation();iframe.requestFullscreen?.()};
-window.closePanel=e=>{e.stopPropagation();history.back()};
+window.shareGame = e => {e.stopPropagation();navigator.share?navigator.share({title:current.title,url:location.href}):navigator.clipboard.writeText(location.href)};
+window.requestFullscreen = e => {e.stopPropagation();iframe.requestFullscreen?.()};
+window.togglePanel = e => {e.stopPropagation(); panel.classList.remove('open')};
 </script>
 </body>
 </html>
