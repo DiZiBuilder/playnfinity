@@ -1,297 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Playnfinity</title>
-  <link rel="icon" href="favicon.ico" />
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#000000" />
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      background: #000;
-      font-family: -apple-system, system-ui, sans-serif;
-      color: white;
-      -webkit-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: pan-y;
-    }
-
-    #game {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      border: none;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    #gestureOverlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 3;
-      pointer-events: auto;
-      background: transparent;
-    }
-
-    .title {
-      position: fixed;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(32px);
-      padding: 12px 28px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 17px;
-      max-width: 90%;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      border: 1px solid rgba(255,255,255,0.09);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-    .title.show { opacity: 1; }
-
-    .heartbeat {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%) scale(0);
-      font-size: 120px;
-      pointer-events: none;
-      z-index: 999;
-      opacity: 0;
-      transition: transform 0.6s cubic-bezier(0.18,0.89,0.32,1.28), opacity 0.6s;
-    }
-    .heartbeat.show { transform: translate(-50%,-50%) scale(1); opacity: 1; }
-
-    .pulltab {
-      position: fixed;
-      top: 0;
-      left: 50%;
-      width: 46px;
-      height: 36px;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(20px);
-      border-radius: 0 0 20px 20px;
-      z-index: 100;
-      transition: top 0.4s cubic-bezier(0.22,1,0.36,1);
-    }
-
-    .panel {
-      position: fixed;
-      top: -100%;
-      left: 0;
-      width: 100%;
-      height: 380px;
-      background: rgba(15,15,25,0.96);
-      backdrop-filter: blur(40px);
-      border-radius: 0 0 30px 30px;
-      z-index: 99;
-      transition: top 0.5s cubic-bezier(0.22,1,0.36,1);
-      padding-top: 50px;
-      text-align: center;
-    }
-    .panel.open { top: 0; }
-
-    .panel h3 {
-      margin: 20px 0 10px;
-      font-weight: 600;
-      font-size: 18px;
-    }
-
-    .panel button {
-      margin: 12px auto;
-      width: 80%;
-      padding: 16px;
-      border-radius: 18px;
-      border: none;
-      background: #a855f7;
-      color: #fff;
-      font-size: 17px;
-      font-weight: 600;
-      box-shadow: 0 10px 30px rgba(168,85,247,0.4);
-      cursor: pointer;
-    }
-
-    .panel button.close-btn {
-      background: #333;
-    }
-
-    .navbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 84px;
-      background: rgba(0,0,0,0.95);
-      backdrop-filter: blur(30px);
-      border-top: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 1000;
-    }
-    .navbar img {
-      width: 28px;
-      height: 28px;
-      filter: brightness(0.7);
-      transition: none;
-    }
-    .navbar a:hover img,
-    .navbar a.active img {
-      filter: none;
-    }
-
-    /* Custom scrollbar from feed.html */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(168, 85, 247, 0.6);
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Playnfinity</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#000">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,system-ui,sans-serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:pan-y}
+#game{position:fixed;top:0;left:0;width:100vw;height:100vh;border:none;z-index:1;pointer-events:none}
+#overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10;pointer-events:auto;background:transparent}
+.title{position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:20;background:rgba(0,0,0,.55);backdrop-filter:blur(32px);padding:12px 28px;border-radius:20px;font-weight:600;font-size:17px;max-width:90%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid rgba(255,255,255,.09);box-shadow:0 8px 32px rgba(0,0,0,.6);opacity:0;transition:opacity .6s}
+.title.show{opacity:1}
+.infobox{position:fixed;bottom:94px;left:0;right:0;padding:16px 20px;background:rgba(20,20,30,.95);backdrop-filter:blur(20px);text-align:center;z-index:15;font-size:15px;line-height:1.4;transition:opacity .5s ease,transform .5s ease;transform:translateY(0)}
+.infobox.hide{opacity:0;transform:translateY(20px);pointer-events:none}
+.heart{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:120px;pointer-events:none;z-index:999;opacity:0}
+.heart.show{animation:beat .6s cubic-bezier(.18,.89,.32,1.28)}
+.pulltab{position:fixed;top:0;left:50%;transform:translateX(-50%);width:46px;height:36px;background:rgba(255,255,255,.15);backdrop-filter:blur(20px);border-radius:0 0 20px 20px;z-index:100;transition:transform .4s}
+.panel{position:fixed;top:-100%;left:0;width:100%;height:380px;background:rgba(15,15,25,.96);backdrop-filter:blur(40px);border-radius:0 0 30px 30px;z-index:99;transition:top .5s cubic-bezier(.22,1,.36,1);padding-top:50px;text-align:center}
+.panel.open{top:0}
+.panel h3{margin:20px 0 10px;font-weight:600;font-size:18px}
+.panel button{margin:12px auto;width:80%;padding:16px;border-radius:18px;border:none;background:#a855f7;color:#fff;font-size:17px;font-weight:600;box-shadow:0 10px 30px rgba(168,85,247,.4);cursor:pointer}
+.panel button.close-btn{background:#333}
+.navbar{position:fixed;bottom:0;width:100%;height:84px;background:rgba(0,0,0,.95);backdrop-filter:blur(30px);border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-around;align-items:center;z-index:1000}
+.navbar img{width:28px;height:28px;filter:brightness(0.7)}
+.navbar a.active img{filter:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(168,85,247,.6);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#a855f7}
+@keyframes beat{0%{transform:translate(-50%,-50%) scale(0);opacity:1}50%{transform:translate(-50%,-50%) scale(1.4)}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+</style>
 </head>
 <body>
 
-  <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
-  <div id="gestureOverlay"></div>
+<iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
+<div id="overlay"></div>
 
-  <div class="title" id="title">Loading...</div>
-  <div class="heartbeat" id="heart">❤️</div>
-  <div class="pulltab" id="pulltab"></div>
+<div class="title" id="title">Loading…</div>
 
-  <div class="panel" id="panel">
-    <h3 id="panelTitle">Game Title</h3>
-    <button onclick="shareGame(event)">Share This Game</button>
-    <button onclick="requestFullscreen(event)">Enter Fullscreen</button>
-    <button class="close-btn" onclick="togglePanel(event)">Close Menu</button>
-  </div>
+<div class="infobox" id="infobox">
+  <div id="infoTitle">Valley of the Ancient</div>
+  <div style="font-size:13px;opacity:.8;margin-top:4px">Played • 456 likes • Powered by YOM</div>
+</div>
 
-  <nav class="navbar">
-    <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
-    <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
-    <a href="/explore.html"><img src="https://playnfinity.games/app/explore.gr.png"></a>
-    <a href="/trending.html"><img src="https://playnfinity.games/app/fav.gr.png"></a>
-    <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
-  </nav>
+<div class="heart" id="heart">Heart</div>
+<div class="pulltab"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/track.js"></script>
-  <script>
-    // Clean URL
-    if (location.pathname.includes('.html')) {
-      history.replaceState(null, null, location.pathname.replace('.html', '') + location.search);
+<div class="panel" id="panel">
+  <h3 id="panelTitle">Game Title</h3>
+  <button onclick="shareGame(event)">Share This Game</button>
+  <button onclick="goFullscreen(event)">Enter Fullscreen</button>
+  <button class="close-btn" onclick="closePanel(event)">Close Menu</button>
+</div>
+
+<nav class="navbar">
+  <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
+  <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
+  <a href="/explore.html"><img src="https://playnfinity.games/app/explore.gr.png"></a>
+  <a href="/trending.html"><img src="https://playnfinity.games/app/fav.gr.png"></a>
+  <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
+</nav>
+
+<script>
+// Clean URL
+if(location.pathname.includes('.html')) history.replaceState(null,null,location.pathname.replace('.html','')+location.search);
+
+// Total lockdown
+document.oncontextmenu = e => {
+  if(e.target === document.getElementById('overlay')) {
+    e.preventDefault();
+    document.getElementById('panel').classList.toggle('open');
+    document.getElementById('infobox').classList.remove('hide');
+  }
+  return false;
+};
+document.onselectstart = document.ondragstart = () => false;
+document.addEventListener('keydown', e => {
+  if(e.key==='F12' || (e.ctrlKey && 'uicjs'.includes(e.key.toLowerCase()))) e.preventDefault();
+});
+
+const games = [
+  {id:'1',title:'Valley of the Ancient',url:'https://yom.net/embed/valley-of-the-ancient'},
+  {id:'2',title:'K4 Rally',url:'https://yom.net/embed/k4-rally'},
+  {id:'3',title:'Martians vs Roughnecks',url:'https://yom.net/embed/martians-vs-roughnecks'}
+];
+
+let idx = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
+let current = games[idx];
+
+const iframe = document.getElementById('game');
+const title = document.getElementById('title');
+const panelTitle = document.getElementById('panelTitle');
+const infoTitle = document.getElementById('infoTitle');
+const infobox = document.getElementById('infobox');
+const overlay = document.getElementById('overlay');
+const panel = document.getElementById('panel');
+const pulltab = document.querySelector('.pulltab');
+
+function loadGame() {
+  iframe.src = current.url + '?autoplay=1&t=' + Date.now();
+  title.textContent = current.title;
+  panelTitle.textContent = current.title;
+  infoTitle.textContent = current.title;
+  title.classList.add('show');
+  infobox.classList.remove('hide');
+  clearTimeout(infobox.hideTimer);
+  infobox.hideTimer = setTimeout(() => infobox.classList.add('hide'), 4000);
+}
+loadGame();
+
+// Double-tap like
+let taps = 0, tapTimer;
+overlay.addEventListener('click', e => {
+  if (e.detail === 1) {
+    taps++;
+    if (taps === 1) tapTimer = setTimeout(() => taps = 0, 400);
+  }
+});
+overlay.addEventListener('dblclick', e => {
+  e.preventDefault();
+  clearTimeout(tapTimer);
+  taps = 0;
+  document.getElementById('heart').classList.add('show');
+  setTimeout(() => document.getElementById('heart').classList.remove('show'), 600);
+});
+
+// Touch swipe + pull-down menu
+let startY = 0, pulled = false;
+overlay.ontouchstart = e => { startY = e.touches[0].screenY; pulled = false; };
+overlay.ontouchmove = e => {
+  const delta = startY - e.touches[0].screenY;
+  if (delta > 0) {
+    pulltab.style.transform = `translateX(-50%) translateY(${Math.min(40, delta)}px)`;
+    if (delta > 80) {
+      panel.classList.add('open');
+      pulled = true;
+      infobox.classList.remove('hide');
     }
-
-    // TOTAL LOCKDOWN
-    document.oncontextmenu = document.onselectstart = document.ondragstart = () => false;
-    document.body.style.userSelect = 'none';
-    document.addEventListener('keydown', e => {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey) || (e.ctrlKey && 'uicjs'.includes(e.key.toLowerCase()))) {
-        e.preventDefault();
-      }
-    });
-
-    // Games
-    const games = [
-      { id: '1', title: 'Valley of the Ancient', url: 'https://yom.net/embed/valley-of-the-ancient' },
-      { id: '2', title: 'K4 Rally', url: 'https://yom.net/embed/k4-rally' },
-      { id: '3', title: 'Martians vs Roughnecks', url: 'https://yom.net/embed/martians-vs-roughnecks' }
-    ];
-
-    let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
-    let currentGame = games[currentIndex];
-
-    const iframe = document.getElementById('game');
-    const titleEl = document.getElementById('title');
-    const panelTitle = document.getElementById('panelTitle');
-    const overlay = document.getElementById('gestureOverlay');
-    const panel = document.getElementById('panel');
-    const pulltab = document.querySelector('.pulltab');
-
-    function loadGame() {
-      iframe.src = currentGame.url + '?autoplay=1&t=' + Date.now();
-      titleEl.textContent = currentGame.title;
-      panelTitle.textContent = currentGame.title;
-      titleEl.classList.add('show');
-      if (typeof initTracking === 'function') initTracking(currentGame.id);
-    }
+  }
+};
+overlay.ontouchend = e => {
+  pulltab.style.transform = 'translateX(-50%)';
+  if (pulled) return;
+  const delta = startY - e.changedTouches[0].screenY;
+  if (Math.abs(delta) > 150) {
+    idx = delta > 0 ? (idx + 1) % games.length : (idx - 1 + games.length) % games.length;
+    current = games[idx];
+    history.replaceState(null, null, '?id=' + current.id);
+    title.classList.remove('show');
+    panel.classList.remove('open');
     loadGame();
+  }
+};
 
-    // Double-tap like
-    let taps = 0, timer;
-    overlay.onclick = () => {
-      taps++;
-      if (taps === 1) timer = setTimeout(() => taps = 0, 400);
-      else { clearTimeout(timer); taps = 0;
-        document.getElementById('heart').classList.add('show');
-        setTimeout(() => document.getElementById('heart').classList.remove('show'), 600);
-      }
-    };
+// Desktop wheel
+overlay.onwheel = e => {
+  e.preventDefault();
+  if (Math.abs(e.deltaY) < 50) return;
+  idx = e.deltaY > 0 ? (idx + 1) % games.length : (idx - 1 + games.length) % games.length;
+  current = games[idx];
+  history.replaceState(null, null, '?id=' + current.id);
+  title.classList.remove('show');
+  loadGame();
+};
 
-    // Swipe + Panel
-    let startY = 0, pulled = false;
-    overlay.ontouchstart = e => startY = e.touches[0].screenY;
-
-    overlay.ontouchmove = e => {
-      const delta = startY - e.touches[0].screenY;
-      if (delta > 0) {
-        pulltab.style.transform = `translateX(-50%) translateY(${Math.min(40,delta)}px)`;
-        if (delta > 80) { panel.classList.add('open'); pulled = true; }
-      }
-    };
-
-    overlay.ontouchend = e => {
-      pulltab.style.transform = 'translateX(-50%)';
-      const delta = startY - e.changedTouches[0].screenY;
-      
-      if (!pulled && Math.abs(delta) > 150) {
-        idx = delta > 0 ? (idx + 1) % games.length : (idx - 1 + games.length) % games.length;
-        current = games[idx];
-        history.replaceState(null,null,'?id='+current.id);
-        titleEl.classList.remove('show');
-        panel.classList.remove('open');
-        loadGame();
-      }
-      pulled = false;
-    };
-
-    // Desktop
-    overlay.onwheel = e => {
-      e.preventDefault();
-      if (Math.abs(e.deltaY) < 50) return;
-      idx = e.deltaY > 0 ? (idx + 1) % games.length : (idx - 1 + games.length) % games.length;
-      current = games[idx];
-      history.replaceState(null,null,'?id='+current.id);
-      titleEl.classList.remove('show');
-      loadGame();
-    };
-
-    overlay.oncontextmenu = e => {
-      e.preventDefault();
-      panel.classList.toggle('open');
-    };
-
-    // Panel actions
-    window.shareGame = e => { e.stopPropagation(); navigator.share ? navigator.share({title:current.title,url:location.href}) : navigator.clipboard.writeText(location.href); };
-    window.requestFullscreen = e => { e.stopPropagation(); iframe.requestFullscreen?.(); };
-    window.togglePanel = e => { e.stopPropagation(); panel.classList.remove('open'); };
-  </script>
+// Panel buttons
+window.shareGame = e => { e.stopPropagation(); navigator.share?.({title:current.title,url:location.href}) || navigator.clipboard.writeText(location.href); };
+window.goFullscreen = e => { e.stopPropagation(); iframe.requestFullscreen?.(); };
+window.closePanel = e => { e.stopPropagation(); panel.classList.remove('open'); };
+</script>
+</body>
 </body>
 </html>
