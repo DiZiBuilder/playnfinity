@@ -23,7 +23,6 @@
       touch-action: pan-y;
     }
 
-    /* KILLS GRAY BAR BLEED FROM FEED.HTML */
     #blackkiller {
       position: fixed;
       top: 0; left: 0;
@@ -78,6 +77,26 @@
     }
     .title.show { opacity: 1; }
 
+    .infobox {
+      position: fixed;
+      bottom: 94px;
+      left: 0;
+      right: 0;
+      padding: 16px 20px;
+      background: rgba(20,20,30,0.95);
+      backdrop-filter: blur(20px);
+      text-align: center;
+      z-index: 15;
+      font-size: 15px;
+      line-height: 1.4;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+    }
+    .infobox.hide {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
     .heart {
       position: fixed;
       top: 50%; left: 50%;
@@ -102,6 +121,7 @@
       backdrop-filter: blur(20px);
       border-radius: 0 0 20px 20px;
       z-index: 100;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
     }
 
     .panel {
@@ -245,8 +265,8 @@
 
     // VERTICAL SWIPE
     let startY = 0;
-    overlay.addEventListener('touchstart', e => startY = e.touches[0].screenY, {passive:true});
-    overlay.addEventListener('touchmove', e => e.preventDefault(), {passive:false});
+    overlay.addEventListener('touchstart', e => startY = e.touches[0].screenY, {passive: true});
+    overlay.addEventListener('touchmove', e => e.preventDefault(), {passive: false});
     overlay.addEventListener('touchend', e => {
       if (!startY) return;
       const delta = startY - e.changedTouches[0].screenY;
@@ -263,7 +283,7 @@
 
     // LEFT-EDGE SWIPE = MENU
     let edgeX = 0;
-    overlay.addEventListener('touchstart', e => { if (e.touches[0].screenX < 60) edgeX = e.touches[0].screenX; }, {passive:true});
+    overlay.addEventListener('touchstart', e => { if (e.touches[0].screenX < 60) edgeX = e.touches[0].screenX; }, {passive: true});
     overlay.addEventListener('touchmove', e => {
       if (edgeX && e.touches[0].screenX - edgeX > 100) {
         panel.classList.add('open');
