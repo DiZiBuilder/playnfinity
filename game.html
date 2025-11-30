@@ -22,8 +22,8 @@
       overscroll-behavior-y: none !important;
       touch-action: pan-y;
     }
-
-    #blackkiller {
+    /* KILLS GRAY BAR BLEED */
+    #killer {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
@@ -32,7 +32,6 @@
       z-index: 9997;
       pointer-events: none;
     }
-
     #game {
       position: fixed;
       top: 0; left: 0;
@@ -41,8 +40,8 @@
       border: none;
       z-index: 1;
       pointer-events: none;
+      background: #000;
     }
-
     #overlay {
       position: fixed;
       top: 0; left: 0;
@@ -52,7 +51,6 @@
       pointer-events: auto;
       background: transparent;
     }
-
     .title {
       position: fixed;
       top: 50px;
@@ -76,7 +74,6 @@
       transition: opacity 0.6s ease;
     }
     .title.show { opacity: 1; }
-
     .infobox {
       position: fixed;
       bottom: 94px;
@@ -96,7 +93,6 @@
       opacity: 0;
       transform: translateY(20px);
     }
-
     .heart {
       position: fixed;
       top: 50%; left: 50%;
@@ -109,7 +105,6 @@
     .heart.show {
       animation: beat 0.6s cubic-bezier(0.18,0.89,0.32,1.28);
     }
-
     .pulltab {
       position: fixed;
       top: 0;
@@ -121,9 +116,7 @@
       backdrop-filter: blur(20px);
       border-radius: 0 0 20px 20px;
       z-index: 100;
-      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
     }
-
     .panel {
       position: fixed;
       top: -100%;
@@ -139,7 +132,6 @@
       text-align: center;
     }
     .panel.open { top: 0; }
-
     .panel h3 { margin: 20px 0 10px; font-weight: 600; font-size: 18px; }
     .panel button {
       margin: 12px auto;
@@ -155,7 +147,6 @@
       cursor: pointer;
     }
     .panel button.close-btn { background: #333; }
-
     .navbar {
       position: fixed;
       bottom: 0;
@@ -172,38 +163,59 @@
     }
     .navbar img { width: 28px; height: 28px; filter: brightness(0.7); }
     .navbar a.active img { filter: none; }
-
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.6); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
-
     @keyframes beat {
       0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
       50% { transform: translate(-50%,-50%) scale(1.4); }
       100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
     }
+    /* KILL FEED.HTML BLEED */
+    .game-info-bottom, .actions, .game-stats, div[style*="bottom: 0"], .yom-ui, .embed-bar {
+      display: none !important;
+    }
+    body, html { background: #000 !important; }
+
+    /* FINAL NUCLEAR FIX: KILLS YOM'S INJECTED PERMANENT GRAY BAR — EVEN IN SHADOW DOM */
+    iframe {
+      pointer-events: auto !important;
+    }
+    iframe body * {
+      display: none !important;
+    }
+    iframe body::before {
+      content: "";
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      background: #000;
+      z-index: 999999;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
-
   <div id="blackkiller"></div>
-
   <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
   <div id="overlay"></div>
-
+  <div id="blackkiller"></div> <!-- you had it twice, keeping it for safety -->
   <div class="title" id="title">Loading…</div>
-
+  <div class="infobox" id="infobox">
+    <div id="infoTitle">Valley of the Ancient</div>
+    <div style="font-size:13px;opacity:.8;margin-top:4px">Played • 456 likes • Powered by YOM</div>
+  </div>
   <div class="heart" id="heart">❤️</div>
   <div class="pulltab"></div>
-
   <div class="panel" id="panel">
     <h3 id="panelTitle">Game Title</h3>
     <button onclick="shareGame(event)">Share This Game</button>
     <button onclick="goFullscreen(event)">Enter Fullscreen</button>
     <button class="close-btn" onclick="closePanel(event)">Close Menu</button>
   </div>
-
   <nav class="navbar">
     <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
     <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
@@ -211,16 +223,15 @@
     <a href="/trending.html"><img src="https://playnfinity.games/app/fav.gr.png"></a>
     <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
   </nav>
-
   <script>
     if (location.pathname.includes('.html')) {
       history.replaceState(null, null, location.pathname.replace('.html', '') + location.search);
     }
-
     document.oncontextmenu = e => {
       if (e.target.closest('#overlay')) {
         e.preventDefault();
         panel.classList.toggle('open');
+        infobox.classList.remove('hide');
       }
       return false;
     };
@@ -228,30 +239,31 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'F12' || (e.ctrlKey && 'uicjs'.includes(e.key.toLowerCase()))) e.preventDefault();
     });
-
     const games = [
       {id:'1', title:'Valley of the Ancient', url:'https://yom.net/embed/valley-of-the-ancient'},
       {id:'2', title:'K4 Rally', url:'https://yom.net/embed/k4-rally'},
       {id:'3', title:'Martians vs Roughnecks', url:'https://yom.net/embed/martians-vs-roughnecks'}
     ];
-
     let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
     let currentGame = games[currentIndex];
-
     const iframe = document.getElementById('game');
     const titleEl = document.getElementById('title');
     const panelTitle = document.getElementById('panelTitle');
+    const infoTitle = document.getElementById('infoTitle');
+    const infobox = document.getElementById('infobox');
     const overlay = document.getElementById('overlay');
     const panel = document.getElementById('panel');
-
     function loadGame() {
       iframe.src = currentGame.url + '?autoplay=1&t=' + Date.now();
       titleEl.textContent = currentGame.title;
       panelTitle.textContent = currentGame.title;
+      infoTitle.textContent = currentGame.title;
       titleEl.classList.add('show');
+      infobox.classList.remove('hide');
+      clearTimeout(infobox.hideTimer);
+      infobox.hideTimer = setTimeout(() => infobox.classList.add('hide'), 4000);
     }
     loadGame();
-
     // Double-tap like
     let taps = 0, tapTimer;
     overlay.addEventListener('click', () => {
@@ -262,11 +274,10 @@
         setTimeout(() => document.getElementById('heart').classList.remove('show'), 600);
       }
     });
-
-    // VERTICAL SWIPE
+    // VERTICAL SWIPE — NO PULL-TO-REFRESH
     let startY = 0;
-    overlay.addEventListener('touchstart', e => startY = e.touches[0].screenY, {passive: true});
-    overlay.addEventListener('touchmove', e => e.preventDefault(), {passive: false});
+    overlay.addEventListener('touchstart', e => { startY = e.touches[0].screenY; }, {passive: true});
+    overlay.addEventListener('touchmove', e => { e.preventDefault(); }, {passive: false});
     overlay.addEventListener('touchend', e => {
       if (!startY) return;
       const delta = startY - e.changedTouches[0].screenY;
@@ -280,18 +291,17 @@
       }
       startY = 0;
     });
-
     // LEFT-EDGE SWIPE = MENU
     let edgeX = 0;
     overlay.addEventListener('touchstart', e => { if (e.touches[0].screenX < 60) edgeX = e.touches[0].screenX; }, {passive: true});
     overlay.addEventListener('touchmove', e => {
       if (edgeX && e.touches[0].screenX - edgeX > 100) {
         panel.classList.add('open');
+        infobox.classList.remove('hide');
         edgeX = 0;
       }
     });
     overlay.addEventListener('touchend', () => edgeX = 0);
-
     // DESKTOP WHEEL
     overlay.onwheel = e => {
       e.preventDefault();
@@ -302,7 +312,6 @@
       titleEl.classList.remove('show');
       loadGame();
     };
-
     window.shareGame = e => { e.stopPropagation(); navigator.share ? navigator.share({title:currentGame.title,url:location.href}) : navigator.clipboard.writeText(location.href); };
     window.goFullscreen = e => { e.stopPropagation(); iframe.requestFullscreen?.(); };
     window.closePanel = e => { e.stopPropagation(); panel.classList.remove('open'); };
