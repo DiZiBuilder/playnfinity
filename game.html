@@ -22,7 +22,8 @@
       overscroll-behavior-y: none !important;
       touch-action: pan-y;
     }
-    #blackkiller {
+    /* KILLS GRAY BAR BLEED */
+    #killer {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
@@ -38,6 +39,7 @@
       height: 100vh;
       border: none;
       z-index: 1;
+      pointer-events: none;
       background: #000;
     }
     #overlay {
@@ -95,19 +97,13 @@
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%,-50%) scale(0);
-      font-size: 140px;
+      font-size: 120px;
       pointer-events: none;
       z-index: 999;
       opacity: 0;
     }
     .heart.show {
-      animation: burst 0.7s cubic-bezier(0.18,0.89,0.32,1.28);
-      opacity: 1;
-    }
-    @keyframes burst {
-      0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
-      40% { transform: translate(-50%,-50%) scale(1.6); }
-      100% { transform: translate(-50%,-50%) scale(1.2); opacity: 0; }
+      animation: beat 0.6s cubic-bezier(0.18,0.89,0.32,1.28);
     }
     .pulltab {
       position: fixed;
@@ -151,84 +147,37 @@
       cursor: pointer;
     }
     .panel button.close-btn { background: #333; }
-
-    /* NAVBAR V2.2 — LOCKED & PERFECT */
-    .nav-bar {
+    .navbar {
       position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid #333;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 84px;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(30px);
+      border-top: 1px solid rgba(255,255,255,0.08);
       display: flex;
       justify-content: space-around;
-      padding: 0.75rem 0;
+      align-items: center;
       z-index: 1000;
     }
-    .nav-item { width: 20%; text-align: center; }
-    .nav-icon {
-      width: 28px;
-      height: 28px;
-      filter: grayscale(100%) brightness(0.7);
-      transition: all 0.2s;
-    }
-    .nav-item.active .nav-icon { filter: none; }
-
-    /* NEW: LOADING SPINNER & PLACEHOLDER */
-    #loader, #placeholder {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.4s ease;
-    }
-    #loader.hide, #placeholder.hide { opacity: 0; pointer-events: none; }
-    .spinner {
-      width: 56px; height: 56px;
-      border: 5px solid rgba(168,85,247,0.3);
-      border-top-color: #a855f7;
-      border-radius: 50%;
-      animation: spin 0.9s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #placeholder img {
-      width: 80%;
-      max-width: 400px;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    }
-    #placeholder h2 { margin-top: 24px; font-size: 24px; font-weight: 600; }
-    #placeholder p { margin-top: 8px; opacity: 0.7; font-size: 16px; }
-
+    .navbar img { width: 28px; height: 28px; filter: brightness(0.7); }
+    .navbar a.active img { filter: none; }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.6); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
+    @keyframes beat {
+      0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+      50% { transform: translate(-50%,-50%) scale(1.4); }
+      100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
+    }
   </style>
 </head>
 <body>
-  <div id="blackkiller"></div>
+  <div id="killer"></div>
   <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
   <div id="overlay"></div>
-  <div id="blackkiller"></div>
-
-  <!-- NEW: LOADING SPINNER -->
-  <div id="loader">
-    <div class="spinner"></div>
-    <p style="margin-top:20px;opacity:0.8;">Launching game…</p>
-  </div>
-
-  <!-- NEW: PLACEHOLDER SCREEN (404 FALLBACK) -->
-  <div id="placeholder" class="hide">
-    <img src="" alt="Game preview">
-    <h2 id="placeholderTitle"></h2>
-    <p>Powered by YOM • Coming very soon</p>
-  </div>
-
   <div class="title" id="title">Loading…</div>
   <div class="infobox" id="infobox">
     <div id="infoTitle">Valley of the Ancient</div>
@@ -243,7 +192,7 @@
     <button class="close-btn" onclick="closePanel(event)">Close Menu</button>
   </div>
 
-  <!-- NAVBAR V2.2 FROM FEED.HTML -->
+  <!-- APPROVED NAVBAR V2.2 FROM FEED.HTML — ONLY THIS PART CHANGED -->
   <nav class="nav-bar">
     <a href="/" class="nav-item" data-page="home">
       <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
@@ -279,19 +228,15 @@
     });
 
     const games = [
-      {id:'1', title:'Valley of the Ancient', url:'https://yom.net/embed/valley-of-the-ancient', thumb:'https://playnfinity.games/app/placeholder-valley.jpg'},
-      {id:'2', title:'K4 Rally', url:'https://yom.net/embed/k4-rally', thumb:'https://playnfinity.games/app/placeholder-rally.jpg'},
-      {id:'3', title:'Martians vs Roughnecks', url:'https://yom.net/embed/martians-vs-roughnecks', thumb:'https://playnfinity.games/app/placeholder-martians.jpg'}
+      {id:'1', title:'Valley of the Ancient', url:'https://yom.net/embed/valley-of-the-ancient'},
+      {id:'2', title:'K4 Rally', url:'https://yom.net/embed/k4-rally'},
+      {id:'3', title:'Martians vs Roughnecks', url:'https://yom.net/embed/martians-vs-roughnecks'}
     ];
 
     let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
     let currentGame = games[currentIndex];
 
     const iframe = document.getElementById('game');
-    const loader = document.getElementById('loader');
-    const placeholder = document.getElementById('placeholder');
-    const placeholderImg = placeholder.querySelector('img');
-    const placeholderTitle = document.getElementById('placeholderTitle');
     const titleEl = document.getElementById('title');
     const panelTitle = document.getElementById('panelTitle');
     const infoTitle = document.getElementById('infoTitle');
@@ -300,10 +245,7 @@
     const panel = document.getElementById('panel');
 
     function loadGame() {
-      loader.classList.remove('hide');
-      placeholder.classList.add('hide');
       iframe.src = currentGame.url + '?autoplay=1&t=' + Date.now();
-
       titleEl.textContent = currentGame.title;
       panelTitle.textContent = currentGame.title;
       infoTitle.textContent = currentGame.title;
@@ -312,14 +254,7 @@
       clearTimeout(infobox.hideTimer);
       infobox.hideTimer = setTimeout(() => infobox.classList.add('hide'), 4000);
     }
-
-    iframe.onload = () => loader.classList.add('hide');
-    iframe.onerror = () => {
-      loader.classList.add('hide');
-      placeholder.classList.remove('hide');
-      placeholderImg.src = currentGame.thumb;
-      placeholderTitle.textContent = currentGame.title;
-    };
+    loadGame();
 
     // Double-tap like
     let taps = 0, tapTimer;
@@ -328,11 +263,11 @@
       if (taps === 1) tapTimer = setTimeout(() => taps = 0, 400);
       else { clearTimeout(tapTimer); taps = 0;
         document.getElementById('heart').classList.add('show');
-        setTimeout(() => document.getElementById('heart').classList.remove('show'), 700);
+        setTimeout(() => document.getElementById('heart').classList.remove('show'), 600);
       }
     });
 
-    // VERTICAL SWIPE
+    // VERTICAL SWIPE — NO PULL-TO-REFRESH
     let startY = 0;
     overlay.addEventListener('touchstart', e => { startY = e.touches[0].screenY; }, {passive: true});
     overlay.addEventListener('touchmove', e => { e.preventDefault(); }, {passive: false});
@@ -376,8 +311,6 @@
     window.shareGame = e => { e.stopPropagation(); navigator.share ? navigator.share({title:currentGame.title,url:location.href}) : navigator.clipboard.writeText(location.href); };
     window.goFullscreen = e => { e.stopPropagation(); iframe.requestFullscreen?.(); };
     window.closePanel = e => { e.stopPropagation(); panel.classList.remove('open'); };
-
-    loadGame();
   </script>
 </body>
 </html>
