@@ -221,12 +221,10 @@
   </nav>
 
   <script>
-    // Clean URL
     if (location.pathname.includes('.html')) {
       history.replaceState(null, null, location.pathname.replace('.html', '') + location.search);
     }
 
-    // Total lockdown
     document.oncontextmenu = e => {
       if (e.target.closest('#overlay')) {
         e.preventDefault();
@@ -269,7 +267,6 @@
     }
     loadGame();
 
-    // Double-tap like
     let taps = 0;
     let tapTimer;
     overlay.addEventListener('click', () => {
@@ -284,7 +281,6 @@
       }
     });
 
-    // === MOBILE: VERTICAL SWIPE = NEXT/PREV GAME ===
     let startY = 0;
     overlay.ontouchstart = e => startY = e.touches[0].screenY;
     overlay.ontouchend = e => {
@@ -301,7 +297,6 @@
       }
     };
 
-    // === MENU: SWIPE FROM LEFT EDGE TO RIGHT ===
     let edgeStartX = 0;
     overlay.addEventListener('touchstart', e => {
       if (e.touches[0].screenX < 60) edgeStartX = e.touches[0].screenX;
@@ -315,7 +310,6 @@
     });
     overlay.addEventListener('touchend', () => edgeStartX = 0);
 
-    // Desktop: wheel
     overlay.onwheel = e => {
       e.preventDefault();
       if (Math.abs(e.deltaY) < 50) return;
@@ -328,7 +322,6 @@
       loadGame();
     };
 
-    // Panel actions
     window.shareGame = e => { e.stopPropagation(); navigator.share ? navigator.share({title:currentGame.title,url:location.href}) : navigator.clipboard.writeText(location.href); };
     window.goFullscreen = e => { e.stopPropagation(); iframe.requestFullscreen?.(); };
     window.closePanel = e => { e.stopPropagation(); panel.classList.remove('open'); };
