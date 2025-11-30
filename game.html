@@ -23,8 +23,8 @@
       touch-action: pan-y;
     }
 
-    /* KILLS GRAY BAR BLEED */
-    #killer {
+    /* KILLS GRAY BAR BLEED FROM FEED.HTML */
+    #blackkiller {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
@@ -42,7 +42,6 @@
       border: none;
       z-index: 1;
       pointer-events: none;
-      background: #000;
     }
 
     #overlay {
@@ -78,26 +77,6 @@
       transition: opacity 0.6s ease;
     }
     .title.show { opacity: 1; }
-
-    .infobox {
-      position: fixed;
-      bottom: 94px;
-      left: 0;
-      right: 0;
-      padding: 16px 20px;
-      background: rgba(20,20,30,0.95);
-      backdrop-filter: blur(20px);
-      text-align: center;
-      z-index: 15;
-      font-size: 15px;
-      line-height: 1.4;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      pointer-events: none;
-    }
-    .infobox.hide {
-      opacity: 0;
-      transform: translateY(20px);
-    }
 
     .heart {
       position: fixed;
@@ -184,11 +163,6 @@
       50% { transform: translate(-50%,-50%) scale(1.4); }
       100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
     }
-/* KILL FEED.HTML BLEED */
-.game-info-bottom, .actions, .game-stats, div[style*="bottom: 0"], .yom-ui, .embed-bar {
-  display: none !important;
-}
-body, html { background: #000 !important; }
   </style>
 </head>
 <body>
@@ -199,11 +173,6 @@ body, html { background: #000 !important; }
   <div id="overlay"></div>
 
   <div class="title" id="title">Loading…</div>
-
-  <div class="infobox" id="infobox">
-    <div id="infoTitle">Valley of the Ancient</div>
-    <div style="font-size:13px;opacity:.8;margin-top:4px">Played • 456 likes • Powered by YOM</div>
-  </div>
 
   <div class="heart" id="heart">❤️</div>
   <div class="pulltab"></div>
@@ -232,7 +201,6 @@ body, html { background: #000 !important; }
       if (e.target.closest('#overlay')) {
         e.preventDefault();
         panel.classList.toggle('open');
-        infobox.classList.remove('hide');
       }
       return false;
     };
@@ -253,8 +221,6 @@ body, html { background: #000 !important; }
     const iframe = document.getElementById('game');
     const titleEl = document.getElementById('title');
     const panelTitle = document.getElementById('panelTitle');
-    const infoTitle = document.getElementById('infoTitle');
-    const infobox = document.getElementById('infobox');
     const overlay = document.getElementById('overlay');
     const panel = document.getElementById('panel');
 
@@ -262,11 +228,7 @@ body, html { background: #000 !important; }
       iframe.src = currentGame.url + '?autoplay=1&t=' + Date.now();
       titleEl.textContent = currentGame.title;
       panelTitle.textContent = currentGame.title;
-      infoTitle.textContent = currentGame.title;
       titleEl.classList.add('show');
-      infobox.classList.remove('hide');
-      clearTimeout(infobox.hideTimer);
-      infobox.hideTimer = setTimeout(() => infobox.classList.add('hide'), 4000);
     }
     loadGame();
 
@@ -281,10 +243,10 @@ body, html { background: #000 !important; }
       }
     });
 
-    // VERTICAL SWIPE — NO PULL-TO-REFRESH
+    // VERTICAL SWIPE
     let startY = 0;
-    overlay.addEventListener('touchstart', e => { startY = e.touches[0].screenY; }, {passive: true});
-    overlay.addEventListener('touchmove', e => { e.preventDefault(); }, {passive: false});
+    overlay.addEventListener('touchstart', e => startY = e.touches[0].screenY, {passive:true});
+    overlay.addEventListener('touchmove', e => e.preventDefault(), {passive:false});
     overlay.addEventListener('touchend', e => {
       if (!startY) return;
       const delta = startY - e.changedTouches[0].screenY;
@@ -301,11 +263,10 @@ body, html { background: #000 !important; }
 
     // LEFT-EDGE SWIPE = MENU
     let edgeX = 0;
-    overlay.addEventListener('touchstart', e => { if (e.touches[0].screenX < 60) edgeX = e.touches[0].screenX; }, {passive: true});
+    overlay.addEventListener('touchstart', e => { if (e.touches[0].screenX < 60) edgeX = e.touches[0].screenX; }, {passive:true});
     overlay.addEventListener('touchmove', e => {
       if (edgeX && e.touches[0].screenX - edgeX > 100) {
         panel.classList.add('open');
-        infobox.classList.remove('hide');
         edgeX = 0;
       }
     });
