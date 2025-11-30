@@ -208,23 +208,15 @@
       }
     });
 
-    // Supabase
-    const supabase = window.supabase.createClient(
-      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
-    );
-
+    // Games (add all your games here)
     const games = [
       { id: '1', title: 'Valley of the Ancient', url: 'https://yom.net/embed/valley-of-the-ancient' },
       { id: '2', title: 'K4 Rally', url: 'https://yom.net/embed/k4-rally' },
       { id: '3', title: 'Martians vs Roughnecks', url: 'https://yom.net/embed/martians-vs-roughnecks' }
-      // Add all your games here
     ];
 
     let currentIndex = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
     let currentGame = games[currentIndex];
-    let tapCount = 0;
-    let tapTimer = null;
 
     // Load current game
     function loadGame() {
@@ -232,10 +224,11 @@
       document.getElementById('title').textContent = currentGame.title;
       document.getElementById('panelTitle').textContent = currentGame.title;
       document.getElementById('title').classList.add('show');
-      if (typeof initTracking === 'function') initTracking(currentGame.id);
     }
 
-    // Double-tap = Like + Heart animation
+    // Double-tap = Like
+    let tapCount = 0;
+    let tapTimer = null;
     const overlay = document.getElementById('gestureOverlay');
     overlay.addEventListener('click', () => {
       tapCount++;
@@ -248,12 +241,6 @@
         const heart = document.getElementById('heart');
         heart.classList.add('show');
         setTimeout(() => heart.classList.remove('show'), 600);
-
-        supabase.from('game_interactions').insert({
-          game_id: currentGame.id,
-          type: 'like',
-          timestamp: new Date().toISOString()
-        });
       }
     });
 
@@ -310,7 +297,6 @@
         navigator.clipboard.writeText(location.href);
         alert('Link copied to clipboard!');
       }
-      supabase.from('game_interactions').insert({ game_id: currentGame.id, type: 'share' });
     }
 
     function requestFullscreen() {
