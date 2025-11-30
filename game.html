@@ -1,178 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Playnfinity</title>
-  <link rel="icon" href="favicon.ico" />
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#000000" />
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%; overflow: hidden; background: #000;
-      font-family: -apple-system, system-ui, sans-serif; color: white;
-      -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
-      -webkit-tap-highlight-color: transparent; touch-action: pan-y;
-    }
-    #game { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border: none; z-index: 1; pointer-events: none; }
-    #overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: auto; background: transparent; }
-    .title {
-      position: fixed; top: 50px; left: 50%; transform: translateX(-50%); z-index: 20;
-      background: rgba(0,0,0,0.55); backdrop-filter: blur(32px); padding: 12px 28px;
-      border-radius: 20px; font-weight: 600; font-size: 17px; max-width: 90%; text-align: center;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      border: 1px solid rgba(255,255,255,0.09); box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-      opacity: 0; transition: opacity .6s ease;
-    }
-    .title.show { opacity: 1; }
-    .heartbeat {
-      position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
-      font-size: 120px; pointer-events: none; z-index: 999; opacity: 0;
-      transition: transform .6s cubic-bezier(.18,.89,.32,1.28), opacity .6s;
-    }
-    .heartbeat.show { transform: translate(-50%,-50%) scale(1); opacity: 1; }
-    .pulltab {
-      position: fixed; top: 0; left: 50%; width: 46px; height: 36px;
-      transform: translateX(-50%); background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(20px); border-radius: 0 0 20px 20px; z-index: 100;
-      transition: top .4s cubic-bezier(.22,1,.36,1);
-    }
-    .panel {
-      position: fixed; top: -100%; left: 0; width: 100%; height: 380px;
-      background: rgba(15,15,25,0.96); backdrop-filter: blur(40px);
-      border-radius: 0 0 30px 30px; z-index: 99;
-      transition: top .5s cubic-bezier(.22,1,.36,1); padding-top: 50px; text-align: center;
-    }
-    .panel.open { top: 0; }
-    .panel h3 { margin: 20px 0 10px; font-weight: 600; font-size: 18px; }
-    .panel button {
-      margin: 12px auto; width: 80%; padding: 16px; border-radius: 18px;
-      border: none; background: #a855f7; color: #fff; font-size: 17px;
-      font-weight: 600; box-shadow: 0 10px 30px rgba(168,85,247,0.4); cursor: pointer;
-    }
-    .panel button.close-btn { background: #333; }
-    .navbar {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 84px;
-      background: rgba(0,0,0,0.95); backdrop-filter: blur(30px);
-      border-top: 1px solid rgba(255,255,255,0.08); display: flex;
-      justify-content: space-around; align-items: center; z-index: 1000;
-    }
-    .navbar img { width: 28px; height: 28px; filter: brightness(0.7); transition: none; }
-    .navbar a:hover img, .navbar a.active img { filter: none; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.6); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Playnfinity</title>
+<link rel="icon" href="favicon.ico">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#000000">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#000;font-family:-apple-system,system-ui,sans-serif;color:#fff;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:pan-y}
+#game{position:fixed;top:0;left:0;width:100vw;height:100vh;border:none;z-index:1;pointer-events:none}
+#overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2;pointer-events:auto;background:transparent}
+.title{position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(0,0,0,0.55);backdrop-filter:blur(32px);padding:12px 28px;border-radius:20px;font-weight:600;font-size:17px;max-width:90%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid rgba(255,255,255,0.09);box-shadow:0 8px 32px rgba(0,0,0,0.6);opacity:0;transition:opacity .6s}
+.title.show{opacity:1}
+.heartbeat{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:120px;pointer-events:none;z-index:999;opacity:0;transition:transform .6s cubic-bezier(.18,.89,.32,1.28),opacity .6s}
+.heartbeat.show{transform:translate(-50%,-50%) scale(1);opacity:1}
+.pulltab{position:fixed;top:0;left:50%;width:46px;height:36px;transform:translateX(-50%);background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);border-radius:0 0 20px 20px;z-index:100;transition:top .4s cubic-bezier(.22,1,.36,1)}
+.panel{position:fixed;top:-100%;left:0;width:100%;height:380px;background:rgba(15,15,25,0.96);backdrop-filter:blur(40px);border-radius:0 0 30px 30px;z-index:99;transition:top .5s cubic-bezier(.22,1,.36,1);padding-top:50px;text-align:center}
+.panel.open{top:0}
+.panel h3{margin:20px 0 10px;font-weight:600;font-size:18px}
+.panel button{margin:12px auto;width:80%;padding:16px;border-radius:18px;border:none;background:#a855f7;color:#fff;font-size:17px;font-weight:600;box-shadow:0 10px 30px rgba(168,85,247,0.4);cursor:pointer}
+.panel button.close-btn{background:#333}
+.navbar{position:fixed;bottom:0;left:0;right:0;height:84px;background:rgba(0,0,0,0.95);backdrop-filter:blur(30px);border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-around;align-items:center;z-index:1000}
+.navbar img{width:28px;height:28px;filter:brightness(0.7);transition:none}
+.navbar a:hover img,.navbar a.active img{filter:none}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.6);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#a855f7}
+</style>
 </head>
 <body>
-  <iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
-  <div id="overlay"></div>
-  <div class="title" id="title">Loading…</div>
-  <div class="heartbeat" id="heart">❤️</div>
-  <div class="pulltab" id="pulltab"></div>
-  <div class="panel" id="panel">
-    <h3 id="panelTitle">Game</h3>
-    <button onclick="shareGame()">Share This Game</button>
-    <button onclick="requestFullscreen()">Enter Fullscreen</button>
-    <button class="close-btn" onclick="history.back()">Close Player</button>
-  </div>
-  <nav class="navbar">
-    <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
-    <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
-    <a href="/explore.html"><img src="https://playnfinity.games/app/explore.gr.png"></a>
-    <a href="/trending.html"><img src="https://playnfinity.games/app/fav.gr.png"></a>
-    <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
-  </nav>
+<iframe id="game" allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>
+<div id="overlay"></div>
+<div class="title" id="title">Loading…</div>
+<div class="heartbeat" id="heart">❤️</div>
+<div class="pulltab" id="pulltab"></div>
+<div class="panel" id="panel">
+  <h3 id="panelTitle">Game</h3>
+  <button onclick="shareGame()">Share This Game</button>
+  <button onclick="requestFullscreen()">Enter Fullscreen</button>
+  <button class="close-btn" onclick="history.back()">Close Player</button>
+</div>
+<nav class="navbar">
+  <a href="/"><img src="https://playnfinity.games/app/home.gr.png"></a>
+  <a href="/feed.html"><img src="https://playnfinity.games/app/letterp.gr.png"></a>
+  <a href="/explore.html"><img src="https://playnfinity.games/app/explore.gr.png"></a>
+  <a href="/trending.html"><img src="https://playnfinity.games/app/fav.gr.png"></a>
+  <a href="/profile.html"><img src="https://playnfinity.games/app/profile.gr.png"></a>
+</nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/track.js"></script>
-  <script>
-    if(location.pathname.includes('.html')) history.replaceState(null,null,location.pathname.replace('.html','')+location.search);
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/track.js"></script>
+<script>
+if(location.pathname.includes('.html')) history.replaceState(null,null,location.pathname.replace('.html','')+location.search);
 
-    document.oncontextmenu = document.onselectstart = document.ondragstart = () => false;
-    document.addEventListener('keydown', e => {
-      if(e.key==='F12' || (e.ctrlKey && e.shiftKey) || (e.ctrlKey && 'uicjs'.includes(e.key.toLowerCase()))) e.preventDefault();
-    });
+document.oncontextmenu=document.onselectstart=document.ondragstart=()=>false;
+document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey)||(e.ctrlKey&&'uicjs'.includes(e.key.toLowerCase())))e.preventDefault()});
 
-    const supabase = window.supabase.createClient(
-      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
-    );
+const supabase = window.supabase.createClient('https://yfrgxmpbdbkfwzwbtfrt.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI');
 
-    const games = [
-      {id:'1',title:'Valley of the Ancient',url:'https://yom.net/embed/valley-of-the-ancient'},
-      {id:'2',title:'K4 Rally',url:'https://yom.net/embed/k4-rally'},
-      {id:'3',title:'Martians vs Roughnecks',url:'https://yom.net/embed/martians-vs-roughnecks'}
-    ];
+const games=[
+  {id:'1',title:'Valley of the Ancient',url:'https://yom.net/embed/valley-of-the-ancient'},
+  {id:'2',title:'K4 Rally',url:'https://yom.net/embed/k4-rally'},
+  {id:'3',title:'Martians vs Roughnecks',url:'https://yom.net/embed/martians-vs-roughnecks'}
+];
 
-    let idx = games.findIndex(g => g.id === new URLSearchParams(location.search).get('id')) || 0;
-    let current = games[idx];
-    let tapCount = 0, tapTimer;
+let idx=games.findIndex(g=>g.id===new URLSearchParams(location.search).get('id'))||0;
+let current=games[idx];
+let tapCount=0,tapTimer,startY=0;
 
-    function load() {
-      document.getElementById('game').src = current.url + '?autoplay=1&t=' + Date.now();
-      document.getElementById('title').textContent = current.title;
-      document.getElementById('panelTitle').textContent = current.title;
-      document.getElementById('title').classList.add('show');
-      if(typeof initTracking === 'function') initTracking(current.id);
-    }
+function load(){
+  document.getElementById('game').src=current.url+'?autoplay=1&t='+Date.now();
+  document.getElementById('title').textContent=current.title;
+  document.getElementById('panelTitle').textContent=current.title;
+  document.getElementById('title').classList.add('show');
+  if(typeof initTracking==='function') initTracking(current.id);
+}
 
-    const o = document.getElementById('overlay');
+const o=document.getElementById('overlay');
 
-    o.addEventListener('click', () => {
-      tapCount++;
-      if(tapCount===1) tapTimer = setTimeout(() => tapCount=0, 400);
-      if(tapCount===2){
-        clearTimeout(tapTimer); tapCount=0;
-        document.getElementById('heart').classList.add('show');
-        setTimeout(() => document.getElementById('heart').classList.remove('show'), 600);
-        supabase.from('game_interactions').insert({game_id: current.id, type: 'like'});
-      }
-    });
+o.addEventListener('click',()=>{ // double-tap like
+  tapCount++;
+  if(tapCount===1) tapTimer=setTimeout(()=>{tapCount=0},400);
+  if(tapCount===2){clearTimeout(tapTimer);tapCount=0;
+    document.getElementById('heart').classList.add('show');
+    setTimeout(()=>document.getElementById('heart').classList.remove('show'),600);
+    supabase.from('game_interactions').insert({game_id:current.id,type:'like'});
+  }
+});
 
-    let startY = 0;
-    o.addEventListener('touchstart', e => { startY = e.touches[0].screenY; }, {passive: true});
-    o.addEventListener('touchmove', e => {
-      const d = startY - e.touches[0].screenY;
-      document.getElementById('pulltab').style.top = Math.max(-40, Math.min(0, d-20)) + 'px';
-      if(d > 100) document.getElementById('panel').classList.add('open');
-    }, {passive: true});
-    o.addEventListener('touchend', () => {
-      const d = startY - event.changedTouches[0].screenY;
-      document.getElementById('pulltab').style.top = '0px';
-      if(Math.abs(d) < 150){ document.getElementById('panel').classList.remove('open'); return; }
-      idx = d > 0 ? (idx+1)%games.length : (idx-1+games.length)%games.length;
-      current = games[idx];
-      history.replaceState(null,null,'?id='+current.id);
-      document.getElementById('title').classList.remove('show');
-      document.getElementById('panel').classList.remove('open');
-      load();
-      supabase.from('game_interactions').insert({game_id: current.id, type: 'swipe'});
-    });
+o.addEventListener('touchstart',e=>startY=e.touches[0].screenY,{passive:true});
+o.addEventListener('touchmove',e=>{
+  const d=startY-e.touches[0].screenY;
+  document.getElementById('pulltab').style.top=Math.max(-40,Math.min(0,d-20))+'px';
+  if(d>80) document.getElementById('panel').classList.add('open');
+},{passive:true});
 
-    o.addEventListener('wheel', e => {
-      e.preventDefault();
-      idx = e.deltaY > 0 ? (idx+1)%games.length : (idx-1+games.length)%games.length;
-      current = games[idx];
-      history.replaceState(null,null,'?id='+current.id);
-      document.getElementById('title').classList.remove('show');
-      load();
-      supabase.from('game_interactions').insert({game_id: current.id, type: 'swipe'});
-    }, {passive: false});
+o.addEventListener('touchend',e=>{
+  const d=startY-e.changedTouches[0].screenY;
+  document.getElementById('pulltab').style.top='0px';
+  if(Math.abs(d)<140){
+    if(d>60) document.getElementById('panel').classList.add('open');
+    return;
+  }
+  idx = d>0 ? (idx+1)%games.length : (idx-1+games.length)%games.length;
+  current=games[idx];
+  history.replaceState(null,null,'?id='+current.id);
+  document.getElementById('title').classList.remove('show');
+  document.getElementById('panel').classList.remove('open');
+  load();
+  supabase.from('game_interactions').insert({game_id:current.id,type:'swipe'});
+});
 
-    function shareGame(){
-      if(navigator.share) navigator.share({title:current.title,url:location.href});
-      else { navigator.clipboard.writeText(location.href); alert('Copied!'); }
-      supabase.from('game_interactions').insert({game_id: current.id, type: 'share'});
-    }
-    function requestFullscreen(){
-      const g = document.getElementById('game');
-      g.requestFullscreen?.() || g.webkitRequestFullscreen?.();
-    }
+o.addEventListener('wheel',e=>{
+  e.preventDefault();
+  if(Math.abs(e.deltaY)<50) return;
+  idx = e.deltaY>0 ? (idx+1)%games.length : (idx-1+games.length)%games.length;
+  current=games[idx];
+  history.replaceState(null,null,'?id='+current.id);
+  document.getElementById('title').classList.remove('show');
+  load();
+  supabase.from('game_interactions').insert({game_id:current.id,type:'swipe'});
+},{passive:false});
 
-    load();
-  </script>
+function shareGame(){
+  if(navigator.share) navigator.share({title:current.title,url:location.href});
+  else{navigator.clipboard.writeText(location.href);alert('Copied!')}
+  supabase.from('game_interactions').insert({game_id:current.id,type:'share'});
+}
+function requestFullscreen(){
+  const g=document.getElementById('game');
+  g.requestFullscreen?.()||g.webkitRequestFullscreen?.();
+}
+
+load();
+</script>
 </body>
 </html>
