@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Feed - Playnfinity</title>
+  <title>Playnfinity Feed</title>
   <link rel="icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#a855f7">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
-    
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; background-color: #000000; }
     body {
       background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #660033 100%);
       background-attachment: fixed;
@@ -17,76 +18,159 @@
     body.light {
       background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
     }
-
-    .container { max-width: 500px; margin: 0 auto; padding: 1rem; padding-bottom: 80px; }
-    .game {
-      background: rgba(255, 255, 255, 0.1);
+    /* Beautiful custom scrollbar */
+    .feed-container {
+      position: fixed;
+      top: 60px; left: 0; right: 0; bottom: 80px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem;
+      padding-bottom: 100px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168, 85, 247, 0.6) transparent;
+    }
+    .feed-container::-webkit-scrollbar { width: 6px; }
+    .feed-container::-webkit-scrollbar-track { background: transparent; }
+    .feed-container::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.6);
+      border-radius: 3px;
+    }
+    .feed-container::-webkit-scrollbar-thumb:hover { background: #a855f7; }
+    .lane-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    body.light .lane-tabs { background: rgba(255,255,255,0.9); border-bottom: 1px solid #ddd; }
+    .lane-tab {
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      opacity: 0.7;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      color: white !important;
+      font-weight: 500;
+    }
+    body.light .lane-tab { color: #000 !important; }
+    .lane-tab.active {
+      background: #a855f7;
+      opacity: 1;
+      color: white !important;
+    }
+    .game-card {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 1.5rem;
       border-radius: 1rem;
       overflow: hidden;
-      margin: 1rem 0;
+      background: rgba(255, 255, 255, 0.08) !important;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
-    body.light .game {
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+    body.light .game-card {
+      background: rgba(0, 0, 0, 0.08) !important;
+      border: 1px solid rgba(0, 0, 0, 0.15);
     }
-    .game:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
-    .thumb { width: 100%; height: 200px; object-fit: cover; display: block; }
-    .info { padding: 1rem; }
-    .info h2 { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; color: white; }
-    body.light .info h2 { color: #000; }
-    .info p { font-size: 0.875rem; color: #e0c3fc; margin: 0.25rem 0; }
-    body.light .info p { color: #6b7280; }
-    .yom-badge { color: #a855f7; font-size: 0.75rem; font-weight: bold; }
-    .actions { display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.875rem; }
-    .likes, .comments { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-    .likes { color: #f59e0b; }
-
-    .toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(0, 0, 0, 0.7);
+    .game-card:hover { transform: scale(1.02); }
+    @media (max-width: 640px) { .game-card { max-width: 100%; } }
+    .game-thumb {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      position: relative;
+    }
+    .game-info {
+      padding: 1rem;
+    }
+    .game-info * { color: #ffffff !important; }
+    /* Elegant metadata */
+    .game-duration,
+    .game-powered {
+      color: #d8b4ff !important;
+      opacity: 0.9 !important;
+      font-size: 0.8rem;
+    }
+    .game-powered {
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+    /* Calm, balanced stats */
+    .game-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+    }
+    .game-stats .left {
+      color: #e8d9ff !important;
+      font-weight: 600 !important;
+      opacity: 1;
+    }
+    .game-stats .right {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .game-stats .right span {
+      font-weight: 600;
+      color: #e8d9ff !important;
+      opacity: 0.95;
+    }
+    .game-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      font-size: 1.1rem;
+      color: #ffffff !important;
+    }
+    .play-button {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.7);
       color: white;
-      border: none;
-      padding: 0.75rem;
+      width: 56px; height: 56px;
       border-radius: 50%;
-      cursor: pointer;
-      z-index: 1001;
-      backdrop-filter: blur(12px);
-      font-size: 1.2rem;
-      width: 48px;
-      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1.4rem;
+      backdrop-filter: blur(8px);
     }
-    body.light .toggle { background: rgba(255, 255, 255, 0.9); color: #, #000; }
-
-    .feedback-btn {
+    .overlay-player {
       position: fixed;
-      bottom: 5.5rem;
-      right: 1.5rem;
-      background: #ec4899;
-      color: white;
-      border: none;
-      padding: 1rem;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 1001;
-      font-size: 1.5rem;
-      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
     }
-
+    .overlay-player.active { display: flex; }
+    #overlay-iframe { flex: 1; border: none; }
+    .overlay-ui {
+      position: absolute;
+      bottom: 100px; left: 0; right: 0;
+      padding: 1rem;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(12px);
+      color: white;
+    }
     .nav-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.85);
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.85);
       backdrop-filter: blur(16px);
       border-top: 1px solid #333;
       display: flex;
@@ -94,192 +178,144 @@
       padding: 0.75rem 0;
       z-index: 1000;
     }
-    body.light .nav-bar { background: rgba(255, 255, 255, 0.9); border-top: 1px solid #ddd; }
-    .nav-item {
-      color: #999;
-      text-decoration: none;
-      font-size: 0.7rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .nav-item.active { color: #a855f7; }
-    .nav-icon { 
-      font-size: 1.5rem; 
-      display: block; 
-      margin-bottom: 0.25rem;
-      filter: grayscale(100%) brightness(0.8);
-      color: #999 !important;
+    .nav-item { width: 20%; text-align: center; }
+    .nav-icon {
+      width: 28px;
+      height: 28px;
+      filter: grayscale(100%) brightness(0.7);
       transition: all 0.2s;
     }
-    .nav-item.active .nav-icon { 
-      filter: none; 
-      color: #a855f7 !important; 
+    .nav-item.active .nav-icon { filter: none; }
+    @media (max-width: 640px) {
+      .game-thumb { height: 160px; }
+      .lane-tabs { gap: 0.25rem; }
+      .lane-tab { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
     }
-    .nav-icon.logo { 
-      width: 28px; 
-      height: 28px; 
-      border-radius: 6px;
-      filter: none;
-    }
-    .nav-item span { line-height: 1; }
-
-    @media (max-width: 640px) { .thumb { height: 160px; } }
   </style>
 </head>
-<body>
-  <button class="toggle" onclick="toggleTheme()">🌙</button>
-  <button class="feedback-btn" onclick="feedbackModal()">💬</button>
-
-  <div class="container" id="games-container"></div>
-
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
+  <div class="lane-tabs">
+    <div class="lane-tab active" data-lane="foryou">For You</div>
+    <div class="lane-tab" data-lane="trending">Trending</div>
+    <div class="lane-tab" data-lane="new">New</div>
+  </div>
+  <div class="feed-container" id="feed"></div>
+  <div class="overlay-player" id="overlay-player">
+    <iframe id="overlay-iframe" allow="fullscreen"></iframe>
+    <div class="overlay-ui">
+      <div id="overlay-title" style="font-weight:600; font-size:1.1rem; margin-bottom:0.5rem;"></div>
+      <div id="overlay-stats" style="opacity:0.8;"></div>
+      <div style="display:flex; gap:1rem; justify-content:center; margin-top:0.75rem;">
+        <button onclick="overlayLike()" style="background:none; border:none; color:white; font-size:1.2rem;">❤️ <span id="overlay-likes">0</span></button>
+        <button onclick="closeOverlay()" style="background:rgba(255,255,255,0.15); color:white; padding:0.4rem 1rem; border-radius:1rem; font-size:0.9rem;">Close</button>
+      </div>
+    </div>
+  </div>
   <nav class="nav-bar">
-    <a href="index.html" class="nav-item">
-      <span class="nav-icon">🏠</span>
-      <span>Home</span>
+    <a href="index.html" class="nav-item" data-page="home">
+      <img src="https://playnfinity.games/app/home.gr.png" alt="Home" class="nav-icon" data-active="https://playnfinity.games/app/home.ab.png">
     </a>
-    <a href="feed.html" class="nav-item active">
-      <img src="https://playnfinity.games/TheLetterP.gray.png" alt="Playnfinity" class="nav-icon logo">
-      <span>Playnfinity</span>
+    <a href="feed.html" class="nav-item active" data-page="playnfinity">
+      <img src="https://playnfinity.games/app/letterp.ab.png" alt="Playnfinity" class="nav-icon" data-active="https://playnfinity.games/app/letterp.ab.png">
     </a>
-    <a href="search.html" class="nav-item">
-      <span class="nav-icon">🔍</span>
-      <span>Search</span>
+    <a href="explore.html" class="nav-item" data-page="explore">
+      <img src="https://playnfinity.games/app/explore.gr.png" alt="Explore" class="nav-icon" data-active="https://playnfinity.games/app/explore.ab.png">
     </a>
-    <a href="favorites.html" class="nav-item">
-      <span class="nav-icon">❤️</span>
-      <span>Favorites</span>
+    <a href="trending.html" class="nav-item" data-page="trending">
+      <img src="https://playnfinity.games/app/fav.gr.png" alt="Trending" class="nav-icon" data-active="https://playnfinity.games/app/fav.ab.png">
     </a>
-    <a href="profile.html" class="nav-item">
-      <span class="nav-icon">👤</span>
-      <span>Profile</span>
+    <a href="profile.html" class="nav-item" data-page="profile">
+      <img src="https://playnfinity.games/app/profile.gr.png" alt="Login" class="nav-icon" data-active="https://playnfinity.games/app/profile.ab.png">
     </a>
   </nav>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'https://yfrgxmpbdbkfwzwbtfrt.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI';
-
-    const staticGames = [
-      { id: 1, title: "Valley of the Ancient", url: "https://yom.net/embed/valley-of-the-ancient", thumb: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f94ce03ba3cd28ed86dbff_ChatGPT%20Image%2011%20apr%202025%2C%2019_09_14.png", dur: "2-3 min", tags: "Exploration", likes: 1200, comments: 456 },
-      { id: 2, title: "K4 Rally", url: "https://yom.net/embed/k4-rally", thumb: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/678a8fc28042d40bdeb4f55c_Screenshot%202025-01-17%20181233.png", dur: "2 min", tags: "Racing", likes: 2500, comments: 789 },
-      { id: 3, title: "Martians vs Roughnecks", url: "https://yom.net/embed/martians-vs-roughnecks", thumb: "https://cdn.prod.website-files.com/65b5480cdd8b6e13edf11b63/67f951e0b5c780c8b4d9f06d_image%20(5).png", dur: "3 min", tags: "Action", likes: 1100, comments: 312 }
-    ];
-
-    async function loadGames() {
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/games?approved=eq.true&order=created_at.desc`, {
-          headers: { 'apikey': SUPABASE_ANON_KEY }
-        });
-        const dbGames = await res.json();
-        renderGames(dbGames);
-      } catch (e) {
-        console.error('DB error:', e);
-        renderGames([]);
+    if (location.pathname.includes('.html') && !location.pathname.includes('game.html')) {
+      history.replaceState(null, null, location.pathname.replace('.html', '') || '/');
+    }
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 's')) || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J'))) {
+        e.preventDefault();
       }
-    }
-
-    function renderGames(dbGames) {
-      const container = document.getElementById('games-container');
-      container.innerHTML = '';
-
-      dbGames.forEach(game => {
-        const div = createGameDiv(game.id, game.title, game.url, game.thumbnail, game.duration + " min", game.tags || "Game", game.likes || 0, game.comments || 0);
-        container.appendChild(div);
-      });
-
-      staticGames.forEach(game => {
-        const div = createGameDiv(game.id, game.title, game.url, game.thumb, game.dur, game.tags, game.likes, game.comments);
-        container.appendChild(div);
-      });
-    }
-
-    function createGameDiv(id, title, url, thumb, dur, tags, likes, comments) {
-      const div = document.createElement('div');
-      div.className = 'game';
-      div.onclick = (e) => { if (!e.target.closest('.actions')) playGame(url, id); };
-      div.innerHTML = `
-        <img src="${thumb || 'https://via.placeholder.com/500x200/581c87/fff?text=' + encodeURIComponent(title)}" alt="${title}" class="thumb" onerror="this.src='https://via.placeholder.com/500x200/581c87/fff?text=No+Image'">
-        <div class="info">
-          <h2>${title}</h2>
-          <p>${dur} | ${tags}</p>
-          <p class="yom-badge">Powered by YOM</p>
-          <div class="actions">
-            <div class="likes" onclick="likeGame(${id}, event)">❤️ <span class="count">${(likes || 0).toLocaleString()}</span></div>
-            <div class="comments" onclick="commentModal(${id}, event)">💬 ${(comments || 0)}</div>
-          </div>
-        </div>
-      `;
-      return div;
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle('light');
-      const isLight = document.body.classList.contains('light');
-      document.querySelector('.toggle').textContent = isLight ? '🌞' : '🌙';
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    }
-
-    function playGame(url, id) {
-      const iframe = document.createElement('iframe');
-      iframe.src = url;
-      iframe.allow = 'fullscreen';
-      iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;border:none;background:#000;';
-      document.body.appendChild(iframe);
-      const close = () => iframe.remove();
-      document.addEventListener('keydown', e => e.key === 'Escape' && close());
-      let startY = 0;
-      document.addEventListener('touchstart', e => startY = e.touches[0].clientY, { once: true });
-      document.addEventListener('touchmove', e => {
-        if (startY - e.touches[0].clientY > 100) close();
-      });
-      setTimeout(close, 180000);
-    }
-
-    function likeGame(id, e) {
-      e.stopPropagation();
-      const count = e.target.querySelector('.count');
-      let num = parseInt(count.textContent.replace(/[^0-9]/g, '')) || 0;
-      num++;
-      count.textContent = num.toLocaleString();
-    }
-
-    function commentModal(id, e) {
-      e.stopPropagation();
-      const comment = prompt(`Comment:`);
-      if (comment) {
-        saveFeedback(id, 'comment', comment);
-        alert('Saved!');
-      }
-    }
-
-    function feedbackModal() {
-      const msg = prompt('Feedback:');
-      if (msg) {
-        saveFeedback(0, 'general', msg);
-        alert('Thanks!');
-      }
-    }
-
-    function saveFeedback(gameId, type, text) {
-      const feedback = JSON.parse(localStorage.getItem('playnfinity_feedback') || '[]');
-      feedback.push({ gameId, type, text, timestamp: new Date().toISOString(), device: navigator.userAgent });
-      localStorage.setItem('playnfinity_feedback', JSON.stringify(feedback));
-    }
-
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light');
-      document.querySelector('.toggle').textContent = '🌞';
-    }
-
-    const currentPage = window.location.pathname.split('/').pop() || 'feed.html';
-    document.querySelectorAll('.nav-item').forEach(item => {
-      if (item.href.includes(currentPage)) item.classList.add('active');
     });
-
-    loadGames();
+    const supabase = window.supabase.createClient(
+      'https://yfrgxmpbdbkfwzwbtfrt.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
+    );
+    const staticGames = [
+      { id: '1', title: "Valley of the Ancient", thumbnail: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", duration: "2-3 min", tags: "Exploration", played: 1200, likes: 456, comments: 87 },
+      { id: '2', title: "K4 Rally", thumbnail: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", duration: "2 min", tags: "Racing", played: 2500, likes: 789, comments: 214 },
+      { id: '3', title: "Martians vs Roughnecks", thumbnail: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80", duration: "3 min", tags: "Action", played: 1100, likes: 312, comments: 56 }
+    ];
+    async function trackPlay(gameId) {
+      await supabase.from('game_plays').insert({ game_id: gameId });
+    }
+    function renderFeed() {
+      const feed = document.getElementById('feed');
+      feed.innerHTML = '';
+      staticGames.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div style="position:relative;">
+            <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
+            <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">▶</div>
+          </div>
+          <div class="game-info">
+            <div class="game-title">${game.title}</div>
+            <div class="game-duration">${game.duration} | ${game.tags}</div>
+            <div class="game-powered">Powered by YOM</div>
+            <div class="game-stats">
+              <div class="left">Played ${game.played.toLocaleString()}</div>
+              <div class="right">
+                <span>❤️ ${game.likes.toLocaleString()}</span>
+                <span>💬 ${game.comments}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        feed.appendChild(card);
+      });
+    }
+    window.playGame = async function(id, title, likes) {
+      await trackPlay(id);
+      window.location.href = `game.html?id=${id}`;
+    };
+    window.closeOverlay = function() {
+      document.getElementById('overlay-player').classList.remove('active');
+      document.getElementById('overlay-iframe').src = '';
+    };
+    window.overlayLike = function() {
+      const count = document.getElementById('overlay-likes');
+      count.textContent = (parseInt(count.textContent) || 0) + 1;
+    };
+    if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+    document.querySelectorAll('.lane-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelector('.lane-tab.active')?.classList.remove('active');
+        tab.classList.add('active');
+      });
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.nav-item').forEach(i => {
+          i.classList.remove('active');
+          const img = i.querySelector('.nav-icon');
+          img.src = img.src.replace('.ab.png', '.gr.png');
+        });
+        this.classList.add('active');
+        this.querySelector('.nav-icon').src = this.querySelector('.nav-icon').dataset.active;
+      });
+    });
+    async function checkLogin() {
+      const { data: { user } } = await supabase.auth.getUser();
+      const profileImg = document.querySelector('[data-page="profile"] img');
+      if (user) profileImg.alt = 'Profile';
+      else profileImg.alt = 'Login';
+    }
+    checkLogin();
+    renderFeed();
   </script>
 </body>
 </html>
