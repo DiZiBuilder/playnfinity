@@ -244,9 +244,9 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmcmd4bXBiZGJrZnd6d2J0ZnJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTMwMjcsImV4cCI6MjA3ODYyOTAyN30.A0tkw4gMg49E7-6oA8m8_FJev209UDeuvDDcxsCREWI'
     );
     const staticGames = [
-      { id: '1', title: "Valley of the Ancient", thumbnail: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", duration: "2-3 min", tags: "Exploration", played: 1200, likes: 456, comments: 87 },
-      { id: '2', title: "K4 Rally", thumbnail: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", duration: "2 min", tags: "Racing", played: 2500, likes: 789, comments: 214 },
-      { id: '3', title: "Martians vs Roughnecks", thumbnail: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80", duration: "3 min", tags: "Action", played: 1100, likes: 312, comments: 56 }
+      { id: '1', title: "Valley of the Ancient", thumbnail: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80", duration: "2-3 min", tags: "Exploration", played: 1200, likes: 456, comments: 87 },
+      { id: '2', title: "K4 Rally", thumbnail: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80", duration: "2 min", tags: "Racing", played: 2500, likes: 789, comments: 214 },
+      { id: '3', title: "Martians vs Roughnecks", thumbnail: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&q=80", duration: "3 min", tags: "Action", played: 1100, likes: 312, comments: 56 }
     ];
     async function trackPlay(gameId) {
       await supabase.from('game_plays').insert({ game_id: gameId });
