@@ -256,7 +256,7 @@
         card.className = 'game-card';
         card.innerHTML = `
           <div style="position:relative;">
-            <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}" onerror="this.src='https://via.placeholder.com/400x200?text=Game+Thumbnail'">
+            <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
             <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">▶</div>
           </div>
           <div class="game-info">
