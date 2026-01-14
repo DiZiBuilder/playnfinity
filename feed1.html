@@ -18,7 +18,6 @@
     body.light {
       background: linear-gradient(135deg, #f8f0ff 0%, #e6d9ff 50%, #ffd4e6 100%);
     }
-    /* Beautiful custom scrollbar */
     .feed-container {
       position: fixed;
       top: 60px; left: 0; right: 0; bottom: 80px;
@@ -95,7 +94,6 @@
       padding: 1rem;
     }
     .game-info * { color: #ffffff !important; }
-    /* Elegant metadata */
     .game-duration,
     .game-powered {
       color: #d8b4ff !important;
@@ -106,7 +104,6 @@
       font-size: 0.75rem;
       margin-top: 0.25rem;
     }
-    /* Calm, balanced stats */
     .game-stats {
       display: flex;
       justify-content: space-between;
@@ -259,7 +256,7 @@
         card.className = 'game-card';
         card.innerHTML = `
           <div style="position:relative;">
-            <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}">
+            <img src="${game.thumbnail}" class="game-thumb" alt="${game.title}" onerror="this.src='https://via.placeholder.com/400x200?text=Game+Thumbnail'">
             <div class="play-button" onclick="playGame('${game.id}', '${game.title}', ${game.likes})">▶</div>
           </div>
           <div class="game-info">
